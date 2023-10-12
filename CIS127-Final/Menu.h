@@ -20,8 +20,6 @@ struct MenuFlavor
     };
 };
 
-constexpr MenuFlavor defaultMenuFlavor = MenuFlavor();
-
 template<typename _Token>
 struct Menu
 {
@@ -32,9 +30,10 @@ struct Menu
         _Token token;
     };
 
+    MenuFlavor flavor;
     vector<Item> options;
 
-    _Token GetSelection(const MenuFlavor& flavor)
+    _Token GetSelection() const
     {
         for (const Item item : options)
         {
