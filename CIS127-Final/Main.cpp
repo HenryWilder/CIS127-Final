@@ -14,14 +14,15 @@
 #include <string>
 #include <vector>
 #include "Serialize.h"
+#include "Menu.h"
+using std::string;
+using std::vector;
 using std::cin;
 using std::cout;
 using std::endl;
 using std::getline;
-using std::string;
-using std::vector;
 
-enum class MenuItem
+enum class MainMenuToken
 {
     EXIT_GAME,
     OPTIONS,
@@ -30,47 +31,34 @@ enum class MenuItem
     LOAD_GAME,
 };
 
-MenuItem GetMainMenuSelection()
+using MainMenu = Menu<MainMenuToken>;
+
+MainMenuToken GetMainMenuSelection()
 {
-    const string MENU_ITEM_CONTINUE = "Continue";
-    const string MENU_ITEM_NEWGAME = "New game";
-    const string MENU_ITEM_OPTIONS = "Options";
-    const string MENU_ITEM_LOAD = "Load game";
-    const string MENU_ITEM_EXIT = "Exit game";
-    vector<string> menuOptions;
-    menuOptions.reserve(5);
+    using enum MainMenuToken;
+
+    MainMenu menu;
 
     if (config.SaveExists())
     {
-        menuOptions = { MENU_ITEM_CONTINUE, MENU_ITEM_OPTIONS, MENU_ITEM_LOAD, MENU_ITEM_NEWGAME, MENU_ITEM_EXIT };
+        menu.options = {
+            { "cont", "Continue",  CONTINUE  },
+            { "opt",  "Options",   OPTIONS   },
+            { "new",  "New game",  NEW_GAME  },
+            { "load", "Load game", LOAD_GAME },
+            { "exit", "Exit game", EXIT_GAME },
+        };
     }
     else
     {
-        menuOptions = { MENU_ITEM_NEWGAME, MENU_ITEM_OPTIONS, MENU_ITEM_EXIT };
+        menu.options = {
+            { "new",  "New game",  NEW_GAME  },
+            { "opt",  "Options",   OPTIONS   },
+            { "exit", "Exit game", EXIT_GAME },
+        };
     }
 
-    for (size_t i = 0; i < menuOptions.size(); ++i)
-    {
-        cout << (i + 1) << ": " << menuOptions[i] << '\n';
-    }
-
-    char menuItemSelectionNumber = '0';
-    while (menuItemSelectionNumber < '1' || '0' + menuOptions.size() < menuItemSelectionNumber)
-    {
-        cout << "Select a menu item: ";
-        cin >> menuItemSelectionNumber;
-    }
-    const string& selectedMenuItem = menuOptions[menuItemSelectionNumber - (size_t)'1'];
-    cout << "You selected " << selectedMenuItem << endl;
-
-    if (selectedMenuItem == MENU_ITEM_CONTINUE)
-    {
-
-    }
-    else if (selectedMenuItem == MENU_ITEM_EXIT)
-    {
-        return MenuItem::EXIT_GAME;
-    }
+    return menu.GetSelection(MenuFlavor{});
 }
 
 int main()
@@ -81,25 +69,27 @@ int main()
 
     while (!shouldGameClose)
     {
-        MenuItem selectedMenuItem = GetMainMenuSelection();
+        MainMenuToken selectedMenuItem = GetMainMenuSelection();
+        using enum MainMenuToken;
         switch (selectedMenuItem)
         {
-        case MenuItem::EXIT_GAME:
+        case EXIT_GAME:
             shouldGameClose = true;
             break;
 
-        case MenuItem::OPTIONS:
+        case OPTIONS:
             break;
 
-        case MenuItem::NEW_GAME:
+        case NEW_GAME:
             break;
 
-        case MenuItem::CONTINUE:
+        case CONTINUE:
             break;
 
-        case MenuItem::LOAD_GAME:
+        case LOAD_GAME:
             break;
         }
+        cout << endl;
     }
 
     return 0;
