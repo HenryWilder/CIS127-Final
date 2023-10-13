@@ -30,14 +30,6 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    srand(time(nullptr));
-    cout << Roll(8, D6) + Roll(2, D8, +5) << endl;
-    cout << Roll(8, D6) + Roll(2, D8, +5) << endl;
-    cout << Roll(8, D6) + Roll(2, D8, +5) << endl;
-    cout << Roll(8, D6) + Roll(2, D8, +5) << endl;
-    cout << Roll(8, D6) + Roll(2, D8, +5) << endl;
-    return 0;
-
     LoadConfigData();
 
     bool shouldGameClose = false;
