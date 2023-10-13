@@ -37,13 +37,14 @@ TextureGrayscale::~TextureGrayscale()
     delete[] data;
 }
 
-void TextureGrayscale::Print() const
+void TextureGrayscale::Print(float scale) const
 {
-    for (size_t y = 0; y < height; ++y)
+    float scaleInv = 1.0f / scale;
+    for (size_t y = 0; y < height * scale; ++y)
     {
-        for (size_t x = 0; x < width; ++x)
+        for (size_t x = 0; x < width * scale; ++x)
         {
-            char ch = AsciiGrayscale(data[y * width + x]);
+            char ch = AsciiGrayscale(at((size_t)(x * scaleInv), (size_t)(y * scaleInv)));
             std::cout << ch << ch;
         }
         std::cout << '\n';
@@ -67,9 +68,9 @@ void TextureGrayscale::PrintIso(float scale) const
 void TextureGrayscale::Draw(const TextureGrayscale& src, quad quad)
 {
     vec2 coord;
-    for (coord.y = 0.0f; coord.y <= 1.0f; coord.y += 1.0f / src.GetHeight())
+    for (coord.y = 0.0f; coord.y <= 1.0f; coord.y += 1.0f / GetHeight())
     {
-        for (coord.x = 0.0f; coord.x <= 1.0f; coord.x += 1.0f / src.GetWidth())
+        for (coord.x = 0.0f; coord.x <= 1.0f; coord.x += 1.0f / GetWidth())
         {
             vec2 position = quad.CoordToPos(coord);
             at(position) = src.at(coord);

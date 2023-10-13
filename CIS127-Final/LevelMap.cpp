@@ -27,23 +27,21 @@ GridSpaceFlags& Room::at(Gridspace position)
     return at(position.x, position.y);
 }
 
-void Room::PrintRoom(float scale) const
+void Room::GetRoomTexture(TextureGrayscale& tex) const
 {
-    TextureGrayscale tex(ROOM_WIDTH * scale, ROOM_HEIGHT * scale);
-    vec2 resolution(ROOM_WIDTH, ROOM_HEIGHT);
+    vec2 resolution(ROOM_WIDTH - 1, ROOM_HEIGHT - 1);
     const Room* _this = this;
     tex.ApplyFragmentShader([_this, resolution](vec2 fragTexCoord)
     {
         vec2 gridPos = fragTexCoord * resolution;
-        GridSpaceFlags spaceFlags = _this->at((size_t)gridPos.x, (size_t)gridPos.y);
+        GridSpaceFlags spaceFlags = _this->at((size_t)(gridPos.x + 0.5f), (size_t)(gridPos.y + 0.5f));
         switch (spaceFlags)
         {
         case GridSpaceFlags::GRIDSPACE_EMPTY: return 0.0f;
-        case GridSpaceFlags::GRIDSPACE_WALL:  return 0.5f;
-        case GridSpaceFlags::GRIDSPACE_DOOR:  return 1.0f;
+        case GridSpaceFlags::GRIDSPACE_WALL:  return 1.0f;
+        case GridSpaceFlags::GRIDSPACE_DOOR:  return 0.5f;
         }
     });
-    tex.PrintIso();
 }
 
 // Todo: make this more advanced

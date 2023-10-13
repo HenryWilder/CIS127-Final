@@ -63,5 +63,8 @@ void NewGame()
 
 void PlayGame(SaveData& data)
 {
-    data.map.GetRoom(0).PrintRoom(4);
+    TextureGrayscale tex(16, 16);
+    data.map.GetRoom(0).GetRoomTexture(tex);
+    tex.Print();
+    tex.PrintIso(4.0f);
 }

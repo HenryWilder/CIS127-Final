@@ -15,7 +15,7 @@ public:
     TextureGrayscale(size_t width, size_t height);
     ~TextureGrayscale();
 
-    void Print() const;
+    void Print(float scale = 1.0f) const;
     void PrintIso(float scale = 1.0f) const;
     void Draw(const TextureGrayscale& src, quad quad);
 
