@@ -9,12 +9,12 @@ enum class RollWith
 
 enum Die : unsigned
 {
-    D2 = 2,
-    D4 = 4,
-    D6 = 6,
-    D8 = 8,
-    D10 = 10,
-    D20 = 20,
+    D2   =   2,
+    D4   =   4,
+    D6   =   6,
+    D8   =   8,
+    D10  =  10,
+    D20  =  20,
     D100 = 100,
 };
 

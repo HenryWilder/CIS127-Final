@@ -18,6 +18,8 @@
 #include "MainMenu.h"
 #include "LevelMap.h"
 #include "RNG.h"
+#include "Perlin2D.h"
+#include "Visuals.h"
 using std::string;
 using std::vector;
 using std::cin;
@@ -30,6 +32,14 @@ void PlayGame(SaveData& data);
 
 int main()
 {
+    TextureGrayscale test(32, 32);
+    test.ApplyFragmentShader([](const TextureGrayscale& texture0, Vector2 fragTexCoord)
+    {
+        return (fragTexCoord.x + fragTexCoord.y) / 2;
+    });
+    test.Print();
+    return 0;
+
     LoadConfigData();
 
     bool shouldGameClose = false;
@@ -55,13 +65,12 @@ int main()
 
 void NewGame()
 {
-    LevelMap map;
-    map.Generate(3);
     SaveData data;
+    data.map.Generate(1);
     PlayGame(data);
 }
 
 void PlayGame(SaveData& data)
 {
-    data.map.PrintMap();
+    data.map.GetRoom(0).PrintRoom();
 }
