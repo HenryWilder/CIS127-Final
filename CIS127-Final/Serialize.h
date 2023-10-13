@@ -1,4 +1,6 @@
 #pragma once
+#include "LevelMap.h"
+#include "Inventory.h"
 #include <string>
 #include <vector>
 using std::string;
@@ -8,8 +10,10 @@ using std::vector;
 struct SaveData
 {
     string playerName = "Ugene Plunderbuss";
-    // todo: player inventory
-    // todo: player room
+    Inventory playerInventory;
+    LevelMap map;
+    int currentRoom;
+    Gridspace currentPosition;
 };
 
 struct ConfigData

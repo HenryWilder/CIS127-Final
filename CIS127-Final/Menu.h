@@ -44,7 +44,7 @@ struct Menu
         {
             cout << "> ";
             string input;
-            cin >> input;
+            getline(cin, input);
             for (const Item item : options)
             {
                 if (input == item.userInput)
