@@ -51,6 +51,35 @@ void TextureGrayscale::Print() const
     std::cout << '\n';
 }
 
+void TextureGrayscale::Draw(const TextureGrayscale& src, quad quad)
+{
+    vec2 coord;
+    for (coord.y = 0.0f; coord.y <= 1.0f; coord.y += 1.0f / src.GetHeight())
+    {
+        for (coord.x = 0.0f; coord.x <= 1.0f; coord.x += 1.0f / src.GetWidth())
+        {
+            vec2 position = quad.CoordToPos(coord);
+            at(position) = src.at(coord);
+        }
+    }
+}
+
+void TextureGrayscale::ApplyFragmentShader(FragShader_Simple fragShader)
+{
+    const float xIncrement = 1.0f / width;
+    const float yIncrement = 1.0f / height;
+    vec2 coord = {};
+    for (float y = 0.0f; y <= 1.0f; y += yIncrement)
+    {
+        coord.y = y;
+        for (float x = 0.0f; x <= 1.0f; x += xIncrement)
+        {
+            coord.x = x;
+            at(vec2(x, y))  = fragShader(coord);
+        }
+    }
+}
+
 void TextureGrayscale::ApplyFragmentShader(FragShader fragShader)
 {
     TextureGrayscale texture0 = TextureGrayscale(width, height);
@@ -61,14 +90,14 @@ void TextureGrayscale::ApplyFragmentShader(FragShader fragShader)
 
     const float xIncrement = 1.0f / width;
     const float yIncrement = 1.0f / height;
-    Vector2 coord = {};
+    vec2 coord = {};
     for (float y = 0.0f; y <= 1.0f; y += yIncrement)
     {
         coord.y = y;
         for (float x = 0.0f; x <= 1.0f; x += xIncrement)
         {
             coord.x = x;
-            at(x, y)  = fragShader(texture0, coord);
+            at(vec2(x, y))  = fragShader(texture0, coord);
         }
     }
 }
@@ -108,7 +137,7 @@ _Use_decl_annotations_ float TextureGrayscale::at(size_t x, size_t y) const
     return data[y * width + x];
 }
 
-float TextureGrayscale::at(Vector2 coord) const
+float TextureGrayscale::at(vec2 coord) const
 {
     return at(
         (size_t)roundf(coord.x * (width  - 1)),
@@ -131,10 +160,44 @@ _Use_decl_annotations_ float& TextureGrayscale::at(size_t x, size_t y)
     return data[y * width + x];
 }
 
-float& TextureGrayscale::at(float x, float y)
+float& TextureGrayscale::at(vec2 coord)
 {
     return at(
-        (size_t)roundf(x * (width  - 1)),
-        (size_t)roundf(y * (height - 1))
+        (size_t)roundf(coord.x * (width  - 1)),
+        (size_t)roundf(coord.y * (height - 1))
     );
+}
+
+namespace shader_presets
+{
+    FragShader Circle(vec2 center, float radius, float gray)
+    {
+        auto fs = [center, radius, gray](const TextureGrayscale& texture0, vec2 fragTexCoord)
+            {
+                vec2 pt = fragTexCoord - center;
+                bool isInCircle = (pt.x * pt.x + pt.y * pt.y) <= radius * radius;
+                float brightness = isInCircle ? gray : texture0.at(fragTexCoord);
+                return brightness;
+            };
+
+        return fs;
+    }
+
+    FragShader Rectangle(float x, float y, float width, float height, float gray)
+    {
+        float xmin = x;
+        float xmax = x + width;
+        float ymin = y;
+        float ymax = y + height;
+        auto fs = [xmin, xmax, ymin, ymax, gray](const TextureGrayscale& texture0, vec2 fragTexCoord)
+            {
+                bool isInRectagnle =
+                    xmin <= fragTexCoord.x && fragTexCoord.x <= xmax &&
+                    ymin <= fragTexCoord.y && fragTexCoord.y <= ymax;
+                float brightness = isInRectagnle ? gray : texture0.at(fragTexCoord);
+                return brightness;
+            };
+
+        return fs;
+    }
 }

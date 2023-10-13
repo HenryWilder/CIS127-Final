@@ -33,11 +33,22 @@ void PlayGame(SaveData& data);
 int main()
 {
     TextureGrayscale test(32, 32);
-    test.ApplyFragmentShader([](const TextureGrayscale& texture0, Vector2 fragTexCoord)
-    {
-        return (fragTexCoord.x + fragTexCoord.y) / 2;
-    });
+    test.ApplyFragmentShader(shader_presets::clearBackground<0.1f>);
+    test.ApplyFragmentShader(shader_presets::Circle(vec2(0.5f), 0.25f, 1.0f));
+    test.ApplyFragmentShader(shader_presets::Circle(vec2(0.25f, 0.75f), 0.125f, 0.75f));
+    test.ApplyFragmentShader(shader_presets::Rectangle(0.25f, 0.75f, 0.25f, 0.125f, 0.35f));
     test.Print();
+
+    TextureGrayscale dest(32, 32);
+    quad iso = quad{
+        vec2(0.0f, 0.5f),
+        vec2(0.5f, 0.25f),
+        vec2(1.0f, 0.5f),
+        vec2(0.5f, 0.75f)
+    };
+    dest.Draw(test, iso);
+    dest.Print();
+
     return 0;
 
     LoadConfigData();

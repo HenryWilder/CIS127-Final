@@ -139,6 +139,7 @@
     <ClCompile Include="Perlin2D.cpp" />
     <ClCompile Include="RNG.cpp" />
     <ClCompile Include="Serialize.cpp" />
+    <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Visuals.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +150,7 @@
     <ClInclude Include="Perlin2D.h" />
     <ClInclude Include="RNG.h" />
     <ClInclude Include="Serialize.h" />
+    <ClInclude Include="Shapes.h" />
     <ClInclude Include="Visuals.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
