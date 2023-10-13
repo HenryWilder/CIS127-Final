@@ -16,6 +16,7 @@ public:
     ~TextureGrayscale();
 
     void Print() const;
+    void PrintIso(float scale = 1.0f) const;
     void Draw(const TextureGrayscale& src, quad quad);
 
     // fragTexCoord is [{0,0}..{1,1}]
@@ -53,27 +54,27 @@ namespace shader_presets
 {
     template<float brightness>
     FragShader_Simple clearBackground = +[](vec2 fragTexCoord)
-        {
-            return brightness;
-        };
+    {
+        return brightness;
+    };
 
     template<float _Directions, float _Quality, float _Radius>
     FragShader blur = +[](const TextureGrayscale& texture0, vec2 fragTexCoord)
+    {
+        constexpr float iIncrement = 1.0f / _Quality;
+        constexpr float averager = _Quality * _Directions - 15.0f;
+        float brightness = texture0.at(fragTexCoord);
+        for (float d = 0.0f; d < PI2; d += PI2 / _Directions)
         {
-            constexpr float iIncrement = 1.0f / _Quality;
-            constexpr float averager = _Quality * _Directions - 15.0f;
-            float brightness = texture0.at(fragTexCoord);
-            for (float d = 0.0f; d < PI2; d += PI2 / _Directions)
+            for (float i = iIncrement; i <= 1.0f; i += iIncrement)
             {
-                for (float i = iIncrement; i <= 1.0f; i += iIncrement)
-                {
-                    vec2 offset = vec2(cosf(d), sinf(d)) * _Radius * i;
-                    brightness += texture0.at(fragTexCoord + offset);
-                }
+                vec2 offset = vec2(cosf(d), sinf(d)) * _Radius * i;
+                brightness += texture0.at(fragTexCoord + offset);
             }
-            brightness /= averager;
-            return brightness;
-        };
+        }
+        brightness /= averager;
+        return brightness;
+    };
 
     FragShader Circle(vec2 center, float radius, float gray);
     FragShader Rectangle(float x, float y, float width, float height, float gray);

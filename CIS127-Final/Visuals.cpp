@@ -51,6 +51,19 @@ void TextureGrayscale::Print() const
     std::cout << '\n';
 }
 
+void TextureGrayscale::PrintIso(float scale) const
+{
+    TextureGrayscale dest((size_t)(width * scale), (size_t)(height * scale));
+    dest.ApplyFragmentShader(shader_presets::clearBackground<0.0f>);
+    dest.Draw(*this, quad{
+        vec2(0.0f, 0.5f),
+        vec2(0.5f, 0.25f),
+        vec2(1.0f, 0.5f),
+        vec2(0.5f, 0.75f)
+    });
+    dest.Print();
+}
+
 void TextureGrayscale::Draw(const TextureGrayscale& src, quad quad)
 {
     vec2 coord;

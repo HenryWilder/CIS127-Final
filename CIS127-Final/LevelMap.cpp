@@ -1,4 +1,5 @@
 #include "LevelMap.h"
+#include "Visuals.h"
 #include <iostream>
 
 bool operator==(Gridspace a, Gridspace b)
@@ -26,26 +27,23 @@ GridSpaceFlags& Room::at(Gridspace position)
     return at(position.x, position.y);
 }
 
-void Room::PrintRoom() const
+void Room::PrintRoom(float scale) const
 {
-    using std::cout;
-    using std::endl;
-    for (int y = 0; y < ROOM_HEIGHT; ++y)
+    TextureGrayscale tex(ROOM_WIDTH * scale, ROOM_HEIGHT * scale);
+    vec2 resolution(ROOM_WIDTH, ROOM_HEIGHT);
+    const Room* _this = this;
+    tex.ApplyFragmentShader([_this, resolution](vec2 fragTexCoord)
     {
-        for (int x = 0; x < ROOM_WIDTH; ++x)
+        vec2 gridPos = fragTexCoord * resolution;
+        GridSpaceFlags spaceFlags = _this->at((size_t)gridPos.x, (size_t)gridPos.y);
+        switch (spaceFlags)
         {
-            GridSpaceFlags spaceFlags = at(x, y);
-            switch (spaceFlags)
-            {
-            case GridSpaceFlags::GRIDSPACE_EMPTY: cout << "  "; break;
-            case GridSpaceFlags::GRIDSPACE_WALL:  cout << "[]"; break;
-            case GridSpaceFlags::GRIDSPACE_DOOR:  cout << "||"; break;
-            default: cout << '?'; break;
-            }
+        case GridSpaceFlags::GRIDSPACE_EMPTY: return 0.0f;
+        case GridSpaceFlags::GRIDSPACE_WALL:  return 0.5f;
+        case GridSpaceFlags::GRIDSPACE_DOOR:  return 1.0f;
         }
-        cout << '\n';
-    }
-    cout << endl;
+    });
+    tex.PrintIso();
 }
 
 // Todo: make this more advanced
