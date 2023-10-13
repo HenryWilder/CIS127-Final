@@ -18,7 +18,7 @@ int Roll(unsigned n, Die d, int modifier, RollWith rollWith)
     case RollWith::DISADVANTAGE: cout << " DIS"; break;
     case RollWith::ADVANTAGE:    cout << " ADV"; break;
     }
-    cout << endl;
+    cout << ": ";
 #endif
 
     bool isNormalRoll = rollWith == RollWith::NORMAL;
@@ -28,7 +28,7 @@ int Roll(unsigned n, Die d, int modifier, RollWith rollWith)
     rolls.reserve(totalRolls);
     for (size_t i = 0; i < totalRolls; ++i)
     {
-        rolls.push_back(rand() % d);
+        rolls.push_back(rand() % d + 1);
     }
 
 #if DEBUG_ROLL
@@ -37,12 +37,11 @@ int Roll(unsigned n, Die d, int modifier, RollWith rollWith)
     {
         cout << roll << ' ';
     }
-    cout << endl;
 #endif
 
     if (!isNormalRoll)
     {
-        std::sort(rolls.begin(), rolls.end()); // Need to test if this sorts ascending
+        std::sort(rolls.begin(), rolls.end());
 
         switch (rollWith)
         {
@@ -56,14 +55,14 @@ int Roll(unsigned n, Die d, int modifier, RollWith rollWith)
         }
 
 #if DEBUG_ROLL
-        cout << "Remaining half: ";
+        cout << " Remaining half: ";
         for (int roll : rolls)
         {
             cout << roll << ' ';
         }
-        cout << endl;
 #endif
     }
+    cout << endl;
         
     return std::accumulate(rolls.begin(), rolls.end(), modifier);
 }
