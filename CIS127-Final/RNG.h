@@ -1,10 +1,10 @@
 #pragma once
 
-enum class RollMethod
+enum class RollWith
 {
-    DIS = -1,
-    NRM = 0,
-    ADV = 1,
+    DISADVANTAGE = -1,
+    NORMAL       =  0,
+    ADVANTAGE    = +1,
 };
 
 enum Die : unsigned
@@ -18,4 +18,4 @@ enum Die : unsigned
     D100 = 100,
 };
 
-int Roll(Die d, unsigned n = 1, int modifier = 0, RollMethod rollWith = RollMethod::NRM);
+int Roll(unsigned n, Die d, int modifier = 0, RollWith rollWith = RollWith::NORMAL);

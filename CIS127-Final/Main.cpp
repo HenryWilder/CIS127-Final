@@ -30,7 +30,7 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    cout << Roll();
+    cout << Roll(8, D6) + Roll(2, D8, +5) << endl;
     return 0;
 
     LoadConfigData();

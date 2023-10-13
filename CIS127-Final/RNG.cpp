@@ -2,11 +2,26 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 using std::vector;
+using std::cout;
+using std::endl;
 
-int Roll(Die d, unsigned n, int modifier, RollMethod rollWith)
+#define DEBUG_ROLL 1
+
+int Roll(unsigned n, Die d, int modifier, RollWith rollWith)
 {
-    bool isNormalRoll = rollWith == RollMethod::NRM;
+#if DEBUG_ROLL
+    cout << n << "d" << d << (modifier >= 0 ? "+" : "") << modifier;
+    switch (rollWith)
+    {
+    case RollWith::DISADVANTAGE: cout << " DIS"; break;
+    case RollWith::ADVANTAGE:    cout << " ADV"; break;
+    }
+    cout << endl;
+#endif
+
+    bool isNormalRoll = rollWith == RollWith::NORMAL;
     size_t totalRolls = isNormalRoll ? n : n * 2ull;
 
     vector<int> rolls;
@@ -16,27 +31,39 @@ int Roll(Die d, unsigned n, int modifier, RollMethod rollWith)
         rolls.push_back(rand() % d);
     }
 
+#if DEBUG_ROLL
+    cout << "Rolling... ";
+    for (int roll : rolls)
+    {
+        cout << roll << ' ';
+    }
+    cout << endl;
+#endif
+
     if (!isNormalRoll)
     {
         std::sort(rolls.begin(), rolls.end()); // Need to test if this sorts ascending
 
         switch (rollWith)
         {
-        case RollMethod::ADV:
+        case RollWith::ADVANTAGE:
             rolls.erase(rolls.begin(), rolls.begin() + n);
             break;
 
-        case RollMethod::DIS:
+        case RollWith::DISADVANTAGE:
             rolls.erase(rolls.begin() + n, rolls.end());
             break;
         }
-    }
 
-    int total = 0;
-    for (int roll : rolls)
-    {
-        total += roll;
+#if DEBUG_ROLL
+        cout << "Remaining half: ";
+        for (int roll : rolls)
+        {
+            cout << roll << ' ';
+        }
+        cout << endl;
+#endif
     }
-
-    return total + modifier;
+        
+    return std::accumulate(rolls.begin(), rolls.end(), modifier);
 }
