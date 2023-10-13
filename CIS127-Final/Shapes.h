@@ -70,3 +70,13 @@ struct quad
         return Lerp(Lerp(topLeft, topRight, pt.x), Lerp(bottomLeft, bottomRight, pt.x), pt.y);
     }
 };
+
+constexpr quad Offset(quad q, vec2 offset)
+{
+    return quad{
+        offset + q.topLeft,
+        offset + q.topRight,
+        offset + q.bottomRight,
+        offset + q.bottomLeft,
+    };
+}

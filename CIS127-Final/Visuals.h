@@ -2,6 +2,8 @@
 #include "Shapes.h"
 #include <sal.h>
 #include <functional>
+#include <vector>
+using std::vector;
 
 constexpr char AsciiGrayscale(float value);
 
@@ -13,7 +15,6 @@ class TextureGrayscale
 {
 public:
     TextureGrayscale(size_t width, size_t height);
-    ~TextureGrayscale();
 
     void Print(float scale = 1.0f) const;
     void PrintIso(float scale = 1.0f) const;
@@ -44,7 +45,7 @@ private:
     bool isWrapped = false;
     const size_t width;
     const size_t height;
-    _Field_size_full_(width * height) float* const data;
+    vector<float> data;
 };
 
 constexpr float PI = 3.14159265359f;

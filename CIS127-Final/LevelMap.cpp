@@ -17,6 +17,9 @@ GridSpaceFlags Room::at(Gridspace position) const
     return at(position.x, position.y);
 }
 
+Room::Room(int x, int y) :
+    mapX(x), mapY(y) {}
+
 _Use_decl_annotations_ GridSpaceFlags& Room::at(int x, int y)
 {
     return grid[y][x];
@@ -25,6 +28,16 @@ _Use_decl_annotations_ GridSpaceFlags& Room::at(int x, int y)
 GridSpaceFlags& Room::at(Gridspace position)
 {
     return at(position.x, position.y);
+}
+
+int Room::GetX() const
+{
+    return mapX;
+}
+
+int Room::GetY() const
+{
+    return mapY;
 }
 
 void Room::GetRoomTexture(TextureGrayscale& tex) const
@@ -70,23 +83,39 @@ void Room::Generate()
     }
 }
 
-void LevelMap::PrintMap() const
+void LevelMap::GetMapTexture(TextureGrayscale& tex) const
 {
-    // todo
+    float roomWidth = 1.0f / ceilf(sqrt(rooms.size()));
+    quad baseQuad = {
+        vec2(0),
+        vec2(roomWidth, 0),
+        vec2(roomWidth),
+        vec2(0, roomWidth)
+    };
+    for (const Room& room : rooms)
+    {
+        TextureGrayscale roomTex(ROOM_WIDTH, ROOM_HEIGHT);
+        room.GetRoomTexture(roomTex);
+        vec2 pos = vec2(room.GetX(), room.GetY()) * roomWidth;
+        tex.Draw(roomTex, Offset(baseQuad, pos));
+    }
+}
+
+void LevelMap::Generate(size_t numRooms)
+{
+    rooms.reserve(numRooms);
+    size_t roomsPerSide = (size_t)ceil(sqrt(rooms.size()));
+    if (roomsPerSide < 1) roomsPerSide = 1;
+    for (size_t i = 0; i < numRooms; ++i)
+    {
+        rooms.push_back(Room(i % roomsPerSide, i / roomsPerSide));
+        rooms.back().Generate();
+    }
 }
 
 size_t LevelMap::NumRooms() const
 {
     return rooms.size();
-}
-
-_Use_decl_annotations_ void LevelMap::Generate(size_t numRooms)
-{
-    rooms.resize(numRooms);
-    for (Room& room : rooms)
-    {
-        room.Generate();
-    }
 }
 
 Room& LevelMap::GetRoom(size_t room)

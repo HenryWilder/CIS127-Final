@@ -57,14 +57,13 @@ int main()
 void NewGame()
 {
     SaveData data;
-    data.map.Generate(1);
+    data.map.Generate(4);
     PlayGame(data);
 }
 
 void PlayGame(SaveData& data)
 {
-    TextureGrayscale tex(16, 16);
-    data.map.GetRoom(0).GetRoomTexture(tex);
-    tex.Print();
-    tex.PrintIso(4.0f);
+    TextureGrayscale mapTex(32, 32);
+    data.map.GetMapTexture(mapTex);
+    mapTex.Print();
 }

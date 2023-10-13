@@ -30,11 +30,10 @@ static_assert(AsciiGrayscale(1.0f) == '@');
 #endif
 
 TextureGrayscale::TextureGrayscale(size_t width, size_t height) :
-    width(width), height(height), data(new float[width * height]) {}
-
-TextureGrayscale::~TextureGrayscale()
+    width(width), height(height)
 {
-    delete[] data;
+    size_t area = width * height;
+    data.resize(area);
 }
 
 void TextureGrayscale::Print(float scale) const
@@ -54,13 +53,13 @@ void TextureGrayscale::Print(float scale) const
 
 void TextureGrayscale::PrintIso(float scale) const
 {
-    TextureGrayscale dest((size_t)(width * scale), (size_t)(height * scale));
+    TextureGrayscale dest((size_t)(width * scale), (size_t)(height * scale * 0.5f));
     dest.ApplyFragmentShader(shader_presets::clearBackground<0.0f>);
     dest.Draw(*this, quad{
         vec2(0.0f, 0.5f),
-        vec2(0.5f, 0.25f),
+        vec2(0.5f, 0.0f),
         vec2(1.0f, 0.5f),
-        vec2(0.5f, 0.75f)
+        vec2(0.5f, 1.0f)
     });
     dest.Print();
 }
@@ -68,9 +67,9 @@ void TextureGrayscale::PrintIso(float scale) const
 void TextureGrayscale::Draw(const TextureGrayscale& src, quad quad)
 {
     vec2 coord;
-    for (coord.y = 0.0f; coord.y <= 1.0f; coord.y += 1.0f / GetHeight())
+    for (coord.y = 0.0f; coord.y <= 1.0f; coord.y += 1.0f / width)
     {
-        for (coord.x = 0.0f; coord.x <= 1.0f; coord.x += 1.0f / GetWidth())
+        for (coord.x = 0.0f; coord.x <= 1.0f; coord.x += 1.0f / height)
         {
             vec2 position = quad.CoordToPos(coord);
             at(position) = src.at(coord);
@@ -99,7 +98,7 @@ void TextureGrayscale::ApplyFragmentShader(FragShader fragShader)
     TextureGrayscale texture0 = TextureGrayscale(width, height);
     for (size_t i = 0; i < width * height; ++i)
     {
-        texture0.data[i] = data[i];
+        texture0.data.at(i) = data.at(i);
     }
 
     const float xIncrement = 1.0f / width;
@@ -148,7 +147,7 @@ _Use_decl_annotations_ float TextureGrayscale::at(size_t x, size_t y) const
         x = std::min(std::max(x, 0ull), width);
         y = std::min(std::max(y, 0ull), height);
     }
-    return data[y * width + x];
+    return data.at(y * width + x);
 }
 
 float TextureGrayscale::at(vec2 coord) const
@@ -161,6 +160,7 @@ float TextureGrayscale::at(vec2 coord) const
 
 _Use_decl_annotations_ float& TextureGrayscale::at(size_t x, size_t y) 
 {
+    
     if (isWrapped)
     {
         x %= width;
@@ -168,10 +168,10 @@ _Use_decl_annotations_ float& TextureGrayscale::at(size_t x, size_t y)
     }
     else
     {
-        x = std::min(std::max(x, 0ull), width);
-        y = std::min(std::max(y, 0ull), height);
+        x = Clamp(x, 0, width - 1);
+        y = Clamp(y, 0, height - 1);
     }
-    return data[y * width + x];
+    return data.at(y * width + x);
 }
 
 float& TextureGrayscale::at(vec2 coord)
