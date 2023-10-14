@@ -149,6 +149,7 @@
     <ClInclude Include="RNG.h" />
     <ClInclude Include="Serialize.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="Utility.h" />
     <ClInclude Include="Visuals.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

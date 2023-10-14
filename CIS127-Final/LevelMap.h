@@ -7,14 +7,6 @@ using std::vector;
 constexpr size_t ROOM_WIDTH  = 16;
 constexpr size_t ROOM_HEIGHT = 16;
 
-struct Gridspace
-{
-    _Field_range_(0, ROOM_WIDTH)  int x;
-    _Field_range_(0, ROOM_HEIGHT) int y;
-};
-
-bool operator==(Gridspace a, Gridspace b);
-
 enum class Cardinal
 {
     NORTH,
