@@ -31,6 +31,13 @@ void PlayGame(SaveData& data);
 
 int main()
 {
+    DrawPixel({ 255, 0, 255 });
+    DrawPixel({ 32, 32, 32 });
+    std::cout << '\n';
+    DrawPixel({ 32, 32, 32 });
+    DrawPixel({ 255, 0, 255 });
+    return 0;
+
     LoadConfigData();
 
     bool shouldGameClose = false;
@@ -57,13 +64,23 @@ int main()
 void NewGame()
 {
     SaveData data;
-    data.map.Generate(4);
+    data.map.Generate(9);
     PlayGame(data);
 }
 
 void PlayGame(SaveData& data)
 {
-    TextureGrayscale mapTex(32, 32);
-    data.map.GetMapTexture(mapTex);
-    mapTex.Print();
+    {
+        TextureGrayscale roomTex(16, 16);
+        data.map.GetRoom(0).GetRoomTexture(roomTex);
+        roomTex.Print();
+        roomTex.PrintIso(2.0f);
+    }
+    {
+        auto [width, height] = data.map.GetMapSize();
+        TextureGrayscale mapTex(width, height);
+        data.map.GetMapTexture(mapTex);
+        mapTex.Print();
+        //mapTex.PrintIso(2.0f);
+    }
 }

@@ -54,9 +54,12 @@ private:
 class LevelMap
 {
 public:
+    static constexpr size_t PATH_LENGTH = 1;
+
     size_t NumRooms() const;
     Room& GetRoom(size_t room);
-
+    
+    std::pair<size_t, size_t> GetMapSize() const;
     void GetMapTexture(TextureGrayscale& tex) const;
     void Generate(size_t numRooms);
 

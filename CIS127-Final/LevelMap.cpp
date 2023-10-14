@@ -83,20 +83,48 @@ void Room::Generate()
     }
 }
 
+std::pair<size_t, size_t> LevelMap::GetMapSize() const
+{
+    size_t xRoomsPerSide = std::max((size_t)ceil (sqrt(rooms.size())), 1ull);
+    size_t yRoomsPerSide = std::max((size_t)floor(sqrt(rooms.size())), 1ull);
+    size_t xNumGaps = xRoomsPerSide - 1;
+    size_t yNumGaps = yRoomsPerSide - 1;
+    return {
+        xRoomsPerSide * ROOM_WIDTH  + xNumGaps * PATH_LENGTH,
+        yRoomsPerSide * ROOM_HEIGHT + yNumGaps * PATH_LENGTH
+    };
+}
+
 void LevelMap::GetMapTexture(TextureGrayscale& tex) const
 {
-    float roomWidth = 1.0f / ceilf(sqrt(rooms.size()));
+    size_t xRoomsPerSide = std::max((size_t)ceil (sqrt(rooms.size())), 1ull);
+    size_t yRoomsPerSide = std::max((size_t)floor(sqrt(rooms.size())), 1ull);
+
+    size_t xNumGaps = xRoomsPerSide - 1;
+    size_t yNumGaps = yRoomsPerSide - 1;
+
+    vec2 pathLength = vec2(
+        PATH_LENGTH / ((float)tex.GetWidth () - 1),
+        PATH_LENGTH / ((float)tex.GetHeight() - 1));
+
+    float widthPerRoom  = 1.0f / xRoomsPerSide - pathLength.x;
+    float heightPerRoom = 1.0f / yRoomsPerSide - pathLength.y;
+
+    vec2 roomSize = vec2(widthPerRoom, heightPerRoom);
+
     quad baseQuad = {
         vec2(0),
-        vec2(roomWidth, 0),
-        vec2(roomWidth),
-        vec2(0, roomWidth)
+        roomSize * vec2(1, 0),
+        roomSize * vec2(1),
+        roomSize * vec2(0, 1)
     };
+
     for (const Room& room : rooms)
     {
         TextureGrayscale roomTex(ROOM_WIDTH, ROOM_HEIGHT);
         room.GetRoomTexture(roomTex);
-        vec2 pos = vec2(room.GetX(), room.GetY()) * roomWidth;
+        vec2 gridPos = vec2(room.GetX(), room.GetY());
+        vec2 pos = gridPos * (roomSize + pathLength);
         tex.Draw(roomTex, Offset(baseQuad, pos));
     }
 }
@@ -104,11 +132,13 @@ void LevelMap::GetMapTexture(TextureGrayscale& tex) const
 void LevelMap::Generate(size_t numRooms)
 {
     rooms.reserve(numRooms);
-    size_t roomsPerSide = (size_t)ceil(sqrt(rooms.size()));
-    if (roomsPerSide < 1) roomsPerSide = 1;
+    size_t xRoomsPerSide = std::max((size_t)ceil(sqrt(numRooms)), 1ull);
+    size_t yRoomsPerSide = std::max((size_t)floor(sqrt(numRooms)), 1ull);
     for (size_t i = 0; i < numRooms; ++i)
     {
-        rooms.push_back(Room(i % roomsPerSide, i / roomsPerSide));
+        int x = i % xRoomsPerSide;
+        int y = i / xRoomsPerSide;
+        rooms.push_back(Room(x, y));
         rooms.back().Generate();
     }
 }

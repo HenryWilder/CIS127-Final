@@ -1,13 +1,16 @@
 #include "Visuals.h"
 #include <iostream>
 
-#define USE_STANDARD_ASCII_RAMP 1
+#define USE_STANDARD_ASCII_RAMP 0
+#define USE_UNICODE_ASCII_RAMP 1
 
 constexpr char AsciiGrayscale(float value)
 {
     constexpr char ASCII_RAMP[] =
 #if USE_STANDARD_ASCII_RAMP
         R"TXT( .'`^",:;Il!i><~+_-?][}{1)(|\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$)TXT";
+#elif USE_UNICODE_ASCII_RAMP
+        { ' ', '\xB0', '\xB1', '\xB2', '\xDB', '\xF0', };
 #else
         R"TXT( .:-=+*#%@)TXT";
 #endif
@@ -20,14 +23,18 @@ constexpr char AsciiGrayscale(float value)
     size_t index = (size_t)(value * ASCII_RAMP_SIZE + 0.5f);
     return ASCII_RAMP[index];
 }
-static_assert(AsciiGrayscale(0.0f) == ' ');
-#if USE_STANDARD_ASCII_RAMP
-static_assert(AsciiGrayscale(0.5f) == 'n');
-static_assert(AsciiGrayscale(1.0f) == '$');
-#else
-static_assert(AsciiGrayscale(0.5f) == '+');
-static_assert(AsciiGrayscale(1.0f) == '@');
-#endif
+
+void DrawPixel(Color color)
+{
+    printf("\x1B[38;2;%d;%d;%dm\xDB\xDB\x1B[0m",
+        (int)color.r, (int)color.g, (int)color.b);
+}
+
+constexpr const char* AsciiColor(float value)
+{
+
+    return nullptr;
+}
 
 TextureGrayscale::TextureGrayscale(size_t width, size_t height) :
     width(width), height(height)

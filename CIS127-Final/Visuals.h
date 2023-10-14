@@ -7,6 +7,12 @@ using std::vector;
 
 constexpr char AsciiGrayscale(float value);
 
+struct Color
+{
+    unsigned char r, g, b;
+};
+void DrawPixel(Color color);
+
 class TextureGrayscale;
 using FragShader_Simple = std::function<float(vec2 fragTexCoord)>;
 using FragShader = std::function<float(const TextureGrayscale& texture0, vec2 fragTexCoord)>;
