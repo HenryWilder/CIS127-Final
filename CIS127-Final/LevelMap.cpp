@@ -42,7 +42,25 @@ int Room::GetY() const
 
 void Room::Print(float scale) const
 {
-
+    constexpr Color floorColor( 10,  10,  10);
+    constexpr Color  wallColor(127, 127, 127);
+    constexpr Color  doorColor( 63, 255, 127);
+    for (size_t y = 0; y < ROOM_HEIGHT; ++y)
+    {
+        for (size_t x = 0; x < ROOM_WIDTH; ++x)
+        {
+            Color colorToUse;
+            switch (grid[y][x])
+            {
+            default:
+            case GridSpaceFlags::GRIDSPACE_EMPTY: colorToUse = floorColor; break;
+            case GridSpaceFlags::GRIDSPACE_WALL:  colorToUse = wallColor;  break;
+            case GridSpaceFlags::GRIDSPACE_DOOR:  colorToUse = doorColor;  break;
+            }
+            DrawBlock(colorToUse);
+        }
+        std::cout << '\n';
+    }
 }
 
 // Todo: make this more advanced
@@ -73,7 +91,10 @@ void Room::Generate()
 
 void LevelMap::Print(float scale) const
 {
-
+    for (size_t i = 0; i < rooms.size(); ++i)
+    {
+        rooms[i].Print();
+    }
 }
 
 void LevelMap::Generate(size_t numRooms)

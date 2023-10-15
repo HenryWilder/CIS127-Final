@@ -32,13 +32,6 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    DrawBlock({ 255, 0, 255 });
-    DrawBlock({ 32, 32, 32 });
-    std::cout << '\n';
-    DrawBlock({ 32, 32, 32 });
-    DrawBlock({ 255, 0, 255 });
-    return 0;
-
     LoadConfigData();
 
     bool shouldGameClose = false;
@@ -72,7 +65,5 @@ void NewGame()
 void PlayGame(SaveData& data)
 {
     cout << "Current room:\n";
-    data.map.Print();
-    cout << "Full map:\n";
     data.map.GetRoom(0).Print();
 }

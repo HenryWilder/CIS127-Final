@@ -28,6 +28,20 @@ concept comparible = requires(_Ty a, _Ty b)
     { a < b } -> std::same_as<bool>;
 };
 
+// Returns the larger of two numbers
+template<comparible _Ty>
+constexpr _Ty max(_Ty a, _Ty b) noexcept
+{
+    return b < a ? a : b;
+}
+
+// Returns the smaller of two numbers
+template<comparible _Ty>
+constexpr _Ty min(_Ty a, _Ty b) noexcept
+{
+    return a < b ? a : b;
+}
+
 // Keeps a number between two values
 template<comparible _Ty>
 constexpr _Ty clamp(_Ty x, _Ty min, _Ty max) noexcept
@@ -63,7 +77,7 @@ concept basic_arithmetible = requires(_Ty a, _Ty b)
 template<typename _TTy, typename _Ty>
 concept can_interpolate = requires(_Ty a, _TTy t)
 {
-    { a* t } -> std::same_as<_Ty>;
+    { a * t } -> std::same_as<_Ty>;
 };
 
 // Linear interpolate
@@ -94,7 +108,7 @@ constexpr _Ty cerp(_Ty a, _Ty b, _Ty c, _Ty d, _TTy t) noexcept
 }
 
 template<std::floating_point _Ty = float> constexpr _Ty PI = (_Ty)3.141592653589793238462643;
-template<std::floating_point _Ty = float> constexpr _Ty TAU = PI<_Ty> *2; // 2pi
+template<std::floating_point _Ty = float> constexpr _Ty TAU = PI<_Ty> * 2; // 2pi
 
 template<std::floating_point _Ty>
 constexpr _Ty deg_to_rad(_Ty angle)
@@ -122,13 +136,15 @@ namespace cx
     static_assert(abs(-1) == 1);
     static_assert(abs(0) == 0);
 
-    // Compiletime constexpr square root. Uses Newton Raphson method. Loops instead of using recursion.
-    // You are not meant to use this for negatives. But if you do, the result will be the imaginary number's coefficient.
-    // Infinity * infinity is still infinity, therefore the square root of infinity is negative infinity.
+    // Compiletime constexpr square root.
+    // Uses Newton Raphson method.
+    // Loops instead of using recursion.
+    // Not meant to be used negatives. If used for negatives, the result will be the imaginary number's coefficient.
+    // sqrt of infinity will loop infinitely.
     template<std::floating_point _Ty>
     constexpr _Ty sqrt(_Ty x)
     {
-        x = x >= 0 ? x : -x;
+        x = abs(x);
 
         _Ty curr = x;
         _Ty prev = 0;
@@ -163,7 +179,7 @@ namespace cx
         }
         return sine;
     }
-    static_assert(sin(0.0f) == 0.0f);
+    static_assert(NearlyEqual(sin(0.0f), 0.0f));
     static_assert(NearlyEqual(sin(PI<float> / 2), 1.0f));
     static_assert(NearlyEqual(sin(PI<float> / 6), 0.5f));
     static_assert(NearlyEqual(sin(PI<float>), 0.0f));
@@ -186,7 +202,7 @@ namespace cx
         }
         return cosine;
     }
-    static_assert(cos(0.0f) == 1.0f);
+    static_assert(NearlyEqual(cos(0.0f), 1.0f));
     static_assert(NearlyEqual(cos(PI<float> / 2), 0.0f));
     static_assert(NearlyEqual(cos(PI<float> / 3), 0.5f));
     static_assert(NearlyEqual(cos(PI<float>), -1.0f));
