@@ -37,12 +37,12 @@ Image LoadImageFromBitmap(const char* filename)
          int32_t height   = *reinterpret_cast< int32_t*>(header + 22); DEBUG_PRINT(height);
         uint16_t bitsPerPixel = *reinterpret_cast<uint16_t*>(header + 28); DEBUG_PRINT(bitsPerPixel); _ASSERT(bitsPerPixel == 24);
         uint32_t dataSize = *reinterpret_cast<uint32_t*>(header + 34); DEBUG_PRINT(dataSize);
-        int rowSize = ceil((bitsPerPixel * width) / 32) * 4; DEBUG_PRINT(rowSize);
+        int rowSize = ceil((bitsPerPixel * width) / 32.0f) * 4; DEBUG_PRINT(rowSize);
 
         char* data = new char[dataSize];
         bitmap.read(data, dataSize);
 
-#if 1 // Debug file contents
+#if 0 // Debug file contents
         {
             size_t x = 0;
             for (uint32_t i = 0; i < headerSize + dataSize; ++i)
@@ -51,6 +51,28 @@ Image LoadImageFromBitmap(const char* filename)
                     ? (unsigned char)header[i]
                     : (unsigned char)data[i - headerSize];
 
+                printf("%02X ", value);
+                ++x;
+                if (x == 8)
+                {
+                    std::cout << ' ';
+                }
+                if (x == 16)
+                {
+                    std::cout << '\n';
+                    x = 0;
+                }
+            }
+            std::cout << '\n' << std::endl;
+        }
+#endif
+
+#if 1 // Debug pixel array
+        {
+            size_t x = 0;
+            for (uint32_t i = 0; i < dataSize; ++i)
+            {
+                int value = (unsigned char)data[i];
                 printf("%02X ", value);
                 ++x;
                 if (x == 8)
@@ -96,7 +118,7 @@ Image LoadImageFromBitmap(const char* filename)
             for (int x = 0; x < width; ++x)
             {
                 Color color = result.data[y * width + x];
-                printf("[%02x %02x %02x]", (int)color.r, (int)color.g, (int)color.b);
+                printf("[%02X %02X %02X]", (int)color.r, (int)color.g, (int)color.b);
             }
             std::cout << '\n';
         }
