@@ -173,11 +173,6 @@ void Image::Unload()
     data.reset();
 }
 
-uint32_t Image::Size() const
-{
-    return width * height;
-}
-
 void Image::Print() const
 {
     Color* dataPtr = data.get();
@@ -194,17 +189,36 @@ void Image::Print() const
 
 void Image::Print(float scale, SamplerParams params) const
 {
-    float outputWidth = width * scale;
-    float outputHeight = height * scale;
+    vec2 size = Size<vec2>();
+    vec2 outSize = size * scale;
 
-    float outWidthIncr = 1 / outputWidth;
-    float outHeightIncr = 1 / outputHeight;
+    vec2 incr = vec2(1) / outSize;
 
     vec2 uv(0);
-    for (uv.y = 0.0f; uv.y <= 1.0f; uv.y += outHeightIncr)
+    for (uv.y = 0.0f; uv.y <= 1.0f; uv.y += incr.y)
     {
-        for (uv.x = 0.0f; uv.x <= 1.0f; uv.x += outWidthIncr)
+        for (uv.x = 0.0f; uv.x <= 1.0f; uv.x += incr.x)
         {
+            Color color = Sample(uv, params);
+            DrawBlock(color);
+        }
+        std::cout << '\n';
+    }
+}
+
+void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) const
+{
+    ivec2 size = dest.size();
+    vec2 destSizeInv = 1.0f / (vec2)size;
+    vec2 srcSizeInv = 1.0f / src.size();
+    vec2 scaleInv = 1.0f / scale;
+
+    ivec2 px(0);
+    for (px.y = 0; px.y < size.y; ++px.y)
+    {
+        for (px.x = 0; px.x < size.x; ++px.x)
+        {
+            vec2 uv = lerp(src.TopLeft(), src.BottomRight(), scaleInv * (vec2)px * destSizeInv) * srcSizeInv;
             Color color = Sample(uv, params);
             DrawBlock(color);
         }
@@ -240,12 +254,8 @@ Color Image::Sample(vec2 uv, SamplerParams params) const noexcept
     {
         vec2 t = fmod(fullCoord, 1.0f);
         irect pixel((int)floorf(fullCoord.x), (int)floorf(fullCoord.y), (int)ceilf(fullCoord.x), (int)ceilf(fullCoord.y));
-        Color colorTopLeft     = _Sample(pixel.TopLeft    ());
-        Color colorTopRight    = _Sample(pixel.TopRight   ());
-        Color colorBottomLeft  = _Sample(pixel.BottomLeft ());
-        Color colorBottomRight = _Sample(pixel.BottomRight());
-        Color colorTop    = mix(colorTopLeft,    colorTopRight,    t.x);
-        Color colorBottom = mix(colorBottomLeft, colorBottomRight, t.x);
+        Color colorTop    = mix(_Sample(pixel.TopLeft   ()), _Sample(pixel.TopRight   ()), t.x);
+        Color colorBottom = mix(_Sample(pixel.BottomLeft()), _Sample(pixel.BottomRight()), t.x);
         Color color = mix(colorTop, colorBottom, t.y);
         return color;
     }
@@ -259,7 +269,7 @@ Color Image::Sample(vec2 uv, SamplerParams params) const noexcept
 
 Color Image::_Sample(uint32_t x, uint32_t y) const
 {
-    return data.get()[y * width + x];
+    return data.get()[(size_t)y * (size_t)width + (size_t)x];
 }
 
 Color Image::_Sample(ivec2 pt) const

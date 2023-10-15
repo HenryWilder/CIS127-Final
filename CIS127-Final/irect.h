@@ -4,12 +4,15 @@
 
 struct irect
 {
+    using value_type = int;
+    static constexpr int _Size = 4;
+
     irect() = default;
 
     constexpr irect(int xmin, int ymin, int xmax, int ymax) :
         xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {}
 
-    int xmin, ymin, xmax, ymax;
+    value_type xmin, ymin, xmax, ymax;
 
     static constexpr irect FromMinAndMax(ivec2 min, ivec2 max) noexcept
     {
@@ -30,4 +33,9 @@ struct irect
     constexpr ivec2    TopRight() const noexcept { return ivec2(xmax, ymin); }
     constexpr ivec2 BottomLeft () const noexcept { return ivec2(xmin, ymax); }
     constexpr ivec2 BottomRight() const noexcept { return ivec2(xmax, ymax); }
+
+    constexpr int width () const noexcept { return xmax - xmin; }
+    constexpr int height() const noexcept { return ymax - ymin; }
+    constexpr ivec2 size()    const noexcept { return ivec2(width(), height()); }
+    constexpr ivec2 extents() const noexcept { return size() / 2; } // Doesn't work correctly for odd-number sizes.
 };

@@ -39,7 +39,9 @@ int main()
     Image background0;
     background0.LoadFromBitmap("background0.bmp");
     background0.Print();
+    background0.Print(3.0f, { .filtering = FilterMethod::NEAREST_NEIGHBOR });
     background0.Print(3.0f, { .filtering = FilterMethod::BILINEAR });
+    background0.PrintEx(rect(0, 0, 16, 16), irect(0, 0, 64, 16), vec2(0.25f, 1.0f), {.xWrap = true, .filtering = FilterMethod::NEAREST_NEIGHBOR});
 
     background0.Unload();
     test.Unload();

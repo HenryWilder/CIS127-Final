@@ -4,6 +4,9 @@
 using byte = unsigned char;
 struct Color
 {
+    using value_type = byte;
+    static constexpr int _Size = 3;
+
     Color() = default;
 
     template<std::integral _ITy>

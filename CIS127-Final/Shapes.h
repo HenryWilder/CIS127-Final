@@ -4,11 +4,17 @@
 
 struct line
 {
+    using value_type = vec2;
+    static constexpr int _Size = 2;
+
     vec2 start, end;
 };
 
 struct triangle
 {
+    using value_type = vec2;
+    static constexpr int _Size = 3;
+
     triangle() = default;
 
     constexpr triangle(vec2 p1, vec2 p2, vec2 p3) :
@@ -19,6 +25,9 @@ struct triangle
 
 struct quad
 {
+    using value_type = vec2;
+    static constexpr int _Size = 4;
+
     quad() = default;
 
     constexpr quad(vec2 p1, vec2 p2, vec2 p3, vec2 p4) :

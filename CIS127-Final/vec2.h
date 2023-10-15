@@ -1,8 +1,12 @@
 #pragma once
 #include "cxmath.h"
+#include "ivec2.h"
 
 struct vec2
 {
+    using value_type = float;
+    static constexpr int _Size = 2;
+
     vec2() = default;
 
     constexpr vec2(float x) :
@@ -11,7 +15,10 @@ struct vec2
     constexpr vec2(float x, float y) :
         x(x), y(y) {}
 
-    float x, y;
+    explicit constexpr vec2(ivec2 base) :
+        x((float)base.x), y((float)base.y) {}
+
+    value_type x, y;
 
     static constexpr vec2 zero()     noexcept { return vec2(+0.0f); }
     static constexpr vec2 one()      noexcept { return vec2(+1.0f); }
@@ -63,7 +70,14 @@ struct vec2
         float sine = cx::sin(radians);
         return vec2(x * cosine - y * sine, x * sine + y * cosine);
     }
+
+    constexpr explicit operator ivec2() const { return ivec2((int)x, (int)y); }
 };
+
+constexpr vec2 operator+(float amnt, vec2 v) { return vec2(amnt + v.x, amnt + v.y); }
+constexpr vec2 operator-(float amnt, vec2 v) { return vec2(amnt - v.x, amnt - v.y); }
+constexpr vec2 operator*(float amnt, vec2 v) { return vec2(amnt * v.x, amnt * v.y); }
+constexpr vec2 operator/(float amnt, vec2 v) { return vec2(amnt / v.x, amnt / v.y); }
 
 constexpr float dot(vec2 a, vec2 b) { return a.x * b.x + a.y + b.y; }
 constexpr float det(vec2 a, vec2 b) { return a.x * b.y - a.y + b.x; }

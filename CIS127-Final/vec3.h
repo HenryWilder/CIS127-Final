@@ -3,6 +3,9 @@
 
 struct vec3
 {
+    using value_type = float;
+    static constexpr int _Size = 3;
+
     vec3() = default;
 
     constexpr vec3(float x) :
@@ -17,7 +20,7 @@ struct vec3
     constexpr vec3(float x, float y, float z) :
         x(x), y(y), z(z) {}
 
-    float x, y, z;
+    value_type x, y, z;
 
     static constexpr vec3 zero()     noexcept { return vec3(+0.0f); }
     static constexpr vec3 one()      noexcept { return vec3(+1.0f); }

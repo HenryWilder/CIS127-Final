@@ -3,6 +3,9 @@
 
 struct ivec2
 {
+    using value_type = int;
+    static constexpr int _Size = 2;
+
     ivec2() = default;
 
     constexpr ivec2(int x) :
@@ -11,7 +14,7 @@ struct ivec2
     constexpr ivec2(int x, int y) :
         x(x), y(y) {}
 
-    int x, y;
+    value_type x, y;
 
     static constexpr ivec2 zero()     noexcept { return ivec2(+0); }
     static constexpr ivec2 one()      noexcept { return ivec2(+1); }
@@ -49,3 +52,8 @@ struct ivec2
     constexpr bool operator==(ivec2 other) const { return x == other.x && y == other.y; }
     constexpr bool operator!=(ivec2 other) const { return x != other.x || y != other.y; }
 };
+
+constexpr ivec2 operator+(int amnt, ivec2 v) { return ivec2(amnt + v.x, amnt + v.y); }
+constexpr ivec2 operator-(int amnt, ivec2 v) { return ivec2(amnt - v.x, amnt - v.y); }
+constexpr ivec2 operator*(int amnt, ivec2 v) { return ivec2(amnt * v.x, amnt * v.y); }
+constexpr ivec2 operator/(int amnt, ivec2 v) { return ivec2(amnt / v.x, amnt / v.y); }

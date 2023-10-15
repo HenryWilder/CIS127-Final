@@ -1,7 +1,6 @@
 #pragma once
 #include "Utility.h"
 #include <memory>
-#include "vec2.h"
 
 enum class FilterMethod
 {
@@ -24,9 +23,25 @@ public:
 
     void LoadFromBitmap(const char* filename);
     void Unload();
-    uint32_t Size() const;
+
+    constexpr uint32_t Area() const
+    {
+        return width * height;
+    }
+
+    template<series_of<2> _Vec>
+    constexpr _Vec Size() const
+    {
+        using _Ty = typename _Vec::value_type;
+        return _Vec((_Ty)width, (_Ty)height);
+    }
+
     void Print() const;
     void Print(float scale, SamplerParams params = {}) const;
+    // @param src - The region (in fractional pixels) of the image to sample
+    // @param dest - The region of the console to output to (does not currently support position, only size)
+    // @param scale - Extra scaling after resizing src to match dest
+    void PrintEx(rect src, irect dest, vec2 scale, SamplerParams params = {}) const;
     operator bool() const;
     bool operator==(const Image& other) const;
     Image& operator=(const Image& other);

@@ -4,6 +4,9 @@
 
 struct rect
 {
+    using value_type = float;
+    static constexpr int _Size = 4;
+
     rect() = default;
 
     constexpr rect(float x, float y, float size) :
@@ -15,7 +18,7 @@ struct rect
     constexpr rect(float xmin, float ymin, float xmax, float ymax) :
         xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {}
 
-    float xmin, ymin, xmax, ymax;
+    value_type xmin, ymin, xmax, ymax;
 
     static constexpr rect FromMinAndMax(vec2 min, vec2 max) noexcept
     {
@@ -38,4 +41,9 @@ struct rect
     constexpr vec2 BottomRight() const noexcept { return vec2(xmax, ymax); }
 
     constexpr vec2 Center() const noexcept { return average(TopLeft(), BottomRight()); }
+
+    constexpr float width () const noexcept { return xmax - xmin; }
+    constexpr float height() const noexcept { return ymax - ymin; }
+    constexpr vec2 size()    const noexcept { return vec2(width(), height()); }
+    constexpr vec2 extents() const noexcept { return size() * 0.5f; }
 };
