@@ -72,16 +72,6 @@ namespace cxmath
     static_assert(sqrt(std::numeric_limits<float>::infinity()) == std::numeric_limits<float>::infinity());
     static_assert(sqrt(-std::numeric_limits<float>::infinity()) == std::numeric_limits<float>::infinity());
 
-    template<std::floating_point _Ty>
-    constexpr _Ty fmod(_Ty numer, _Ty denom)
-    {
-        return (int)(numer / denom) * numer - denom;
-    }
-    static_assert(fmod(1.0f, 1.0f) == 0.0f);
-    static_assert(NearlyEqual(fmod(0.5f, 1.0f), 0.5f));
-    static_assert(fmod(0.75f, 0.5f) == 0.25f);
-    static_assert(fmod(-5.5f, 3.0f) == -2.5f);
-
     // Compiletime constexpr sine.
     template<std::floating_point _Ty>
     constexpr _Ty sin(_Ty x)
@@ -94,14 +84,38 @@ namespace cxmath
         while (sine != prev)
         {
             prev = sine;
-            int n2 = 2 * n; ++n;
-            sine += t *= xnegx / ((n2 + 1) * n2);
+            sine += t *= xnegx / ((2 * n + 1) * 2 * n);
+            ++n;
         }
         return sine;
     }
     static_assert(sin(0.0f) == 0.0f);
     static_assert(NearlyEqual(sin(PI<float> / 2), 1.0f));
+    static_assert(NearlyEqual(sin(PI<float> / 6), 0.5f));
     static_assert(NearlyEqual(sin(PI<float>), 0.0f));
+
+    // Compiletime constexpr cosine.
+    template<std::floating_point _Ty>
+    constexpr _Ty cos(_Ty x)
+    {
+        _Ty t = 1;
+        _Ty prev = 0;
+        _Ty cosine = t;
+        int n = 1;
+        const _Ty xnegx = -x * x;
+        while (cosine != prev)
+        {
+            prev = cosine;
+            int part = 2 * n - 1;
+            cosine += t *= xnegx / ((2 * n - 1) * 2 * n);
+            ++n;
+        }
+        return cosine;
+    }
+    static_assert(cos(0.0f) == 1.0f);
+    static_assert(NearlyEqual(cos(PI<float> / 2), 0.0f));
+    static_assert(NearlyEqual(cos(PI<float> / 3), 0.5f));
+    static_assert(NearlyEqual(cos(PI<float>), -1.0f));
 }
 using namespace cxmath; // If std ever shadows these functions, they can still be accessed explicitly.
 
