@@ -37,6 +37,10 @@ void Image::LoadFromBitmap(const char* filename)
         uint32_t dataSize = *reinterpret_cast<uint32_t*>(header + 34); DEBUG_PRINT(dataSize);
         uint32_t rowSize = (uint32_t)ceil((bitsPerPixel * width) / 32.0f) * 4; DEBUG_PRINT(rowSize);
 
+        _ASSERT(dataSize % rowSize == 0);
+        _ASSERT(dataSize % 4 == 0);
+        _ASSERT(dataSize >= 3);
+
         char* fileData = new char[dataSize];
         bitmap.read(fileData, dataSize);
 
@@ -95,8 +99,8 @@ void Image::LoadFromBitmap(const char* filename)
             size_t i = 0;
             for (int y = height - 1; y >= 0; --y)
             {
-                uint32_t rowStart = y * rowSize;
-                for (int x = 0; x < width; ++x)
+                uint32_t rowStart = (uint32_t)y * rowSize;
+                for (uint32_t x = 0; x < width; ++x)
                 {
                     uint32_t pixelStart = rowStart + x * 3 + 2;
                     byte r = fileData[pixelStart - 0];
@@ -177,9 +181,9 @@ uint32_t Image::Size() const
 void Image::Print() const
 {
     Color* dataPtr = data.get();
-    for (int y = 0; y < height; ++y)
+    for (uint32_t y = 0; y < height; ++y)
     {
-        for (int x = 0; x < width; ++x)
+        for (uint32_t x = 0; x < width; ++x)
         {
             Color color = dataPtr[y * width + x];
             DrawBlock(color);

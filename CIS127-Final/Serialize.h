@@ -9,7 +9,7 @@ using std::vector;
 // Minimum of 6 items
 struct SaveData
 {
-    string playerName = "Ugene Plunderbuss";
+    string playerName; // Default will be "Ugene Plunderbuss"
     Inventory playerInventory;
     LevelMap map;
     int currentRoom;

@@ -2,9 +2,7 @@
 #include "Utility.h"
 #include <memory>
 
-// It's safe to pass this around raw because it's just two integers and a pointer.
-// Once one instance of a particular image is freed, all instances of that image are freed.
-// It is important that this is tracked so that deallocated memory isn't accidentally accessed.
+// It's safe to pass this around raw because it's just two integers and a shared pointer.
 class Image
 {
 public:
