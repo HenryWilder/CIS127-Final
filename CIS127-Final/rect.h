@@ -31,4 +31,11 @@ struct rect
     {
         return rect(pos.x, pos.y, pos.x + size, pos.y + size);
     }
+
+    constexpr vec2    TopLeft () const noexcept { return vec2(xmin, ymin); }
+    constexpr vec2    TopRight() const noexcept { return vec2(xmax, ymin); }
+    constexpr vec2 BottomLeft () const noexcept { return vec2(xmin, ymax); }
+    constexpr vec2 BottomRight() const noexcept { return vec2(xmax, ymax); }
+
+    constexpr vec2 Center() const noexcept { return average(TopLeft(), BottomRight()); }
 };

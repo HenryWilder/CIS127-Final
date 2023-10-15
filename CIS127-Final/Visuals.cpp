@@ -192,6 +192,26 @@ void Image::Print() const
     }
 }
 
+void Image::Print(float scale) const
+{
+    float outputWidth = width * scale;
+    float outputHeight = height * scale;
+
+    float outWidthIncr = 1 / outputWidth;
+    float outHeightIncr = 1 / outputHeight;
+
+    vec2 uv(0);
+    for (uv.y = 0.0f; uv.y <= 1.0f; uv.y += outHeightIncr)
+    {
+        for (uv.x = 0.0f; uv.x <= 1.0f; uv.x += outWidthIncr)
+        {
+            Color color = Sample(uv);
+            DrawBlock(color);
+        }
+        std::cout << '\n';
+    }
+}
+
 Image::operator bool() const
 {
     return (bool)data;
@@ -208,4 +228,41 @@ Image& Image::operator=(const Image& other)
     height = other.height;
     data   = other.data;
     return *this;
+}
+
+Color Image::Sample(vec2 uv, SamplerParams params) const noexcept
+{
+    uv.x = (params.xWrap) ? fmodf(uv.x, 1.0f) : saturate(uv.x);
+    uv.y = (params.yWrap) ? fmodf(uv.y, 1.0f) : saturate(uv.y);
+    vec2 fullCoord = uv * (vec2((float)width, (float)height) - 1);
+
+    if (params.filtering == FilterMethod::BILINEAR)
+    {
+        vec2 t = fmod(fullCoord, 1.0f);
+        irect pixel((int)floorf(fullCoord.x), (int)floorf(fullCoord.y), (int)ceilf(fullCoord.x), (int)ceilf(fullCoord.y));
+        Color colorTopLeft     = _Sample(pixel.TopLeft    ());
+        Color colorTopRight    = _Sample(pixel.TopRight   ());
+        Color colorBottomLeft  = _Sample(pixel.BottomLeft ());
+        Color colorBottomRight = _Sample(pixel.BottomRight());
+        Color colorTop    = mix(colorTopLeft,    colorTopRight,    t.x);
+        Color colorBottom = mix(colorBottomLeft, colorBottomRight, t.x);
+        Color color = mix(colorTop, colorBottom, t.y);
+        return color;
+    }
+    else // Nearest neighbor
+    {
+        uint32_t x = (uint32_t)fullCoord.x;
+        uint32_t y = (uint32_t)fullCoord.y;
+        return _Sample(x, y);
+    }
+}
+
+Color Image::_Sample(uint32_t x, uint32_t y) const
+{
+    return data.get()[y * width + x];
+}
+
+Color Image::_Sample(ivec2 pt) const
+{
+    return _Sample(pt.x, pt.y);
 }

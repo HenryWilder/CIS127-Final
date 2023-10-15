@@ -74,6 +74,14 @@ concept basic_arithmetible = requires(_Ty a, _Ty b)
     { a - b } -> std::same_as<_Ty>;
 };
 
+template<typename _Ty>
+concept scalar_arithmetible = requires(_Ty a, _Ty b, float f)
+{
+    { a + b } -> std::same_as<_Ty>;
+    { a - b } -> std::same_as<_Ty>;
+    { a * f } -> std::same_as<_Ty>;
+};
+
 template<typename _TTy, typename _Ty>
 concept can_interpolate = requires(_Ty a, _TTy t)
 {
@@ -92,6 +100,12 @@ static_assert(lerp(0.0, 1.0, 0.5) == 0.5);
 static_assert(lerp(-1.0, 1.0, 0.5) == 0.0);
 static_assert(lerp(0.0, 1.0, 2.0) == 2.0);
 static_assert(lerp(1.0, 0.0, 2.0) == -1.0);
+
+template<scalar_arithmetible _Ty>
+constexpr _Ty average(_Ty a, _Ty b) noexcept
+{
+    return (a + b) * 0.5f;
+}
 
 // Quadratic interpolate
 template<basic_arithmetible _Ty, can_interpolate<_Ty> _TTy>

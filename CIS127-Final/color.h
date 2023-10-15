@@ -1,4 +1,5 @@
 #pragma once
+#include "vec3.h"
 
 using byte = unsigned char;
 struct Color
@@ -21,7 +22,7 @@ struct Color
     constexpr Color(_FTy r, _FTy g, _FTy b) :
         r((byte)(r * (_FTy)255)), g((byte)(g * (_FTy)255)), b((byte)(b * (_FTy)255)) {}
 
-    constexpr Color(vec3 v) :
+    explicit constexpr Color(vec3 v) :
         r((byte)(v.x * 255)), g((byte)(v.y * 255)), b((byte)(v.z * 255)) {}
 
     byte r, g, b;

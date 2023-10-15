@@ -138,6 +138,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="RNG.cpp" />
     <ClCompile Include="Serialize.cpp" />
+    <ClCompile Include="vec2.cpp" />
     <ClCompile Include="Visuals.cpp" />
   </ItemGroup>
   <ItemGroup>

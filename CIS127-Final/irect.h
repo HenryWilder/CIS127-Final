@@ -1,7 +1,6 @@
 #pragma once
 #include "cxmath.h"
 #include "ivec2.h"
-#include "vec2.h"
 
 struct irect
 {
@@ -26,4 +25,9 @@ struct irect
     {
         return irect(pos.x, pos.y, pos.x + size, pos.y + size);
     }
+
+    constexpr ivec2    TopLeft () const noexcept { return ivec2(xmin, ymin); }
+    constexpr ivec2    TopRight() const noexcept { return ivec2(xmax, ymin); }
+    constexpr ivec2 BottomLeft () const noexcept { return ivec2(xmin, ymax); }
+    constexpr ivec2 BottomRight() const noexcept { return ivec2(xmax, ymax); }
 };
