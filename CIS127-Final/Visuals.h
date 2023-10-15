@@ -1,4 +1,5 @@
 #pragma once
+#include "Utility.h"
 
 constexpr char AsciiGrayscale(float value);
 

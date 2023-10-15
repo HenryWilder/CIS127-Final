@@ -13,7 +13,7 @@ struct SaveData
     Inventory playerInventory;
     LevelMap map;
     int currentRoom;
-    Gridspace currentPosition;
+    ivec2 currentPosition;
 };
 
 struct ConfigData

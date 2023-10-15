@@ -1,82 +1,58 @@
 #pragma once
+#include "cxmath.h"
+#include "vec2.h"
 
-constexpr float Clamp(float x, float min, float max)
+struct line
 {
-    if (x < min) return min;
-    if (x > max) return max;
-    return x;
-}
-
-constexpr float Lerp(float a, float b, float t)
-{
-    return a + (b - a) * t;
-}
-
-struct vec2
-{
-    constexpr vec2() : x(), y() {}
-    constexpr vec2(float x) : x(x), y(x) {}
-    constexpr vec2(float x, float y) : x(x), y(y) {}
-    float x, y;
+    vec2 start, end;
 };
 
-constexpr vec2 operator+(vec2 a, vec2 b) { return { a.x + b.x, a.y + b.y }; }
-constexpr vec2 operator-(vec2 a, vec2 b) { return { a.x - b.x, a.y - b.y }; }
-constexpr vec2 operator*(vec2 a, vec2 b) { return { a.x * b.x, a.y * b.y }; }
-constexpr vec2 operator/(vec2 a, vec2 b) { return { a.x / b.x, a.y / b.y }; }
-constexpr vec2 operator*(vec2 a, float scale) { return { a.x * scale, a.y * scale }; }
-constexpr vec2 operator/(vec2 a, float scale) { return { a.x / scale, a.y / scale }; }
-
-constexpr float Dot(vec2 a, vec2 b)
+struct triangle
 {
-    return a.x * b.x + a.y * b.y;
-}
+    triangle() = default;
 
-constexpr float Det(vec2 a, vec2 b)
-{
-    return a.x * b.y - a.y * b.x;
-}
+    constexpr triangle(vec2 p1, vec2 p2, vec2 p3) :
+        points{ p1, p2, p3 } {}
 
-constexpr float LengthSqr(vec2 a)
-{
-    return Dot(a, a);
-}
-
-float Length(vec2 a);
-
-constexpr float DistanceSqr(vec2 a, vec2 b)
-{
-    return LengthSqr(a.x - b.x);
-}
-
-float Distance(vec2 a, vec2 b);
-
-vec2 Normalize(vec2 v);
-
-constexpr vec2 Lerp(vec2 a, vec2 b, float t)
-{
-    return a + (b - a) * t;
-}
-
-vec2 ProjectPointToLine(vec2 lineStart, vec2 lineEnd, vec2 pt);
+    vec2 points[3];
+};
 
 struct quad
 {
-    // Ordered clockwise
-    vec2 topLeft, topRight, bottomRight, bottomLeft;
+    quad() = default;
 
-    constexpr vec2 CoordToPos(vec2 pt) const
+    constexpr quad(vec2 p1, vec2 p2, vec2 p3, vec2 p4) :
+        points{ p1, p2, p3, p4 } {}
+
+    vec2 points[4]; // Clockwise order with first point being UV(0,0) (top left of a texture)
+
+    constexpr vec2 CoordToPos(vec2 uv) const
     {
-        return Lerp(Lerp(topLeft, topRight, pt.x), Lerp(bottomLeft, bottomRight, pt.x), pt.y);
+        const auto&[topLeft, topRight, bottomRight, bottomLeft] = points;
+        vec2 top = lerp(topLeft, topRight, uv.x);
+        vec2 bottom = lerp(bottomLeft, bottomRight, uv.x);
+        return lerp(top, bottom, uv.y);
     }
 };
 
-constexpr quad Offset(quad q, vec2 offset)
+struct circle
 {
-    return quad{
-        offset + q.topLeft,
-        offset + q.topRight,
-        offset + q.bottomRight,
-        offset + q.bottomLeft,
-    };
-}
+    circle() = default;
+
+    constexpr circle(vec2 position, float radius) :
+        position(position), radius(radius) {}
+
+    vec2 position;
+    float radius;
+};
+
+struct oval
+{
+    oval() = default;
+
+    constexpr oval(vec2 position, float r1, float r2) :
+        position(position), r1(r1), r2(r2) {}
+
+    vec2 position;
+    float r1, r2;
+};

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Utility.h"
 #include "Serialize.h"
 #include "Menu.h"
 #include "MainMenu.h"
@@ -31,11 +32,11 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    DrawPixel({ 255, 0, 255 });
-    DrawPixel({ 32, 32, 32 });
+    DrawBlock({ 255, 0, 255 });
+    DrawBlock({ 32, 32, 32 });
     std::cout << '\n';
-    DrawPixel({ 32, 32, 32 });
-    DrawPixel({ 255, 0, 255 });
+    DrawBlock({ 32, 32, 32 });
+    DrawBlock({ 255, 0, 255 });
     return 0;
 
     LoadConfigData();
@@ -70,17 +71,8 @@ void NewGame()
 
 void PlayGame(SaveData& data)
 {
-    {
-        TextureGrayscale roomTex(16, 16);
-        data.map.GetRoom(0).GetRoomTexture(roomTex);
-        roomTex.Print();
-        roomTex.PrintIso(2.0f);
-    }
-    {
-        auto [width, height] = data.map.GetMapSize();
-        TextureGrayscale mapTex(width, height);
-        data.map.GetMapTexture(mapTex);
-        mapTex.Print();
-        //mapTex.PrintIso(2.0f);
-    }
+    cout << "Current room:\n";
+    data.map.Print();
+    cout << "Full map:\n";
+    data.map.GetRoom(0).Print();
 }

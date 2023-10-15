@@ -2,7 +2,7 @@
 #include "Visuals.h"
 #include <iostream>
 
-bool operator==(Gridspace a, Gridspace b)
+bool operator==(ivec2 a, ivec2 b)
 {
     return a.x == b.x && a.y == b.y;
 }
@@ -12,20 +12,20 @@ _Use_decl_annotations_ GridSpaceFlags Room::at(int x, int y) const
     return grid[y][x];
 }
 
-GridSpaceFlags Room::at(Gridspace position) const
+GridSpaceFlags Room::at(ivec2 position) const
 {
     return at(position.x, position.y);
 }
 
 Room::Room(int x, int y) :
-    mapX(x), mapY(y) {}
+    mapX(x), mapY(y), grid{} {}
 
 _Use_decl_annotations_ GridSpaceFlags& Room::at(int x, int y)
 {
     return grid[y][x];
 }
 
-GridSpaceFlags& Room::at(Gridspace position)
+GridSpaceFlags& Room::at(ivec2 position)
 {
     return at(position.x, position.y);
 }
@@ -40,21 +40,9 @@ int Room::GetY() const
     return mapY;
 }
 
-void Room::GetRoomTexture(TextureGrayscale& tex) const
+void Room::Print(float scale) const
 {
-    vec2 resolution(ROOM_WIDTH - 1, ROOM_HEIGHT - 1);
-    const Room* _this = this;
-    tex.ApplyFragmentShader([_this, resolution](vec2 fragTexCoord)
-    {
-        vec2 gridPos = fragTexCoord * resolution;
-        GridSpaceFlags spaceFlags = _this->at((size_t)(gridPos.x + 0.5f), (size_t)(gridPos.y + 0.5f));
-        switch (spaceFlags)
-        {
-        case GridSpaceFlags::GRIDSPACE_EMPTY: return 0.0f;
-        case GridSpaceFlags::GRIDSPACE_WALL:  return 1.0f;
-        case GridSpaceFlags::GRIDSPACE_DOOR:  return 0.5f;
-        }
-    });
+
 }
 
 // Todo: make this more advanced
@@ -83,50 +71,9 @@ void Room::Generate()
     }
 }
 
-std::pair<size_t, size_t> LevelMap::GetMapSize() const
+void LevelMap::Print(float scale) const
 {
-    size_t xRoomsPerSide = std::max((size_t)ceil (sqrt(rooms.size())), 1ull);
-    size_t yRoomsPerSide = std::max((size_t)floor(sqrt(rooms.size())), 1ull);
-    size_t xNumGaps = xRoomsPerSide - 1;
-    size_t yNumGaps = yRoomsPerSide - 1;
-    return {
-        xRoomsPerSide * ROOM_WIDTH  + xNumGaps * PATH_LENGTH,
-        yRoomsPerSide * ROOM_HEIGHT + yNumGaps * PATH_LENGTH
-    };
-}
 
-void LevelMap::GetMapTexture(TextureGrayscale& tex) const
-{
-    size_t xRoomsPerSide = std::max((size_t)ceil (sqrt(rooms.size())), 1ull);
-    size_t yRoomsPerSide = std::max((size_t)floor(sqrt(rooms.size())), 1ull);
-
-    size_t xNumGaps = xRoomsPerSide - 1;
-    size_t yNumGaps = yRoomsPerSide - 1;
-
-    vec2 pathLength = vec2(
-        PATH_LENGTH / ((float)tex.GetWidth () - 1),
-        PATH_LENGTH / ((float)tex.GetHeight() - 1));
-
-    float widthPerRoom  = 1.0f / xRoomsPerSide - pathLength.x;
-    float heightPerRoom = 1.0f / yRoomsPerSide - pathLength.y;
-
-    vec2 roomSize = vec2(widthPerRoom, heightPerRoom);
-
-    quad baseQuad = {
-        vec2(0),
-        roomSize * vec2(1, 0),
-        roomSize * vec2(1),
-        roomSize * vec2(0, 1)
-    };
-
-    for (const Room& room : rooms)
-    {
-        TextureGrayscale roomTex(ROOM_WIDTH, ROOM_HEIGHT);
-        room.GetRoomTexture(roomTex);
-        vec2 gridPos = vec2(room.GetX(), room.GetY());
-        vec2 pos = gridPos * (roomSize + pathLength);
-        tex.Draw(roomTex, Offset(baseQuad, pos));
-    }
 }
 
 void LevelMap::Generate(size_t numRooms)
@@ -136,8 +83,8 @@ void LevelMap::Generate(size_t numRooms)
     size_t yRoomsPerSide = std::max((size_t)floor(sqrt(numRooms)), 1ull);
     for (size_t i = 0; i < numRooms; ++i)
     {
-        int x = i % xRoomsPerSide;
-        int y = i / xRoomsPerSide;
+        int x = (int)(i % xRoomsPerSide);
+        int y = (int)(i / xRoomsPerSide);
         rooms.push_back(Room(x, y));
         rooms.back().Generate();
     }
