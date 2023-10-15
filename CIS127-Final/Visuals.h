@@ -1,36 +1,30 @@
 #pragma once
 #include "Utility.h"
+#include <memory>
 
-// It's safe to pass this around raw because it's just two integers and a pointer
-struct Image
+// It's safe to pass this around raw because it's just two integers and a pointer.
+// Once one instance of a particular image is freed, all instances of that image are freed.
+// It is important that this is tracked so that deallocated memory isn't accidentally accessed.
+class Image
 {
-    void Alloc(uint32_t width, uint32_t height)
-    {
-        this->width = width;
-        this->height = height;
-        data = new Color[width * height];
-    }
+public:
+    Image();
 
-    void Free()
-    {
-        delete[] data;
-    }
+    void LoadFromBitmap(const char* filename);
+    void Unload();
+    uint32_t Size() const;
+    void Print() const;
+    operator bool() const;
+    bool operator==(const Image& other) const;
+    Image& operator=(const Image& other);
 
-    uint32_t GetDataSize() const
-    {
-        return width * height;
-    }
-
-    uint32_t width = 0;
-    uint32_t height = 0;
-    Color* data = nullptr;
+private:
+    uint32_t width;
+    uint32_t height;
+    std::shared_ptr<Color> data;
 };
-
-Image LoadImageFromBitmap(const char* filename);
-void UnloadImage(Image image);
 
 constexpr char AsciiGrayscale(float value);
 
 void DrawColoredText(const char* text, Color color);
 void DrawBlock(Color color);
-void DrawBitmap(const char* filename);

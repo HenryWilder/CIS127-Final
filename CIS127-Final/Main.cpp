@@ -32,8 +32,9 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    Image test = LoadImageFromBitmap("test.bmp");
-    if (test.data) UnloadImage(test);
+    Image test;
+    test.LoadFromBitmap("test.bmp");
+    test.Unload();
     return 0;
 
     LoadConfigData();

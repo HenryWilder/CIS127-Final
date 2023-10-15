@@ -1,7 +1,6 @@
 #include "Visuals.h"
 #include <iostream>
 #include <fstream>
-#include <bitset>
 
 #if 0
 #define DEBUG_PRINT(x) std::cout << #x ": " << x << '\n'
@@ -10,7 +9,7 @@
 #endif
 
 // See https://en.wikipedia.org/wiki/BMP_file_format
-Image LoadImageFromBitmap(const char* filename)
+void Image::LoadFromBitmap(const char* filename)
 {
     // Assertions are used to ensure that the bitmaps used are the ones made specifically for this project
 
@@ -21,7 +20,7 @@ Image LoadImageFromBitmap(const char* filename)
         char header[headerSize];
         bitmap.read(header, headerSize);
 
-#if 0 // Checks
+#if 1 // Checks
         {
             _ASSERT(header[0] == 'B' && header[1] == 'M');
             uint32_t sizeOfHeader    = *reinterpret_cast<uint32_t*>(header + 14); DEBUG_PRINT(sizeOfHeader);
@@ -31,15 +30,15 @@ Image LoadImageFromBitmap(const char* filename)
         }
 #endif
         uint32_t size = *reinterpret_cast<uint32_t*>(header + 2); DEBUG_PRINT(size);
-        uint32_t offset = *reinterpret_cast<uint32_t*>(header + 10); DEBUG_PRINT(offset);
-        int32_t width = *reinterpret_cast< int32_t*>(header + 18); DEBUG_PRINT(width);
-        int32_t height = *reinterpret_cast< int32_t*>(header + 22); DEBUG_PRINT(height);
+        //uint32_t offset = *reinterpret_cast<uint32_t*>(header + 10); DEBUG_PRINT(offset);
+        width  = (uint32_t)*reinterpret_cast< int32_t*>(header + 18); DEBUG_PRINT(width);
+        height = (uint32_t)*reinterpret_cast< int32_t*>(header + 22); DEBUG_PRINT(height);
         uint16_t bitsPerPixel = *reinterpret_cast<uint16_t*>(header + 28); DEBUG_PRINT(bitsPerPixel); _ASSERT(bitsPerPixel == 24);
         uint32_t dataSize = *reinterpret_cast<uint32_t*>(header + 34); DEBUG_PRINT(dataSize);
         uint32_t rowSize = (uint32_t)ceil((bitsPerPixel * width) / 32.0f) * 4; DEBUG_PRINT(rowSize);
 
-        char* data = new char[dataSize];
-        bitmap.read(data, dataSize);
+        char* fileData = new char[dataSize];
+        bitmap.read(fileData, dataSize);
 
 #if 0 // Debug file contents
         {
@@ -48,7 +47,7 @@ Image LoadImageFromBitmap(const char* filename)
             {
                 int value = i < headerSize
                     ? (unsigned char)header[i]
-                    : (unsigned char)data[i - headerSize];
+                    : (unsigned char)fileData[i - headerSize];
 
                 printf("%02X ", value);
                 ++x;
@@ -71,7 +70,7 @@ Image LoadImageFromBitmap(const char* filename)
             size_t x = 0;
             for (uint32_t i = 0; i < dataSize; ++i)
             {
-                int value = (unsigned char)data[i];
+                int value = (unsigned char)fileData[i];
                 printf("%02X ", value);
                 ++x;
                 if (x == 8)
@@ -88,8 +87,8 @@ Image LoadImageFromBitmap(const char* filename)
         }
 #endif
 
-        Image result;
-        result.Alloc(width, height);
+        data = std::shared_ptr<Color>(new Color[width * height]);
+        Color* dataPtr = this->data.get();
 
         // Load data into memory
         {
@@ -100,53 +99,35 @@ Image LoadImageFromBitmap(const char* filename)
                 for (int x = 0; x < width; ++x)
                 {
                     uint32_t pixelStart = rowStart + x * 3 + 2;
-                    byte r = data[pixelStart - 0];
-                    byte g = data[pixelStart - 1];
-                    byte b = data[pixelStart - 2];
-                    result.data[i] = Color(r, g, b);
+                    byte r = fileData[pixelStart - 0];
+                    byte g = fileData[pixelStart - 1];
+                    byte b = fileData[pixelStart - 2];
+                    dataPtr[i] = Color(r, g, b);
                     ++i;
                 }
             }
         }
+        delete[] fileData; // Frees file content without freeing the image we have stored
+        bitmap.close();
 
-#if 1 // Debug color values
-        // numeric
+#if 0 // Debug color values
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
             {
-                Color color = result.data[y * width + x];
+                Color color = dataPtr[y * width + x];
                 printf("[%02X %02X %02X]", (int)color.r, (int)color.g, (int)color.b);
             }
             std::cout << '\n';
         }
-        // visual
-        for (int y = 0; y < height; ++y)
-        {
-            for (int x = 0; x < width; ++x)
-            {
-                Color color = result.data[y * width + x];
-                DrawBlock(color);
-            }
-            std::cout << '\n';
-        }
 #endif
-
-        result.Free();
-        delete[] data;
-        bitmap.close();
-        return Image();
+#if 1 // Debug color visuals
+        Print();
+#endif
     }
-    return Image();
 }
 
 #undef DEBUG_PRINT
-
-void UnloadImage(Image image)
-{
-    _ASSERT_EXPR(image.data != nullptr, "Attempted to double-unload an image");
-    delete[] image.data;
-}
 
 constexpr char AsciiGrayscale(float value)
 {
@@ -178,4 +159,49 @@ void DrawColoredText(const char* text, Color color)
 void DrawBlock(Color color)
 {
     DrawColoredText("\xDB\xDB", color);
+}
+
+Image::Image() :
+    width(0), height(0), data(nullptr) {}
+
+void Image::Unload()
+{
+    data.reset();
+}
+
+uint32_t Image::Size() const
+{
+    return width * height;
+}
+
+void Image::Print() const
+{
+    Color* dataPtr = data.get();
+    for (int y = 0; y < height; ++y)
+    {
+        for (int x = 0; x < width; ++x)
+        {
+            Color color = dataPtr[y * width + x];
+            DrawBlock(color);
+        }
+        std::cout << '\n';
+    }
+}
+
+Image::operator bool() const
+{
+    return (bool)data;
+}
+
+bool Image::operator==(const Image& other) const
+{
+    return data == other.data;
+}
+
+Image& Image::operator=(const Image& other)
+{
+    width  = other.width;
+    height = other.height;
+    data   = other.data;
+    return *this;
 }
