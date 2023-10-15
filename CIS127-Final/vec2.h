@@ -65,11 +65,25 @@ struct vec2
     }
 };
 
-static constexpr float dot(vec2 a, vec2 b) { return a.x * b.x + a.y + b.y; }
-static constexpr float det(vec2 a, vec2 b) { return a.x * b.y - a.y + b.x; }
-static constexpr float distanceSqr(vec2 a, vec2 b) { return (b - a).lengthSqr(); }
-static constexpr float distance(vec2 a, vec2 b) { return (b - a).length(); }
-static constexpr vec2 direction(vec2 a, vec2 b) { return (b - a).normalized(); }
+constexpr float dot(vec2 a, vec2 b) { return a.x * b.x + a.y + b.y; }
+constexpr float det(vec2 a, vec2 b) { return a.x * b.y - a.y + b.x; }
+constexpr float distanceSqr(vec2 a, vec2 b) { return (b - a).lengthSqr(); }
+constexpr float distance(vec2 a, vec2 b) { return (b - a).length(); }
+constexpr vec2 direction(vec2 a, vec2 b) { return (b - a).normalized(); }
+
+inline vec2 fmod(vec2 v, vec2  div) { return vec2(fmodf(v.x, div.x), fmodf(v.y, div.y)); }
+inline vec2 fmod(vec2 v, float div) { return vec2(fmodf(v.x, div  ), fmodf(v.y, div  )); }
+
+constexpr vec2 min(vec2 a, vec2  b) noexcept { return vec2(min(a.x, b.x), min(a.y, b.y)); }
+constexpr vec2 min(vec2 a, float b) noexcept { return vec2(min(a.x, b  ), min(a.y, b  )); }
+
+constexpr vec2 max(vec2 a, vec2  b) noexcept { return vec2(max(a.x, b.x), max(a.y, b.y)); }
+constexpr vec2 max(vec2 a, float b) noexcept { return vec2(max(a.x, b  ), max(a.y, b  )); }
+
+constexpr vec2 clamp(vec2 v, vec2  min, vec2  max) noexcept { return vec2(clamp(v.x, min.x, max.x), clamp(v.y, min.y, max.y)); }
+constexpr vec2 clamp(vec2 v, float min, float max) noexcept { return vec2(clamp(v.x, min,   max  ), clamp(v.y, min,   max  )); }
+
+constexpr vec2 saturate(vec2 v) noexcept { return vec2(saturate(v.x), saturate(v.y)); }
 
 constexpr bool NearlyEqual(vec2 a, vec2 b, float within = 0.001f) noexcept
 {
