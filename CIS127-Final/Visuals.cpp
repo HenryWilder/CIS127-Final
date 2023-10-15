@@ -1,6 +1,7 @@
 #include "Visuals.h"
 #include <iostream>
 #include <fstream>
+#include <bitset>
 
 #if 1
 #define DEBUG_PRINT(x) std::cout << #x ": " << x << '\n'
@@ -39,46 +40,94 @@ Image LoadImageFromBitmap(const char* filename)
         int paddingSize = rowSize - width; DEBUG_PRINT(paddingSize);
 
         char* data = new char[dataSize];
-        bitmap.read(data, sizeof(data));
+        bitmap.read(data, dataSize);
 
-        unsigned x = 0;
-        for (uint32_t i = 0; (i + 2) < dataSize; i += 3)
+#if 0 // Debug file contents
         {
-            byte b = data[i + 0];
-            byte g = data[i + 1];
-            byte r = data[i + 2];
-            printf("[%3d %3d %3d]", (int)r, (int)g, (int)b);
-            ++x;
-            if (x == width)
+            size_t x = 0;
+            for (uint32_t i = 0; i < sizeof(header); ++i)
             {
-                //i += paddingSize;
-                x = 0;
-                std::cout << '\n';
+                //std::bitset<8> bits = header[i];
+                //std::cout << bits << ' ';
+                printf("%02X ", (int)(unsigned char)header[i]);
+                ++x;
+                if (x == 8)
+                {
+                    std::cout << ' ';
+                }
+                if (x == 16)
+                {
+                    std::cout << '\n';
+                    x = 0;
+                }
+            }
+            for (uint32_t i = 0; i < dataSize; ++i)
+            {
+                //std::bitset<8> bits = data[i];
+                //std::cout << bits << ' ';
+                printf("%02X ", (int)(unsigned char)data[i]);
+                ++x;
+                if (x == 8)
+                {
+                    std::cout << ' ';
+                }
+                if (x == 16)
+                {
+                    std::cout << '\n';
+                    x = 0;
+                }
+            }
+            std::cout << '\n';
+        }
+#endif
+        Image result;
+        result.width = width;
+        result.height = height;
+        result.data = new Color[width * height];
+
+        // Load data into memory
+        {
+            size_t i = 0;
+            for (int y = height - 1; y >= 0; --y)
+            {
+                uint32_t rowStart = y * rowSize;
+                for (int x = 0; x < width; ++x)
+                {
+                    uint32_t pixelStart = rowStart + x * 3;
+                    byte b = data[pixelStart + 0];
+                    byte g = data[pixelStart + 1];
+                    byte r = data[pixelStart + 2];
+                    result.data[i++] = Color(r, g, b);
+                }
             }
         }
 
-        std::cout << '\n';
-
-        x = 0;
-        for (uint32_t i = 0; (i + 2) < dataSize; i += 3)
+#if 1 // Debug color values
+        for (int y = 0; y < height; ++y)
         {
-            byte b = data[i + 0];
-            byte g = data[i + 1];
-            byte r = data[i + 2];
-            Color color(r, g, b);
-            DrawBlock(color);
-            ++x;
-            if (x == width)
+            for (int x = 0; x < width; ++x)
             {
-                //i += paddingSize;
-                x = 0;
-                std::cout << '\n';
+                Color color = result.data[y * width + x];
+                printf("[%02x %02x %02x]", (int)color.r, (int)color.g, (int)color.b);
             }
+            std::cout << '\n';
         }
+        for (int y = 0; y < height; ++y)
+        {
+            for (int x = 0; x < width; ++x)
+            {
+                Color color = result.data[y * width + x];
+                DrawBlock(color);
+            }
+            std::cout << '\n';
+        }
+#endif
 
+        delete[] result.data;
         delete[] data;
+        bitmap.close();
+        return Image();
     }
-    bitmap.close();
     return Image();
 }
 
