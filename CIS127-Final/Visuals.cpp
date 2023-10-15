@@ -17,8 +17,9 @@ Image LoadImageFromBitmap(const char* filename)
     std::ifstream bitmap(filename, std::ifstream::in | std::ifstream::binary);
     if (bitmap)
     {
-        char header[54];
-        bitmap.read(header, sizeof(header));
+        constexpr size_t headerSize = 54;
+        char header[headerSize];
+        bitmap.read(header, headerSize);
 
         // Checks
 #if 1
@@ -37,35 +38,20 @@ Image LoadImageFromBitmap(const char* filename)
         uint16_t bitsPerPixel = *reinterpret_cast<uint16_t*>(header + 28); DEBUG_PRINT(bitsPerPixel); _ASSERT(bitsPerPixel == 24);
         uint32_t dataSize = *reinterpret_cast<uint32_t*>(header + 34); DEBUG_PRINT(dataSize);
         int rowSize = ceil((bitsPerPixel * width) / 32) * 4; DEBUG_PRINT(rowSize);
-        int paddingSize = rowSize - width; DEBUG_PRINT(paddingSize);
 
         char* data = new char[dataSize];
         bitmap.read(data, dataSize);
 
-#if 0 // Debug file contents
+#if 1 // Debug file contents
         {
             size_t x = 0;
-            for (uint32_t i = 0; i < sizeof(header); ++i)
+            for (uint32_t i = 0; i < headerSize + dataSize; ++i)
             {
-                //std::bitset<8> bits = header[i];
-                //std::cout << bits << ' ';
-                printf("%02X ", (int)(unsigned char)header[i]);
-                ++x;
-                if (x == 8)
-                {
-                    std::cout << ' ';
-                }
-                if (x == 16)
-                {
-                    std::cout << '\n';
-                    x = 0;
-                }
-            }
-            for (uint32_t i = 0; i < dataSize; ++i)
-            {
-                //std::bitset<8> bits = data[i];
-                //std::cout << bits << ' ';
-                printf("%02X ", (int)(unsigned char)data[i]);
+                int value = i < headerSize
+                    ? (unsigned char)header[i]
+                    : (unsigned char)data[i - headerSize];
+
+                printf("%02X ", value);
                 ++x;
                 if (x == 8)
                 {
@@ -80,6 +66,7 @@ Image LoadImageFromBitmap(const char* filename)
             std::cout << '\n';
         }
 #endif
+
         Image result;
         result.width = width;
         result.height = height;
@@ -103,6 +90,7 @@ Image LoadImageFromBitmap(const char* filename)
         }
 
 #if 1 // Debug color values
+        // numeric
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
@@ -112,6 +100,7 @@ Image LoadImageFromBitmap(const char* filename)
             }
             std::cout << '\n';
         }
+        // visual
         for (int y = 0; y < height; ++y)
         {
             for (int x = 0; x < width; ++x)
