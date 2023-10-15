@@ -34,6 +34,7 @@ int main()
 {
     Image test;
     test.LoadFromBitmap("test.bmp");
+    test.Print();
     test.Unload();
     return 0;
 

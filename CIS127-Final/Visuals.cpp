@@ -125,7 +125,7 @@ void Image::LoadFromBitmap(const char* filename)
             std::cout << '\n';
         }
 #endif
-#if 1 // Debug color visuals
+#if 0 // Debug color visuals
         Print();
 #endif
     }
