@@ -269,10 +269,19 @@ void Image::Print(float scale, SamplerParams params) const
 
 void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) const
 {
+    bool isSuperSampled = params.filtering == FilterMethod::PLANTERS_AVERAGE;
+
     ivec2 size = dest.size();
     vec2 destSizeInv = 1.0f / (vec2)size;
     vec2 srcSizeInv = 1.0f / src.size();
     vec2 scaleInv = 1.0f / scale;
+
+    vec2 superSamplePoints[NUM_SUPERSAMPLE_POINTS] = {};
+    if (isSuperSampled)
+    {
+        params.filtering = FilterMethod::BILINEAR;
+        GetPlantersPoints(superSamplePoints, scaleInv * srcSizeInv);
+    }
 
     ivec2 px(0);
     for (px.y = 0; px.y < size.y; ++px.y)
@@ -280,7 +289,21 @@ void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) cons
         for (px.x = 0; px.x < size.x; ++px.x)
         {
             vec2 uv = lerp(src.TopLeft(), src.BottomRight(), scaleInv * (vec2)px * destSizeInv) * srcSizeInv;
-            Color color = Sample(uv, params);
+            Color color;
+            if (!isSuperSampled)
+            {
+                color = Sample(uv, params);
+            }
+            else
+            {
+                vec3 samples = vec3(0);
+                for (size_t i = 0; i < NUM_SUPERSAMPLE_POINTS; ++i)
+                {
+                    samples += (vec3)Sample(uv + superSamplePoints[i], params);
+                }
+                samples /= NUM_SUPERSAMPLE_POINTS;
+                color = (Color)samples;
+            }
             DrawBlock(color);
         }
         std::cout << '\n';
