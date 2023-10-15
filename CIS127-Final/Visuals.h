@@ -5,7 +5,8 @@
 enum class FilterMethod
 {
     NEAREST_NEIGHBOR = 0,
-    BILINEAR,
+    BILINEAR, // Useful for upscaling
+    PLANTERS_AVERAGE, // Useful for downscaling
 };
 
 struct SamplerParams

@@ -9,7 +9,7 @@
 // (camalCase is used where the thing has an OpenGL parallel)
 
 template<std::floating_point _Ty>
-constexpr bool NearlyEqual(_Ty a, _Ty b, _Ty within = (_Ty)0.001) noexcept
+constexpr bool NearlyEqual(_Ty a, _Ty b, _Ty within = ((_Ty)1 / (_Ty)1024)) noexcept
 {
     _Ty diff = a - b;
     return -within <= diff && diff <= within;
@@ -135,6 +135,19 @@ constexpr _Ty rad_to_deg(_Ty angle)
 {
     constexpr _Ty converter = 1 / TAU<_Ty>;
     return angle * converter;
+}
+
+template<typename _Ty>
+concept self_scalar = requires(_Ty x)
+{
+    { x * x } -> std::same_as<_Ty>;
+};
+
+// A value multiplied by itself
+template<self_scalar _Ty>
+constexpr _Ty sqr(_Ty x)
+{
+    return x * x;
 }
 
 

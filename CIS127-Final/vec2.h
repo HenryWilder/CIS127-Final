@@ -28,6 +28,9 @@ struct vec2
     static constexpr vec2 left()     noexcept { return vec2(-1.0f, +0.0f); }
     static constexpr vec2 down()     noexcept { return vec2(+0.0f, -1.0f); }
 
+    static vec2 rand01();
+    static vec2 rand_between(vec2 min, vec2 max);
+
     constexpr vec2 operator+() const { return *this; }
     constexpr vec2 operator-() const { return vec2(-x, -y); }
 

@@ -187,19 +187,80 @@ void Image::Print() const
     }
 }
 
+constexpr size_t NUM_SUPERSAMPLE_POINTS = 6;
+void GetPlantersPoints(_Outref_ vec2 (&points)[NUM_SUPERSAMPLE_POINTS], vec2 max)
+{
+    constexpr float PLANTER_POINT_RADIUS = 0.0625; // When 0-1
+    constexpr float PLANTER_POINT_RADIUS_SQR = PLANTER_POINT_RADIUS * PLANTER_POINT_RADIUS; // a^2 * b^2 = c^2, and square is cheaper than root
+
+    // The Above assumption is proven by these assertions
+    static_assert(NearlyEqual(cx::sqrt(sqr(3.0f) + sqr(4.0f)),     5.0f ));
+    static_assert(NearlyEqual(        (sqr(3.0f) + sqr(4.0f)), sqr(5.0f)));
+
+    for (size_t i = 0; i < NUM_SUPERSAMPLE_POINTS; ++i)
+    {
+        bool isPointTooClose = true;
+        vec2 point;
+        while (isPointTooClose)
+        {
+            point = vec2::rand01();
+
+            // Search existing points for collisions
+            isPointTooClose = false;
+            for (size_t j = 0; j < i; ++j)
+            {
+                if (distanceSqr(point, points[j]) < PLANTER_POINT_RADIUS_SQR)
+                {
+                    isPointTooClose = true;
+                    break;
+                }
+            }
+        }
+        points[i] = point;
+    }
+
+    // Scale sample points
+    for (vec2& point : points)
+    {
+        point *= max;
+    }
+}
+
 void Image::Print(float scale, SamplerParams params) const
 {
+    bool isSuperSampled = params.filtering == FilterMethod::PLANTERS_AVERAGE;
+
     vec2 size = Size<vec2>();
     vec2 outSize = size * scale;
-
     vec2 incr = vec2(1) / outSize;
+
+    vec2 superSamplePoints[NUM_SUPERSAMPLE_POINTS] = {};
+    if (isSuperSampled)
+    {
+        params.filtering = FilterMethod::BILINEAR;
+        GetPlantersPoints(superSamplePoints, incr);
+    }
 
     vec2 uv(0);
     for (uv.y = 0.0f; uv.y <= 1.0f; uv.y += incr.y)
     {
         for (uv.x = 0.0f; uv.x <= 1.0f; uv.x += incr.x)
         {
-            Color color = Sample(uv, params);
+            Color color;
+            if (!isSuperSampled)
+            {
+                color = Sample(uv, params);
+            }
+            else
+            {
+                vec3 samples = vec3(0);
+                for (size_t i = 0; i < NUM_SUPERSAMPLE_POINTS; ++i)
+                {
+                    samples += (vec3)Sample(uv + superSamplePoints[i], params);
+                }
+                samples /= NUM_SUPERSAMPLE_POINTS;
+                color = (Color)samples;
+            }
             DrawBlock(color);
         }
         std::cout << '\n';
@@ -250,7 +311,16 @@ Color Image::Sample(vec2 uv, SamplerParams params) const noexcept
     uv.y = (params.yWrap) ? fmodf(uv.y, 1.0f) : saturate(uv.y);
     vec2 fullCoord = uv * (vec2((float)width, (float)height) - 1);
 
-    if (params.filtering == FilterMethod::BILINEAR)
+    switch (params.filtering)
+    {
+    case FilterMethod::NEAREST_NEIGHBOR:
+    {
+        uint32_t x = (uint32_t)fullCoord.x;
+        uint32_t y = (uint32_t)fullCoord.y;
+        return _Sample(x, y);
+    }
+    default:
+    case FilterMethod::BILINEAR:
     {
         vec2 t = fmod(fullCoord, 1.0f);
         irect pixel((int)floorf(fullCoord.x), (int)floorf(fullCoord.y), (int)ceilf(fullCoord.x), (int)ceilf(fullCoord.y));
@@ -259,11 +329,6 @@ Color Image::Sample(vec2 uv, SamplerParams params) const noexcept
         Color color = mix(colorTop, colorBottom, t.y);
         return color;
     }
-    else // Nearest neighbor
-    {
-        uint32_t x = (uint32_t)fullCoord.x;
-        uint32_t y = (uint32_t)fullCoord.y;
-        return _Sample(x, y);
     }
 }
 
