@@ -3,7 +3,7 @@
 #include <fstream>
 #include <bitset>
 
-#if 1
+#if 0
 #define DEBUG_PRINT(x) std::cout << #x ": " << x << '\n'
 #else
 #define DEBUG_PRINT(x)
@@ -21,8 +21,7 @@ Image LoadImageFromBitmap(const char* filename)
         char header[headerSize];
         bitmap.read(header, headerSize);
 
-        // Checks
-#if 1
+#if 0 // Checks
         {
             _ASSERT(header[0] == 'B' && header[1] == 'M');
             uint32_t sizeOfHeader    = *reinterpret_cast<uint32_t*>(header + 14); DEBUG_PRINT(sizeOfHeader);
@@ -31,13 +30,13 @@ Image LoadImageFromBitmap(const char* filename)
             uint32_t importantColors = *reinterpret_cast<uint32_t*>(header + 50); DEBUG_PRINT(importantColors); _ASSERT(importantColors  ==  0);
         }
 #endif
-        uint32_t size     = *reinterpret_cast<uint32_t*>(header +  2); DEBUG_PRINT(size);
-        uint32_t offset   = *reinterpret_cast<uint32_t*>(header + 10); DEBUG_PRINT(offset);
-         int32_t width    = *reinterpret_cast< int32_t*>(header + 18); DEBUG_PRINT(width);
-         int32_t height   = *reinterpret_cast< int32_t*>(header + 22); DEBUG_PRINT(height);
+        uint32_t size = *reinterpret_cast<uint32_t*>(header + 2); DEBUG_PRINT(size);
+        uint32_t offset = *reinterpret_cast<uint32_t*>(header + 10); DEBUG_PRINT(offset);
+        int32_t width = *reinterpret_cast< int32_t*>(header + 18); DEBUG_PRINT(width);
+        int32_t height = *reinterpret_cast< int32_t*>(header + 22); DEBUG_PRINT(height);
         uint16_t bitsPerPixel = *reinterpret_cast<uint16_t*>(header + 28); DEBUG_PRINT(bitsPerPixel); _ASSERT(bitsPerPixel == 24);
         uint32_t dataSize = *reinterpret_cast<uint32_t*>(header + 34); DEBUG_PRINT(dataSize);
-        int rowSize = ceil((bitsPerPixel * width) / 32.0f) * 4; DEBUG_PRINT(rowSize);
+        uint32_t rowSize = (uint32_t)ceil((bitsPerPixel * width) / 32.0f) * 4; DEBUG_PRINT(rowSize);
 
         char* data = new char[dataSize];
         bitmap.read(data, dataSize);
@@ -67,7 +66,7 @@ Image LoadImageFromBitmap(const char* filename)
         }
 #endif
 
-#if 1 // Debug pixel array
+#if 0 // Debug pixel array
         {
             size_t x = 0;
             for (uint32_t i = 0; i < dataSize; ++i)
@@ -90,9 +89,7 @@ Image LoadImageFromBitmap(const char* filename)
 #endif
 
         Image result;
-        result.width = width;
-        result.height = height;
-        result.data = new Color[width * height];
+        result.Alloc(width, height);
 
         // Load data into memory
         {
@@ -102,11 +99,12 @@ Image LoadImageFromBitmap(const char* filename)
                 uint32_t rowStart = y * rowSize;
                 for (int x = 0; x < width; ++x)
                 {
-                    uint32_t pixelStart = rowStart + x * 3;
-                    byte b = data[pixelStart + 0];
-                    byte g = data[pixelStart + 1];
-                    byte r = data[pixelStart + 2];
-                    result.data[i++] = Color(r, g, b);
+                    uint32_t pixelStart = rowStart + x * 3 + 2;
+                    byte r = data[pixelStart - 0];
+                    byte g = data[pixelStart - 1];
+                    byte b = data[pixelStart - 2];
+                    result.data[i] = Color(r, g, b);
+                    ++i;
                 }
             }
         }
@@ -134,7 +132,7 @@ Image LoadImageFromBitmap(const char* filename)
         }
 #endif
 
-        delete[] result.data;
+        result.Free();
         delete[] data;
         bitmap.close();
         return Image();

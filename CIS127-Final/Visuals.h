@@ -4,8 +4,25 @@
 // It's safe to pass this around raw because it's just two integers and a pointer
 struct Image
 {
-    unsigned width;
-    unsigned height;
+    void Alloc(uint32_t width, uint32_t height)
+    {
+        this->width = width;
+        this->height = height;
+        data = new Color[width * height];
+    }
+
+    void Free()
+    {
+        delete[] data;
+    }
+
+    uint32_t GetDataSize() const
+    {
+        return width * height;
+    }
+
+    uint32_t width = 0;
+    uint32_t height = 0;
     Color* data = nullptr;
 };
 
