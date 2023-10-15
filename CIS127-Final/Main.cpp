@@ -32,6 +32,10 @@ void PlayGame(SaveData& data);
 
 int main()
 {
+    Image test = LoadImageFromBitmap("test.bmp");
+    if (test.data) UnloadImage(test);
+    return 0;
+
     LoadConfigData();
 
     bool shouldGameClose = false;
