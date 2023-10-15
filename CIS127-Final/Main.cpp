@@ -38,7 +38,8 @@ int main()
 
     Image background0;
     background0.LoadFromBitmap("background0.bmp");
-    background0.Print(2.0f);
+    background0.Print();
+    background0.Print(3.0f, { .filtering = FilterMethod::BILINEAR });
 
     background0.Unload();
     test.Unload();

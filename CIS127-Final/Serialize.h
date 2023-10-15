@@ -11,11 +11,11 @@ struct SaveData
 {
     SaveData() = default;
 
-    string playerName; // Default will be "Ugene Plunderbuss"
-    Inventory playerInventory;
-    LevelMap map;
-    int currentRoom;
-    ivec2 currentPosition;
+    string playerName = "Ugene Plunderbuss";
+    Inventory playerInventory = Inventory();
+    LevelMap map = LevelMap();
+    int currentRoom = 0;
+    ivec2 currentPosition = ivec2(0);
 };
 
 struct ConfigData

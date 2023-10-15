@@ -26,12 +26,12 @@ public:
     void Unload();
     uint32_t Size() const;
     void Print() const;
-    void Print(float scale) const;
+    void Print(float scale, SamplerParams params = {}) const;
     operator bool() const;
     bool operator==(const Image& other) const;
     Image& operator=(const Image& other);
 
-    Color Sample(vec2 uv, SamplerParams params = {}) const noexcept;
+    Color Sample(vec2 uv, SamplerParams params) const noexcept;
 
 private:
     Color _Sample(uint32_t x, uint32_t y) const;

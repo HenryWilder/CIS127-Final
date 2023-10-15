@@ -91,7 +91,7 @@ void Image::LoadFromBitmap(const char* filename)
         }
 #endif
 
-        data = std::shared_ptr<Color>(new Color[width * height]);
+        data = std::shared_ptr<Color>(new Color[(size_t)width * (size_t)height]);
         Color* dataPtr = this->data.get();
 
         // Load data into memory
@@ -192,7 +192,7 @@ void Image::Print() const
     }
 }
 
-void Image::Print(float scale) const
+void Image::Print(float scale, SamplerParams params) const
 {
     float outputWidth = width * scale;
     float outputHeight = height * scale;
@@ -205,7 +205,7 @@ void Image::Print(float scale) const
     {
         for (uv.x = 0.0f; uv.x <= 1.0f; uv.x += outWidthIncr)
         {
-            Color color = Sample(uv);
+            Color color = Sample(uv, params);
             DrawBlock(color);
         }
         std::cout << '\n';
