@@ -9,26 +9,30 @@ struct Color
 
     Color() = default;
 
-    template<std::integral _ITy>
-    constexpr Color(_ITy value) :
-        r((byte)value), g((byte)value), b((byte)value) {}
+    constexpr Color(int gray) :
+        r((byte)gray), g((byte)gray), b((byte)gray) {}
 
-    template<std::integral _ITy>
-    constexpr Color(_ITy r, _ITy g, _ITy b) :
+    constexpr Color(int r, int g, int b) :
         r((byte)r), g((byte)g), b((byte)b) {}
 
-    template<std::floating_point _FTy>
-    constexpr Color(_FTy value) :
-        r((byte)(value * (_FTy)255)), g((byte)(value * (_FTy)255)), b((byte)(value * (_FTy)255)) {}
+    constexpr Color(byte gray) :
+        r(gray), g(gray), b(gray) {}
 
-    template<std::floating_point _FTy>
-    constexpr Color(_FTy r, _FTy g, _FTy b) :
-        r((byte)(r * (_FTy)255)), g((byte)(g * (_FTy)255)), b((byte)(b * (_FTy)255)) {}
+    constexpr Color(byte r, byte g, byte b) :
+        r(r), g(g), b(b) {}
 
-    explicit constexpr Color(vec3 v) :
-        r((byte)(v.x * 255)), g((byte)(v.y * 255)), b((byte)(v.z * 255)) {}
+    constexpr Color(float gray) :
+        r((byte)(gray * 255.0f)), g((byte)(gray * 255.0f)), b((byte)(gray * 255.0f)) {}
+
+    constexpr Color(float r, float g, float b) :
+        r((byte)(r * 255.0f)), g((byte)(g * 255.0f)), b((byte)(b * 255.0f)) {}
 
     byte r, g, b;
+
+    // Explicit conversions between color and vec3
+
+    explicit constexpr Color(vec3 v) :
+        r((byte)(v.x * 255.0f)), g((byte)(v.y * 255.0f)), b((byte)(v.z * 255.0f)) {}
 
     explicit constexpr operator vec3() const noexcept
     {
@@ -36,6 +40,15 @@ struct Color
         return vec3(r * conversion, g * conversion, b * conversion);
     }
 };
+
+constexpr Color operator""_rgb(_In_range_(0x000000ull, 0xFFFFFFull) unsigned long long hexCode)
+{
+    // It is intentional that the type cast narrows to a byte. This saves having to mask.
+    return Color(
+        (byte)(hexCode >> 020ull),
+        (byte)(hexCode >> 010ull),
+        (byte)(hexCode >> 000ull));
+}
 
 // Color equivalent of lerp
 template<can_interpolate<vec3> _Ty>

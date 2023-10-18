@@ -30,7 +30,7 @@ public:
         return width * height;
     }
 
-    template<series_of<2> _Vec>
+    template<vec_of_dim<2> _Vec>
     constexpr _Vec Size() const
     {
         using _Ty = typename _Vec::value_type;

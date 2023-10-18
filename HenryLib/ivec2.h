@@ -4,7 +4,8 @@
 struct ivec2
 {
     using value_type = int;
-    static constexpr int _Size = 2;
+    static constexpr unsigned _Dim = 2u;
+    static constexpr unsigned _Components = 2u;
 
     ivec2() = default;
 
@@ -15,14 +16,6 @@ struct ivec2
         x(x), y(y) {}
 
     value_type x, y;
-
-    static constexpr ivec2 zero()     noexcept { return ivec2(+0); }
-    static constexpr ivec2 one()      noexcept { return ivec2(+1); }
-    static constexpr ivec2 negative() noexcept { return ivec2(-1); }
-    static constexpr ivec2 right()    noexcept { return ivec2(+1, +0); }
-    static constexpr ivec2 up()       noexcept { return ivec2(+0, +1); }
-    static constexpr ivec2 left()     noexcept { return ivec2(-1, +0); }
-    static constexpr ivec2 down()     noexcept { return ivec2(+0, -1); }
 
     constexpr ivec2 operator+() const { return *this; }
     constexpr ivec2 operator-() const { return ivec2(-x, -y); }

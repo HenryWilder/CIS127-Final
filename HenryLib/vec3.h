@@ -5,7 +5,8 @@
 struct vec3
 {
     using value_type = float;
-    static constexpr int _Size = 3;
+    static constexpr unsigned _Dim = 3u;
+    static constexpr unsigned _Components = 3u;
 
     vec3() = default;
 
@@ -22,16 +23,6 @@ struct vec3
         x(x), y(y), z(z) {}
 
     value_type x, y, z;
-
-    static consteval vec3 zero()     noexcept { return { +0.0f, +0.0f, +0.0f }; }
-    static consteval vec3 one()      noexcept { return { +1.0f, +1.0f, +1.0f }; }
-    static consteval vec3 negative() noexcept { return { -1.0f, -1.0f, -1.0f }; }
-    static consteval vec3 right()    noexcept { return { +1.0f, +0.0f, +0.0f }; }
-    static consteval vec3 up()       noexcept { return { +0.0f, +1.0f, +0.0f }; }
-    static consteval vec3 forward()  noexcept { return { +0.0f, +0.0f, +1.0f }; }
-    static consteval vec3 left()     noexcept { return { -1.0f, +0.0f, +0.0f }; }
-    static consteval vec3 down()     noexcept { return { +0.0f, -1.0f, +0.0f }; }
-    static consteval vec3 backward() noexcept { return { +0.0f, +0.0f, -1.0f }; }
 
     constexpr vec3 operator+() const { return *this; }
     constexpr vec3 operator-() const { return vec3(-x, -y, -z); }

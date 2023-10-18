@@ -5,7 +5,8 @@
 struct vec2
 {
     using value_type = float;
-    static constexpr int _Size = 2;
+    static constexpr unsigned _Dim = 2u;
+    static constexpr unsigned _Components = 2u;
 
     vec2() = default;
 
@@ -19,14 +20,6 @@ struct vec2
         x((float)base.x), y((float)base.y) {}
 
     value_type x, y;
-
-    static constexpr vec2 zero()     noexcept { return vec2(+0.0f); }
-    static constexpr vec2 one()      noexcept { return vec2(+1.0f); }
-    static constexpr vec2 negative() noexcept { return vec2(-1.0f); }
-    static constexpr vec2 right()    noexcept { return vec2(+1.0f, +0.0f); }
-    static constexpr vec2 up()       noexcept { return vec2(+0.0f, +1.0f); }
-    static constexpr vec2 left()     noexcept { return vec2(-1.0f, +0.0f); }
-    static constexpr vec2 down()     noexcept { return vec2(+0.0f, -1.0f); }
 
     static vec2 rand01();
     static vec2 rand_between(vec2 min, vec2 max);

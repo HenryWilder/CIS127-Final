@@ -5,7 +5,8 @@
 struct irect
 {
     using value_type = int;
-    static constexpr int _Size = 4;
+    static constexpr unsigned _Dim = 2u;
+    static constexpr unsigned _Components = 4u;
 
     irect() = default;
 

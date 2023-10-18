@@ -4,21 +4,25 @@
 
 struct rect
 {
-    using value_type = float;
-    static constexpr int _Size = 4;
+    using component_t = float;
+    static constexpr unsigned _Dim = 2u;
+    static constexpr unsigned _Components = 4u;
 
     rect() = default;
 
-    constexpr rect(float x, float y, float size) :
+    constexpr rect(component_t x, component_t y, component_t size) :
         xmin(x), ymin(y), xmax(x + size), ymax(y + size) {}
 
-    constexpr rect(vec2 position, float size) :
+    constexpr rect(vec2 position, component_t size) :
         xmin(position.x), ymin(position.y), xmax(position.x + size), ymax(position.y + size) {}
 
-    constexpr rect(float xmin, float ymin, float xmax, float ymax) :
+    constexpr rect(component_t xmin, component_t ymin, component_t xmax, component_t ymax) :
         xmin(xmin), ymin(ymin), xmax(xmax), ymax(ymax) {}
 
-    value_type xmin, ymin, xmax, ymax;
+    component_t xmin;
+    component_t ymin;
+    component_t xmax;
+    component_t ymax;
 
     static constexpr rect FromMinAndMax(vec2 min, vec2 max) noexcept
     {

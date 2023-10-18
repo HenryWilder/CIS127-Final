@@ -48,6 +48,9 @@
     <ClInclude Include="vec3.h">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files\Types</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="HenryLib.cpp">
