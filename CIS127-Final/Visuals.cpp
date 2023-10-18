@@ -151,15 +151,22 @@ void Image::Unload()
 
 void Image::Print() const
 {
+    cg::Init(width, height);
+    cg::BeginDrawing();
+    cg::ClearBackground(BLACK);
+
     Color* dataPtr = data.get();
     for (uint32_t y = 0; y < height; ++y)
     {
         for (uint32_t x = 0; x < width; ++x)
         {
             Color color = dataPtr[y * width + x];
-            cg::DrawPixel(vec2(x, y), color);
+            cg::DrawPixel(vec2((float)x, (float)y), color);
         }
     }
+
+    cg::EndDrawing();
+    cg::Finished();
 }
 
 constexpr size_t NUM_SUPERSAMPLE_POINTS = 6;
@@ -216,7 +223,9 @@ void Image::Print(float scale, SamplerParams params) const
         GetPlantersPoints(superSamplePoints, incr);
     }
 
-    vec2 renderSize = (vec2)cg::GetRenderSize();
+    cg::Init((size_t)outSize.x, (size_t)outSize.y);
+    cg::BeginDrawing();
+    cg::ClearBackground(BLACK);
 
     vec2 uv(0);
     for (uv.y = 0.0f; uv.y <= 1.0f; uv.y += incr.y)
@@ -238,9 +247,12 @@ void Image::Print(float scale, SamplerParams params) const
                 samples /= NUM_SUPERSAMPLE_POINTS;
                 color = (Color)samples;
             }
-            cg::DrawPixel(vec2(uv.x, uv.y) * renderSize, color);
+            cg::DrawPixel(vec2(uv.x, uv.y) * outSize, color);
         }
     }
+
+    cg::EndDrawing();
+    cg::Finished();
 }
 
 void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) const
@@ -258,6 +270,11 @@ void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) cons
         params.filtering = FilterMethod::BILINEAR;
         GetPlantersPoints(superSamplePoints, scaleInv * srcSizeInv);
     }
+
+    vec2 finalSize = (vec2)size * scaleInv * destSizeInv;
+    cg::Init((size_t)finalSize.x, (size_t)finalSize.y);
+    cg::BeginDrawing();
+    cg::ClearBackground(BLACK);
 
     ivec2 px(0);
     for (px.y = 0; px.y < size.y; ++px.y)
@@ -283,6 +300,9 @@ void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) cons
             cg::DrawPixel(px, color);
         }
     }
+
+    cg::EndDrawing();
+    cg::Finished();
 }
 
 Image::operator bool() const

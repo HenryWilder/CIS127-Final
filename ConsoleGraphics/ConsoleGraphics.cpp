@@ -81,9 +81,22 @@ public:
         return Index((size_t)round(v.x), (size_t)round(v.y));
     }
 
+    size_t Index(ivec2 v) const { return Index((size_t)v.x, (size_t)v.y); }
+
+    bool IsInRange(size_t x, size_t y) const noexcept
+    {
+        return
+            (0ull <= x && x < _width) &&
+            (0ull <= y && y < _height);
+    }
+
+    bool IsInRange(ivec2 v) const noexcept { return IsInRange((size_t)v.x, (size_t)v.y); }
+    bool IsInRange( vec2 v) const noexcept { return IsInRange((size_t)roundf(v.x), (size_t)roundf(v.y)); }
+
+private:
     void DrawPixel(size_t index, Pixel_t value, float depth)
     {
-        if (_depth.at(index) >= depth)
+        if (_depth.at(index) < depth)
         {
             _color.at(index) = value;
         }
@@ -94,24 +107,37 @@ public:
         _color.at(index) = value;
     }
 
+public:
     void DrawPixel(vec2 v, Pixel_t value, float depth)
     {
-        DrawPixel(Index(v), value, depth);
+        if (IsInRange(v))
+        {
+            DrawPixel(Index(v), value, depth);
+        }
     }
 
     void DrawPixel(vec2 v, Pixel_t value)
     {
-        DrawPixel(Index(v), value);
+        if (IsInRange(v))
+        {
+            DrawPixel(Index(v), value);
+        }
     }
 
     void DrawPixel(ivec2 v, Pixel_t value, float depth)
     {
-        DrawPixel(Index(v.x, v.y), value, depth);
+        if (IsInRange(v))
+        {
+            DrawPixel(Index(v), value, depth);
+        }
     }
 
     void DrawPixel(ivec2 v, Pixel_t value)
     {
-        DrawPixel(Index(v.x, v.y), value);
+        if (IsInRange(v))
+        {
+            DrawPixel(Index(v), value);
+        }
     }
 
     void DrawPixel(vec3 v, Pixel_t value)

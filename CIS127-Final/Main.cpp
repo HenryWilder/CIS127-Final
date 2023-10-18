@@ -34,29 +34,15 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    cg::Init(16, 16);
-    {
-        cg::BeginDrawing();
-        cg::ClearBackground(BLACK);
-        cg::DrawPixel(vec2(1, 1), BLUE);
-        cg::DrawRectangle(rect(5, 3, 4), BLUE);
-        cg::EndDrawing();
-    }
-    cg::Finished();
-
-    int ignore;
-    std::cin >> ignore;
-
-    return 0;
-
     DrawColoredText("DEBUG TESTS\n", Color(255, 0, 255));
+
 
     Image test;
     test.LoadFromBitmap("test.bmp");
     std::cout << "Basic bitmap rendering\n";
     test.Print();
     test.Unload();
-    
+
     std::cout << std::endl;
 
     Image background0;
