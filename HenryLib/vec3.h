@@ -64,7 +64,7 @@ constexpr vec3 operator-(float amnt, vec3 v) { return vec3(amnt - v.x, amnt - v.
 constexpr vec3 operator*(float amnt, vec3 v) { return vec3(amnt * v.x, amnt * v.y, amnt * v.z); }
 constexpr vec3 operator/(float amnt, vec3 v) { return vec3(amnt / v.x, amnt / v.y, amnt / v.z); }
 
-constexpr float dot(vec3 a, vec3 b) { return a.x * b.x + a.y + b.y + a.z * b.z; }
+constexpr float dot(vec3 a, vec3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 constexpr float distanceSqr(vec3 a, vec3 b) { return (b - a).lengthSqr(); }
 constexpr float distance(vec3 a, vec3 b) { return (b - a).length(); }
 constexpr vec3 direction(vec3 a, vec3 b) { return (b - a).normalized(); }

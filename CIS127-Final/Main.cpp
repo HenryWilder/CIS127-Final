@@ -10,7 +10,6 @@
  * - Remove items from inventory when used
  * - Play must encounter other "characters"
  */
-// IMPORTANT: Resources must be copied to the output file for the program to work.
 
 #include <iostream>
 #include <string>
@@ -37,7 +36,7 @@ int main()
 {
     cg::Init(16, 16);
     cg::BeginDrawing();
-    cg::ClearBackground(WHITE);
+    cg::ClearBackground(BLACK);
     cg::DrawPixel(vec2(1, 1), BLUE);
     cg::DrawRectangle(rect(5, 3, 4), BLUE);
     cg::EndDrawing();

@@ -4,45 +4,41 @@
 using std::vector;
 using std::stack;
 
-// The whole reason I made this is so you can recompile the dll with
-// a different configuration depending on what works for your system.
+#include "config.h"
 
-#define COLOR_USE_GRAYSCALE_ASCII 0x0
-#define COLOR_USE_ESCAPE_CODES    0x1
-#define COLOR_USE_WINDOWS_CONTEXT 0x2
+#define IS_USING_GRAYSCALE_ASCII (CHOSEN_COLOR_METHOD == COLOR_USE_GRAYSCALE_ASCII) // Grayscale ASCII art
+#define IS_USING_ESCAPE_CODES    (CHOSEN_COLOR_METHOD == COLOR_USE_ESCAPE_CODES   ) // Color ASCII art
+#define IS_USING_WINDOWS_CONTEXT (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT) // Windows pixel functions
 
-// How pixels are colored
-#define CHOSEN_COLOR_METHOD COLOR_USE_WINDOWS_CONTEXT
+#define IS_USING_ASCII_RAMP_STANDARD (ASCII_RAMP_STYLE == ASCII_RAMP_STANDARD) // ASCII ramp with wider range
+#define IS_USING_ASCII_RAMP_SHORT    (ASCII_RAMP_STYLE == ASCII_RAMP_SHORT   ) // ASCII ramp with shorter, more convincing range
+#define IS_USING_ASCII_RAMP_BLOCKS   (ASCII_RAMP_STYLE == ASCII_RAMP_BLOCKS  ) // ASCII ramp with solid blocks
 
-#if (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT)
-// Toggle by commenting/uncommenting this macro
-//#define USE_SLOW_FILL
-#endif
-
-
-#if (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT)
+#if IS_USING_WINDOWS_CONTEXT
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 HWND console;
 HDC dc;
 #endif
 
-#if (CHOSEN_COLOR_METHOD == COLOR_USE_GRAYSCALE_ASCII)
+#if IS_USING_GRAYSCALE_ASCII
 using Pixel_t = float;
 constexpr Pixel_t ColorToPixel(Color color)
 {
     return color.ToGray();
 }
-#elif (CHOSEN_COLOR_METHOD == COLOR_USE_ESCAPE_CODES)
+#elif IS_USING_ESCAPE_CODES
 using Pixel_t = Color;
 #define ColorToPixel(color) (color)
-#elif (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT)
+#elif IS_USING_WINDOWS_CONTEXT
 using Pixel_t = COLORREF;
 constexpr Pixel_t ColorToPixel(Color color)
 {
     return RGB(color.r, color.g, color.b);
 }
-#endif // CHOSEN_COLOR_METHOD
+#else
+#error selected color method is invalid
+#endif // IS_USING_GRAYSCALE_ASCII / IS_USING_ESCAPE_CODES / IS_USING_WINDOWS_CONTEXT
 
 class PixelBuffer
 {
@@ -148,27 +144,44 @@ public:
 
     void Flush()
     {
-#if (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT) && !defined(USE_SLOW_FILL)
+#if IS_USING_WINDOWS_CONTEXT && !USE_SLOW_FILL
         RECT rec = {};
         LONG y, x;
 #else
         size_t y, x;
-#endif
+#endif // IS_USING_WINDOWS_CONTEXT && !USE_SLOW_FILL
+
         for (y = 0; y < _height; ++y)
         {
             for (x = 0; x < _width; ++x)
             {
                 Pixel_t value = _color[Index(x, y)];
-#if (CHOSEN_COLOR_METHOD == COLOR_USE_GRAYSCALE_ASCII)
-                constexpr char ASCII_RAMP[] = { ' ', '\xB0', '\xB1', '\xB2', '\xDB' };
-                constexpr float ASCII_RAMP_MAX = sizeof(ASCII_RAMP) - 1;
+#if IS_USING_GRAYSCALE_ASCII
+
+                constexpr char ASCII_RAMP[] =
+#if   ASCII_RAMP_STYLE == ASCII_RAMP_STANDARD
+                    R"() .'`^",:;Il!i><~+_-?][}{1)(|\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$)";
+#elif ASCII_RAMP_STYLE == ASCII_RAMP_SHORT
+                    " .:-=+*#%@";
+#elif ASCII_RAMP_STYLE == ASCII_RAMP_BLOCKS
+                   " \xB0\xB1\xB2\xDB";
+#endif
+                constexpr float ASCII_RAMP_MAX = sizeof(ASCII_RAMP) - 2;
                 float valueIndex = roundf(clamp(value, 0.0f, 1.0f) * ASCII_RAMP_MAX);
                 char valueChar = ASCII_RAMP[(size_t)valueIndex];
-                for (int i = 0; i < 2; ++i) putchar(valueChar); // Do twice to make a square
-#elif (CHOSEN_COLOR_METHOD == COLOR_USE_ESCAPE_CODES)
+                for (int i = 0; i < 2; ++i)
+                {
+                    putchar(valueChar);
+                }
+
+#elif IS_USING_ESCAPE_CODES
+
                 printf("\x1B[38;2;%d;%d;%dm\xDB\xDB\x1B[0m", (int)value.r, (int)value.g, (int)value.b);
-#elif (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT)
-#ifdef USE_SLOW_FILL
+
+#elif IS_USING_WINDOWS_CONTEXT
+
+#if USE_SLOW_FILL
+
                 for (int dy = y * 8; dy < (y + 1) * 8; ++dy)
                 {
                     for (int dx = x * 8; dx < (x + 1) * 8; ++dx)
@@ -177,13 +190,16 @@ public:
                     }
                 }
 #else
+
                 HBRUSH brush = CreateSolidBrush(value);
                 rec.right  = (rec.left = x * 8) + 8;
                 rec.bottom = (rec.top  = y * 8) + 8;
                 FillRect(dc, &rec, brush);
                 DeleteObject(brush);
-#endif
-#endif // (CHOSEN_COLOR_METHOD == COLOR_USE_GRAYSCALE_ASCII)
+
+#endif // USE_SLOW_FILL
+
+#endif // IS_USING_GRAYSCALE_ASCII / IS_USING_ESCAPE_CODES / IS_USING_WINDOWS_CONTEXT
             }
             putchar('\n');
         }

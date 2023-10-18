@@ -19,11 +19,11 @@
     <Filter Include="Source Files\Types">
       <UniqueIdentifier>{0a126306-3b32-4340-a30e-f548f5a8e2f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{88341cfa-284d-46c3-9de2-50810b5e617e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="HenryLib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="color.h">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
@@ -50,6 +50,9 @@
     </ClInclude>
     <ClInclude Include="constants.h">
       <Filter>Header Files\Types</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HenryLib.h">
+      <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -44,8 +44,8 @@ struct Color
 
     constexpr float ToGray() const
     {
-        constexpr vec3 conversion = vec3(0.299f, 0.587f, 0.114f);
-        return dot((vec3)(*this), conversion);
+        float result = dot((vec3)(*this), vec3(0.299f, 0.587f, 0.114f));;
+        return result;
     }
 };
 
