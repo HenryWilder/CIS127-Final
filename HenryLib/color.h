@@ -41,6 +41,12 @@ struct Color
         constexpr float conversion = 1.0f / 255.0f;
         return vec3(r * conversion, g * conversion, b * conversion);
     }
+
+    constexpr float ToGray() const
+    {
+        constexpr vec3 conversion = vec3(0.299f, 0.587f, 0.114f);
+        return dot((vec3)(*this), conversion);
+    }
 };
 
 constexpr Color operator""_rgb(_In_range_(0x000000ull, 0xFFFFFFull) unsigned long long hexCode)
