@@ -1,5 +1,5 @@
 #pragma once
-#include "Utility.h"
+#include <HenryLib.h>
 #include <memory>
 
 enum class FilterMethod

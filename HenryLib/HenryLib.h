@@ -1,6 +1,5 @@
 #pragma once
 
-// #include "nbool.h"
 #include "cxmath.h"
 #include "ivec2.h"
 #include "irect.h"
@@ -9,6 +8,9 @@
 #include "vec3.h"
 #include "shapes.h"
 #include "color.h"
+
+template<typename _Enum>
+concept enumeration = std::is_enum_v<_Enum>;
 
 template<typename _Ty>
 concept series = requires
@@ -22,3 +24,4 @@ concept series_of = series<_Ty> && _Ty::_Size == _Size;
 
 template<typename _Ty, int _Dim>
 concept vec_of = series<_Ty> && _Ty::_Size == _Dim;
+

@@ -1,5 +1,6 @@
 #pragma once
 #include "cxmath.h"
+#include "vec2.h"
 
 struct vec3
 {
@@ -22,15 +23,15 @@ struct vec3
 
     value_type x, y, z;
 
-    static constexpr vec3 zero()     noexcept { return vec3(+0.0f); }
-    static constexpr vec3 one()      noexcept { return vec3(+1.0f); }
-    static constexpr vec3 negative() noexcept { return vec3(-1.0f); }
-    static constexpr vec3 right()    noexcept { return vec3(+1.0f, +0.0f, +0.0f); }
-    static constexpr vec3 up()       noexcept { return vec3(+0.0f, +1.0f, +0.0f); }
-    static constexpr vec3 forward()  noexcept { return vec3(+0.0f, +0.0f, +1.0f); }
-    static constexpr vec3 left()     noexcept { return vec3(-1.0f, +0.0f, +0.0f); }
-    static constexpr vec3 down()     noexcept { return vec3(+0.0f, -1.0f, +0.0f); }
-    static constexpr vec3 backward() noexcept { return vec3(+0.0f, +0.0f, -1.0f); }
+    static consteval vec3 zero()     noexcept { return { +0.0f, +0.0f, +0.0f }; }
+    static consteval vec3 one()      noexcept { return { +1.0f, +1.0f, +1.0f }; }
+    static consteval vec3 negative() noexcept { return { -1.0f, -1.0f, -1.0f }; }
+    static consteval vec3 right()    noexcept { return { +1.0f, +0.0f, +0.0f }; }
+    static consteval vec3 up()       noexcept { return { +0.0f, +1.0f, +0.0f }; }
+    static consteval vec3 forward()  noexcept { return { +0.0f, +0.0f, +1.0f }; }
+    static consteval vec3 left()     noexcept { return { -1.0f, +0.0f, +0.0f }; }
+    static consteval vec3 down()     noexcept { return { +0.0f, -1.0f, +0.0f }; }
+    static consteval vec3 backward() noexcept { return { +0.0f, +0.0f, -1.0f }; }
 
     constexpr vec3 operator+() const { return *this; }
     constexpr vec3 operator-() const { return vec3(-x, -y, -z); }

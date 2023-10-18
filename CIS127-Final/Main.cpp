@@ -10,10 +10,12 @@
  * - Remove items from inventory when used
  * - Play must encounter other "characters"
  */
+// IMPORTANT: Resources must be copied to the output file for the program to work.
+
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Utility.h"
+#include <HenryLib.h>
 #include "Serialize.h"
 #include "Menu.h"
 #include "MainMenu.h"
@@ -32,30 +34,43 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    //Image test;
-    //test.LoadFromBitmap("test.bmp");
-    //test.Print();
-    //
-    //Image background0;
-    //background0.LoadFromBitmap("background0.bmp");
-    //background0.Print();
-    //background0.Print(3.0f, { .filtering = FilterMethod::NEAREST_NEIGHBOR });
-    //background0.Print(3.0f, { .filtering = FilterMethod::BILINEAR });
-    //background0.PrintEx(rect(0, 0, 16, 16), irect(0, 0, 64, 8), vec2(0.125f, 1.0f), {.xWrap = true, .filtering = FilterMethod::BILINEAR});
+    DrawColoredText("DEBUG TESTS\n", Color(255, 0, 255));
+
+    Image test;
+    test.LoadFromBitmap("test.bmp");
+    std::cout << "Basic bitmap rendering\n";
+    test.Print();
+    test.Unload();
+    
+    std::cout << std::endl;
+
+    Image background0;
+    background0.LoadFromBitmap("background0.bmp");
+    std::cout << "Basic bitmap rendering\n";
+    background0.Print();
+    std::cout << "3x upscaling with nearest neighbor filtering\n";
+    background0.Print(3.0f, { .filtering = FilterMethod::NEAREST_NEIGHBOR });
+    std::cout << "3x upscaling with bilinear filtering\n";
+    background0.Print(3.0f, { .filtering = FilterMethod::BILINEAR });
+    std::cout << "1/2x scale with bilinear filtering and wrapping\n";
+    background0.PrintEx(rect(0, 0, 16, 16), irect(0, 0, 64, 8), vec2(0.125f, 1.0f), {.xWrap = true, .filtering = FilterMethod::BILINEAR});
+    background0.Unload();
+
+    std::cout << std::endl;
     
     Image large_test;
     large_test.LoadFromBitmap("large_test.bmp");
-    std::cout << "Nearest neighbor\n";
+    std::cout << "Nearest neighbor downscaling\n";
     large_test.Print(1.0f / 32, { .filtering = FilterMethod::NEAREST_NEIGHBOR });
-    std::cout << "Bilinear\n";
+    std::cout << "Bilinear downscaling\n";
     large_test.Print(1.0f / 32, { .filtering = FilterMethod::BILINEAR });
-    std::cout << "Supersampled\n";
+    std::cout << "Supersampled downscaling\n";
     large_test.Print(1.0f / 32, { .filtering = FilterMethod::PLANTERS_AVERAGE });
-
     large_test.Unload();
-    //background0.Unload();
-    //test.Unload();
-    return 0;
+
+    std::cout << std::endl;
+
+    DrawColoredText("END OF TESTS\n\n", Color(255, 0, 255));
 
     LoadConfigData();
 

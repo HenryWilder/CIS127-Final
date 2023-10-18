@@ -1,5 +1,5 @@
 #pragma once
-#include "Utility.h"
+#include <HenryLib.h>
 #include "Visuals.h"
 #include <vector>
 #include <sal.h>
