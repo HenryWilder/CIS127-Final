@@ -35,7 +35,16 @@ void PlayGame(SaveData& data);
 
 int main()
 {
-    std::cout << Test();
+    cg::Init(16, 16);
+    cg::BeginDrawing();
+    cg::ClearBackground(WHITE);
+    cg::DrawPixel(vec2(1, 1), BLUE);
+    cg::DrawRectangle(rect(5, 3, 4), BLUE);
+    cg::EndDrawing();
+
+    int ignore;
+    std::cin >> ignore;
+
     return 0;
 
     DrawColoredText("DEBUG TESTS\n", Color(255, 0, 255));

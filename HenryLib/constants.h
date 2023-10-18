@@ -4,6 +4,7 @@
 #include "vec2.h"
 #include "vec3.h"
 #include "rect.h"
+#include "color.h"
 
 // Helper concepts
 
