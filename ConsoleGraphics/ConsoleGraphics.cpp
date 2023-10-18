@@ -61,6 +61,11 @@ public:
         }
     }
 
+    ivec2 Size() const noexcept
+    {
+        return ivec2((int)_width, (int)_height);
+    }
+
     size_t Area() const noexcept
     {
         return _width * _height;
@@ -253,9 +258,19 @@ namespace cg
         CurrentBuffer().Clear(ColorToPixel(color));
     }
 
+    void DrawPixel(ivec2 position, Color color)
+    {
+        CurrentBuffer().DrawPixel(position, ColorToPixel(color)); 
+    }
+
     void DrawPixel(vec2 position, Color color)
     {
         CurrentBuffer().DrawPixel(position, ColorToPixel(color)); 
+    }
+
+    void DrawRectangle(irect rec, Color color)
+    {
+        CurrentBuffer().DrawRectangle(rec, ColorToPixel(color));
     }
 
     void DrawRectangle(rect rec, Color color)
@@ -266,11 +281,16 @@ namespace cg
             (int)round(rec.xmax),
             (int)round(rec.ymax)
         };
-        CurrentBuffer().DrawRectangle(irec, ColorToPixel(color));
+        DrawRectangle(irec, color);
     }
 
     void DrawTriangle(triangle rec, Color color)
     {
         // todo
+    }
+
+    ivec2 GetRenderSize()
+    {
+        return CurrentBuffer().Size();
     }
 }

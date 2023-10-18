@@ -58,7 +58,4 @@ private:
     std::shared_ptr<Color> data;
 };
 
-constexpr char AsciiGrayscale(float value);
-
 void DrawColoredText(const char* text, Color color);
-void DrawBlock(Color color);

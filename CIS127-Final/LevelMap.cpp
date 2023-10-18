@@ -1,6 +1,7 @@
 #include "LevelMap.h"
 #include "Visuals.h"
 #include <iostream>
+#include <ConsoleGraphics.h>
 
 bool operator==(ivec2 a, ivec2 b)
 {
@@ -57,9 +58,8 @@ void Room::Print(float scale) const
             case GridSpaceFlags::GRIDSPACE_WALL:  colorToUse = wallColor;  break;
             case GridSpaceFlags::GRIDSPACE_DOOR:  colorToUse = doorColor;  break;
             }
-            DrawBlock(colorToUse);
+            cg::DrawPixel(vec2(x, y), colorToUse);
         }
-        std::cout << '\n';
     }
 }
 
