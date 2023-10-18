@@ -32,16 +32,16 @@ template<typename _Vec, unsigned _Dim> concept vec_le_dim = is_dimensional_vec_v
 
 // Declarations
 
-template<vec_or_rect _Ty> constexpr _Ty zero;
-template<vec_or_rect _Ty> constexpr _Ty one;
-template<vec_or_rect _Ty> constexpr _Ty unit = one<_Ty>; // Alias for 'one'
-template<vec_or_rect _Ty> constexpr _Ty negative;
+template<vec_or_rect _Ty>    constexpr _Ty  zero;
+template<vec_or_rect _Ty>    constexpr _Ty  one;
+template<vec_or_rect _Ty>    constexpr _Ty  negative;
 template<vec_ge_dim<2> _Vec> constexpr _Vec left;
 template<vec_ge_dim<2> _Vec> constexpr _Vec right;
 template<vec_ge_dim<2> _Vec> constexpr _Vec up;
 template<vec_ge_dim<2> _Vec> constexpr _Vec down;
 template<vec_ge_dim<3> _Vec> constexpr _Vec forward;
 template<vec_ge_dim<3> _Vec> constexpr _Vec backward;
+template<typename _Ty>       constexpr _Ty  unit = one<_Ty>;
 
 // Definitions
 
@@ -84,8 +84,6 @@ template<> constexpr rect one      <rect> = rect(+0.0f, +0.0f, +1.0f, +1.0f);
 template<> constexpr rect negative <rect> = rect(+0.0f, +0.0f, -1.0f, -1.0f);
 
 // Colors
-
-constexpr byte operator""_u(char ch) { return (byte)ch; }
 
 constexpr Color WHITE = 0xFFFFFF_rgb;
 constexpr Color GRAY  = 0x808080_rgb;

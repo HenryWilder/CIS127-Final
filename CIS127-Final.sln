@@ -6,9 +6,15 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CIS127-Final", "CIS127-Final\CIS127-Final.vcxproj", "{B6038B5E-1B82-4F96-848E-9AFCEC26174D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E6DB6758-0BFF-4599-917F-41495AAEF6D6} = {E6DB6758-0BFF-4599-917F-41495AAEF6D6}
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379} = {E9CCE079-C578-40B4-BBBC-B38701A1C379}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HenryLib", "HenryLib\HenryLib.vcxproj", "{E6DB6758-0BFF-4599-917F-41495AAEF6D6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ConsoleGraphics", "ConsoleGraphics\ConsoleGraphics.vcxproj", "{E9CCE079-C578-40B4-BBBC-B38701A1C379}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E6DB6758-0BFF-4599-917F-41495AAEF6D6} = {E6DB6758-0BFF-4599-917F-41495AAEF6D6}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +40,14 @@ Global
 		{E6DB6758-0BFF-4599-917F-41495AAEF6D6}.Release|x64.Build.0 = Release|x64
 		{E6DB6758-0BFF-4599-917F-41495AAEF6D6}.Release|x86.ActiveCfg = Release|Win32
 		{E6DB6758-0BFF-4599-917F-41495AAEF6D6}.Release|x86.Build.0 = Release|Win32
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Debug|x64.ActiveCfg = Debug|x64
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Debug|x64.Build.0 = Debug|x64
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Debug|x86.ActiveCfg = Debug|Win32
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Debug|x86.Build.0 = Debug|Win32
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Release|x64.ActiveCfg = Release|x64
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Release|x64.Build.0 = Release|x64
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Release|x86.ActiveCfg = Release|Win32
+		{E9CCE079-C578-40B4-BBBC-B38701A1C379}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

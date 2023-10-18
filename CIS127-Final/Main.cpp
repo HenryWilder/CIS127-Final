@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 #include <HenryLib.h>
+#include <ConsoleGraphics.h>
 #include "Serialize.h"
 #include "Menu.h"
 #include "MainMenu.h"
@@ -34,6 +35,9 @@ void PlayGame(SaveData& data);
 
 int main()
 {
+    std::cout << Test();
+    return 0;
+
     DrawColoredText("DEBUG TESTS\n", Color(255, 0, 255));
 
     Image test;

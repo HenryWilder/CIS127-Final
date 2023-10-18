@@ -2,6 +2,8 @@
 #include "vec3.h"
 
 using byte = unsigned char;
+constexpr byte operator""_u(char ch) { return (byte)ch; }
+
 struct Color
 {
     using value_type = byte;
@@ -49,6 +51,11 @@ constexpr Color operator""_rgb(_In_range_(0x000000ull, 0xFFFFFFull) unsigned lon
         (byte)(hexCode >> 010ull),
         (byte)(hexCode >> 000ull));
 }
+static_assert(([]() { Color test = 0x000000_rgb; return test.r == '\x00'_u && test.g == '\x00'_u && test.b == '\x00'_u; })());
+static_assert(([]() { Color test = 0xFF0000_rgb; return test.r == '\xFF'_u && test.g == '\x00'_u && test.b == '\x00'_u; })());
+static_assert(([]() { Color test = 0x00FF00_rgb; return test.r == '\x00'_u && test.g == '\xFF'_u && test.b == '\x00'_u; })());
+static_assert(([]() { Color test = 0x0000FF_rgb; return test.r == '\x00'_u && test.g == '\x00'_u && test.b == '\xFF'_u; })());
+static_assert(([]() { Color test = 0xFFFFFF_rgb; return test.r == '\xFF'_u && test.g == '\xFF'_u && test.b == '\xFF'_u; })());
 
 // Color equivalent of lerp
 template<can_interpolate<vec3> _Ty>
