@@ -35,11 +35,14 @@ void PlayGame(SaveData& data);
 int main()
 {
     cg::Init(16, 16);
-    cg::BeginDrawing();
-    cg::ClearBackground(BLACK);
-    cg::DrawPixel(vec2(1, 1), BLUE);
-    cg::DrawRectangle(rect(5, 3, 4), BLUE);
-    cg::EndDrawing();
+    {
+        cg::BeginDrawing();
+        cg::ClearBackground(BLACK);
+        cg::DrawPixel(vec2(1, 1), BLUE);
+        cg::DrawRectangle(rect(5, 3, 4), BLUE);
+        cg::EndDrawing();
+    }
+    cg::Finished();
 
     int ignore;
     std::cin >> ignore;
