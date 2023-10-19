@@ -151,8 +151,7 @@ void Image::Unload()
 
 void Image::Print() const
 {
-    cg::Init(width, height);
-    cg::BeginDrawing();
+    cg::BeginDrawing(width, height);
     cg::ClearBackground(BLACK);
 
     Color* dataPtr = data.get();
@@ -166,7 +165,6 @@ void Image::Print() const
     }
 
     cg::EndDrawing();
-    cg::Finished();
 }
 
 constexpr size_t NUM_SUPERSAMPLE_POINTS = 6;
@@ -223,8 +221,7 @@ void Image::Print(float scale, SamplerParams params) const
         GetPlantersPoints(superSamplePoints, incr);
     }
 
-    cg::Init((size_t)outSize.x, (size_t)outSize.y);
-    cg::BeginDrawing();
+    cg::BeginDrawing(outSize);
     cg::ClearBackground(BLACK);
 
     vec2 uv(0);
@@ -252,7 +249,6 @@ void Image::Print(float scale, SamplerParams params) const
     }
 
     cg::EndDrawing();
-    cg::Finished();
 }
 
 void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) const
@@ -272,8 +268,7 @@ void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) cons
     }
 
     vec2 finalSize = (vec2)size * scaleInv * destSizeInv;
-    cg::Init((size_t)finalSize.x, (size_t)finalSize.y);
-    cg::BeginDrawing();
+    cg::BeginDrawing(finalSize);
     cg::ClearBackground(BLACK);
 
     ivec2 px(0);
@@ -302,7 +297,6 @@ void Image::PrintEx(rect src, irect dest, vec2 scale, SamplerParams params) cons
     }
 
     cg::EndDrawing();
-    cg::Finished();
 }
 
 Image::operator bool() const

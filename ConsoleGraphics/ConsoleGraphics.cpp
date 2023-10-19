@@ -263,19 +263,16 @@ private:
     vector<float> _depth;
 };
 
-PixelBuffer mainBuffer;
-stack<PixelBuffer*> bufferStack;
-
 PixelBuffer& CurrentBuffer()
 {
-    return *bufferStack.top();
+    static PixelBuffer mainBuffer;
+    return mainBuffer;
 }
 
 namespace cg
 {
-    void Init(size_t width, size_t height)
+    void Init()
     {
-        mainBuffer = PixelBuffer(width, height);
 #if (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT)
         console = GetConsoleWindow();
         dc = GetDC(console);
@@ -289,15 +286,24 @@ namespace cg
 #endif
     }
 
-    void BeginDrawing()
+    void BeginDrawing(size_t width, size_t height)
     {
-        bufferStack.push(&mainBuffer);
+        CurrentBuffer() = PixelBuffer(width, height);
+    }
+
+    void BeginDrawing(ivec2 size)
+    {
+        CurrentBuffer() = PixelBuffer(size.x, size.y);
+    }
+
+    void BeginDrawing(vec2 size)
+    {
+        CurrentBuffer() = PixelBuffer((size_t)ceilf(size.x), (size_t)ceilf(size.y));
     }
 
     void EndDrawing()
     {
-        bufferStack.top()->Flush();
-        bufferStack.pop();
+        CurrentBuffer().Flush();
     }
 
     void ClearBackground(Color color)

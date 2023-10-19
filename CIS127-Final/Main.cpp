@@ -36,6 +36,7 @@ int main()
 {
     DrawColoredText("DEBUG TESTS\n", Color(255, 0, 255));
 
+    cg::Init();
 
     Image test;
     test.LoadFromBitmap("test.bmp");
@@ -72,6 +73,8 @@ int main()
     std::cout << std::endl;
 
     DrawColoredText("END OF TESTS\n\n", Color(255, 0, 255));
+
+    cg::Finished();
 
     LoadConfigData();
 
