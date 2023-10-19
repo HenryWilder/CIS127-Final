@@ -1,8 +1,14 @@
 #include "ConsoleGraphics.h"
 #include <vector>
 #include <stack>
+#include <thread>
 using std::vector;
 using std::stack;
+
+void Sleep(size_t ms)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
+}
 
 #include "config.h"
 
@@ -178,6 +184,17 @@ public:
 #if IS_USING_WINDOWS_CONTEXT && !USE_SLOW_FILL
         RECT rec = {};
         LONG y, x;
+
+        system("cls");
+
+        // Create space for the graphic
+        for (y = 0; y < _height; ++y)
+        {
+            putchar('\n');
+        }
+
+        Sleep(30ull);
+        
 #else
         size_t y, x;
 #endif // IS_USING_WINDOWS_CONTEXT && !USE_SLOW_FILL
@@ -211,11 +228,13 @@ public:
 
 #elif IS_USING_WINDOWS_CONTEXT
 
+                constexpr int PIXELS_PER_BLOCK = 16;
+
 #if USE_SLOW_FILL
 
-                for (int dy = y * 8; dy < (y + 1) * 8; ++dy)
+                for (int dy = y * PIXELS_PER_BLOCK; dy < (y + 1) * PIXELS_PER_BLOCK; ++dy)
                 {
-                    for (int dx = x * 8; dx < (x + 1) * 8; ++dx)
+                    for (int dx = x * PIXELS_PER_BLOCK; dx < (x + 1) * PIXELS_PER_BLOCK; ++dx)
                     {
                         SetPixelV(dc, dx, dy, value);
                     }
@@ -223,8 +242,8 @@ public:
 #else
 
                 HBRUSH brush = CreateSolidBrush(value);
-                rec.right  = (rec.left = x * 8) + 8;
-                rec.bottom = (rec.top  = y * 8) + 8;
+                rec.right  = (rec.left = x * PIXELS_PER_BLOCK) + PIXELS_PER_BLOCK;
+                rec.bottom = (rec.top  = y * PIXELS_PER_BLOCK) + PIXELS_PER_BLOCK;
                 FillRect(dc, &rec, brush);
                 DeleteObject(brush);
 
@@ -232,7 +251,9 @@ public:
 
 #endif // IS_USING_GRAYSCALE_ASCII / IS_USING_ESCAPE_CODES / IS_USING_WINDOWS_CONTEXT
             }
+#if !IS_USING_WINDOWS_CONTEXT
             putchar('\n');
+#endif // !IS_USING_WINDOWS_CONTEXT
         }
     }
 

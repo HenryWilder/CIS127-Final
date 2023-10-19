@@ -10,7 +10,7 @@
 // - COLOR_USE_ESCAPE_CODES
 // - COLOR_USE_WINDOWS_CONTEXT
 #define CHOSEN_COLOR_METHOD \
-    COLOR_USE_GRAYSCALE_ASCII
+    COLOR_USE_WINDOWS_CONTEXT
 
 // When using Windows.h, whether to fill pixel-by-pixel instead of entire rectangles.
 // This is slower, but gives a more animated appearance and fixes certain rare graphical bugs.
@@ -27,4 +27,4 @@
 // - ASCII_RAMP_SHORT
 // - ASCII_RAMP_BLOCKS
 #define ASCII_RAMP_STYLE \
-    ASCII_RAMP_SHORT
+    ASCII_RAMP_BLOCKS
