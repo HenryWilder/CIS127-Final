@@ -1,6 +1,6 @@
 #pragma once
 #include <concepts>
-//#include <limits>
+#include "custom_concepts.h"
 
 // The name scheme may seem a little weird. It kinda is.
 // I tried to keep in consistent in the sense that math uses snake_case, while higher level functions use PascalCase.
@@ -14,9 +14,6 @@ constexpr bool NearlyEqual(_Ty a, _Ty b, _Ty within = ((_Ty)1 / (_Ty)1024)) noex
     _Ty diff = a - b;
     return -within <= diff && diff <= within;
 }
-
-template<typename _Ty>
-concept numeric = std::is_floating_point_v<_Ty> || std::is_integral_v<_Ty>;
 
 // Epic! static assertions can test lambdas!!
 static_assert(([]() { return true; })());

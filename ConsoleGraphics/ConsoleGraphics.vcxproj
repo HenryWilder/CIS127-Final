@@ -173,10 +173,14 @@
   <ItemGroup>
     <ClInclude Include="config.h" />
     <ClInclude Include="config_options.h" />
+    <ClInclude Include="ConsoleIO.h" />
     <ClInclude Include="include\ConsoleGraphics.h" />
+    <ClInclude Include="shared.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleGraphics.cpp" />
+    <ClCompile Include="ConsoleIO.cpp" />
+    <ClCompile Include="shared.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

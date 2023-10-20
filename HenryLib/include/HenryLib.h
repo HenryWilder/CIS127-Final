@@ -1,5 +1,7 @@
 #pragma once
 
+#include "..\custom_concepts.h"
+#include "..\utility.h"
 #include "..\cxmath.h"
 #include "..\ivec2.h"
 #include "..\irect.h"

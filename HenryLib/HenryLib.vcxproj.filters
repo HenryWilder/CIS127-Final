@@ -27,9 +27,6 @@
     <ClInclude Include="color.h">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
-    <ClInclude Include="cxmath.h">
-      <Filter>Header Files\Types</Filter>
-    </ClInclude>
     <ClInclude Include="irect.h">
       <Filter>Header Files\Types</Filter>
     </ClInclude>
@@ -53,6 +50,18 @@
     </ClInclude>
     <ClInclude Include="include\HenryLib.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="cxmath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="custom_concepts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StringTo.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

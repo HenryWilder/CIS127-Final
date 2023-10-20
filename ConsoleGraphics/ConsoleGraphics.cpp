@@ -1,31 +1,9 @@
 #include "ConsoleGraphics.h"
+#include "shared.h"
 #include <vector>
 #include <stack>
-#include <thread>
 using std::vector;
 using std::stack;
-
-void Sleep(size_t ms)
-{
-    std::this_thread::sleep_for(std::chrono::milliseconds(ms));
-}
-
-#include "config.h"
-
-#define IS_USING_GRAYSCALE_ASCII (CHOSEN_COLOR_METHOD == COLOR_USE_GRAYSCALE_ASCII) // Grayscale ASCII art
-#define IS_USING_ESCAPE_CODES    (CHOSEN_COLOR_METHOD == COLOR_USE_ESCAPE_CODES   ) // Color ASCII art
-#define IS_USING_WINDOWS_CONTEXT (CHOSEN_COLOR_METHOD == COLOR_USE_WINDOWS_CONTEXT) // Windows pixel functions
-
-#define IS_USING_ASCII_RAMP_STANDARD (ASCII_RAMP_STYLE == ASCII_RAMP_STANDARD) // ASCII ramp with wider range
-#define IS_USING_ASCII_RAMP_SHORT    (ASCII_RAMP_STYLE == ASCII_RAMP_SHORT   ) // ASCII ramp with shorter, more convincing range
-#define IS_USING_ASCII_RAMP_BLOCKS   (ASCII_RAMP_STYLE == ASCII_RAMP_BLOCKS  ) // ASCII ramp with solid blocks
-
-#if IS_USING_WINDOWS_CONTEXT
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
-HWND console;
-HDC dc;
-#endif
 
 #if IS_USING_GRAYSCALE_ASCII
 using Pixel_t = float;
@@ -181,23 +159,26 @@ public:
 
     void Flush()
     {
-#if IS_USING_WINDOWS_CONTEXT && !USE_SLOW_FILL
-        RECT rec = {};
-        LONG y, x;
+#if IS_USING_WINDOWS_CONTEXT
 
         system("cls");
 
         // Create space for the graphic
-        for (y = 0; y < _height; ++y)
+        for (size_t y = 0; y < _height; ++y)
         {
             putchar('\n');
         }
 
         Sleep(30ull);
-        
+
+        RECT rec = {};
+        LONG y, x;
+
 #else
+
         size_t y, x;
-#endif // IS_USING_WINDOWS_CONTEXT && !USE_SLOW_FILL
+
+#endif // IS_USING_WINDOWS_CONTEXT
 
         for (y = 0; y < _height; ++y)
         {
@@ -230,24 +211,11 @@ public:
 
                 constexpr int PIXELS_PER_BLOCK = 16;
 
-#if USE_SLOW_FILL
-
-                for (int dy = y * PIXELS_PER_BLOCK; dy < (y + 1) * PIXELS_PER_BLOCK; ++dy)
-                {
-                    for (int dx = x * PIXELS_PER_BLOCK; dx < (x + 1) * PIXELS_PER_BLOCK; ++dx)
-                    {
-                        SetPixelV(dc, dx, dy, value);
-                    }
-                }
-#else
-
                 HBRUSH brush = CreateSolidBrush(value);
                 rec.right  = (rec.left = x * PIXELS_PER_BLOCK) + PIXELS_PER_BLOCK;
                 rec.bottom = (rec.top  = y * PIXELS_PER_BLOCK) + PIXELS_PER_BLOCK;
                 FillRect(dc, &rec, brush);
                 DeleteObject(brush);
-
-#endif // USE_SLOW_FILL
 
 #endif // IS_USING_GRAYSCALE_ASCII / IS_USING_ESCAPE_CODES / IS_USING_WINDOWS_CONTEXT
             }
