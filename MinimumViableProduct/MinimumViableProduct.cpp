@@ -38,6 +38,8 @@ using std::variant;
 using std::exception;
 using byte = unsigned char;
 
+constexpr bool USE_COLORED_TEXT = true;
+
 struct ColoredText
 {
     string text;
@@ -56,20 +58,61 @@ ColoredText Colored(const string& text, _In_range_(0, 0xFFFFFF) int hex)
 
 ostream& operator<<(ostream& stream, const ColoredText& text)
 {
-    return stream << "\x1B[38;2;"
-        << (unsigned int)text.r << ';'
-        << (unsigned int)text.g << ';'
-        << (unsigned int)text.b << 'm'
-        << text.text << "\x1B[0m";
+    if constexpr (USE_COLORED_TEXT)
+    {
+        return stream << "\x1B[38;2;"
+            << (unsigned int)text.r << ';'
+            << (unsigned int)text.g << ';'
+            << (unsigned int)text.b << 'm'
+            << text.text << "\x1B[0m";
+    }
+    else
+    {
+        return stream << text.text;
+    }
 }
 
 constexpr int SKYBLUE = 0x0080FF;
+constexpr int WHITE   = 0xFFFFFF;
 constexpr int RED     = 0xFF0000;
+constexpr int GREEN   = 0x00FF00;
+constexpr int BLUE    = 0x0000FF;
 constexpr int GOLD    = 0xFFD700;
 
-inline ColoredText Skyblue(const string& text) { return Colored(text, SKYBLUE); }
-inline ColoredText Red    (const string& text) { return Colored(text, RED); }
-inline ColoredText Gold   (const string& text) { return Colored(text, GOLD); }
+
+string PromptString(const string& query)
+{
+    cout << query << "\n> ";
+    string input;
+    getline(cin, input);
+    return input;
+}
+
+vector<string>::const_iterator Prompt(const string& query, const vector<string>& options)
+{
+    cout << query;
+    for (const auto& option : options)
+    {
+        string optText = option;
+        cout << "\n: " << Colored(optText, GOLD);
+    }
+    cout << '\n';
+
+    auto it = options.end();
+    while (it == options.end())
+    {
+        cout << "> ";
+        string input;
+        getline(cin, input);
+        it = find(options.begin(), options.end(), input);
+        if (it == options.end() && input == "quit")
+        {
+            return options.end();
+        }
+    }
+
+    return it;
+}
 
 
 using ItemNum_t = unsigned int;
@@ -80,17 +123,19 @@ enum class Item : ItemNum_t
     BASIC_SHIELD,
     BASIC_ARMOR,
     BASIC_POTION,
-    GOLD,
+    GOLD_PIECES,
+    DUST,
 };
 
 constexpr const char* itemNames[]
 {
-    "UNKNOWN",
+    "[UNKNOWN]",
     "Basic Sword",
     "Basic Shield",
     "Basic Armor",
-    "Basic Potion",
+    "Potion",
     "Gold",
+    "Dust",
 };
 
 string ItemEnumToName(Item item)
@@ -104,7 +149,7 @@ Item ItemEnumFromName(const char* name)
 
     for (size_t itemIndex = 1; itemIndex < NUM_ITEMS; ++itemIndex)
     {
-        if (strcmp(name, itemNames[itemIndex]))
+        if (strcmp(name, itemNames[itemIndex]) == 0)
         {
             return (Item)itemIndex;
         }
@@ -134,12 +179,16 @@ struct ItemSlot
 
 ostream& operator<<(ostream& stream, const ItemSlot& slot)
 {
-    return stream << (ItemNum_t)slot.item << ' ' << slot.count;
+    return stream << slot.count << ' ' << ItemEnumToName(slot.item);
 }
 
 istream& operator>>(istream& stream, ItemSlot& slot)
 {
-    return stream >> (ItemNum_t&)slot.item >> slot.count;
+    stream >> slot.count;
+    string name;
+    getline(stream, name);
+    slot.item = ItemEnumFromName(name);
+    return stream; 
 }
 
 
@@ -149,6 +198,18 @@ struct Inventory
 
     Inventory(initializer_list<ItemSlot> items) :
         items(items) {}
+
+    bool Contains(Item checkFor) const
+    {
+        for (const ItemSlot& item : items)
+        {
+            if (item.item == checkFor)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     size_t IndexOf(Item item) const
     {
@@ -162,13 +223,36 @@ struct Inventory
         return items.size();
     }
 
-    const ItemSlot& operator[](Item item)          const { return items[IndexOf(item)]; }
-    const ItemSlot& operator[](const char* name)   const { return (*this)[ItemEnumFromName(name)]; }
-    const ItemSlot& operator[](const string& name) const { return (*this)[name.c_str()]; }
+    void Add(Item item, _In_range_(>,0) int count = 1)
+    {
+        size_t index = IndexOf(item);
+        if (index < items.size())
+        {
+            items[index].count += count;
+        }
+        else
+        {
+            items.push_back({ item, count });
+        }
+    }
 
-    ItemSlot& operator[](Item item)          { return items[IndexOf(item)]; }
-    ItemSlot& operator[](const char* name)   { return (*this)[ItemEnumFromName(name)]; }
-    ItemSlot& operator[](const string& name) { return (*this)[name.c_str()]; }
+    bool Use(Item item, _In_range_(>,0) int count = 1)
+    {
+        size_t index = IndexOf(item);
+        if (index < items.size() && items[index].count <= count)
+        {
+            if (items[index].count == count)
+            {
+                items.erase(items.begin() + index);
+            }
+            else
+            {
+                items[index].count -= count;
+            }
+            return true;
+        }
+        return false;
+    }
 
     vector<ItemSlot> items;
 };
@@ -178,7 +262,7 @@ ostream& operator<<(ostream& stream, const Inventory& inventory)
     stream << inventory.items.size() << '\n';
     for (const ItemSlot& slot : inventory.items)
     {
-        stream << slot << '  ';
+        stream << slot << '\n';
     }
     return stream;
 }
@@ -289,32 +373,32 @@ struct SaveData
 
     void Save(const char* filename) const
     {
-        cout << Skyblue("[Saving...]\n");
+        cout << Colored("[Saving...]", SKYBLUE);
         ofstream ofs(filename, ofstream::trunc);
         if (ofs.is_open())
         {
             ofs << player;
 
             ofs.close();
-            cout << Skyblue("[Save successful]\n");
+            cout << Colored("[Save successful]\n", SKYBLUE);
             return;
         }
-        cout << Red("[Error: Save failed]\n");
+        cout << Colored("[Save failed]\n", RED);
     }
 
     bool Load(const char* filename)
     {
-        cout << Skyblue("[Loading...]\n");
+        cout << Colored("[Loading...]", SKYBLUE);
         ifstream ifs(filename);
         if (ifs.is_open())
         {
             ifs >> player;
 
             ifs.close();
-            cout << Skyblue("[Load successful]\n");
+            cout << Colored("[Load successful]\n", SKYBLUE);
             return true;
         }
-        cout << Red("[Error: Load failed]\n");
+        cout << Colored("[Load failed]\n", RED);
         return false;
     }
 };
@@ -327,34 +411,43 @@ int main()
 
     if (!data.Load(filename)) // New game
     {
+        cout << Colored("STARTING NEW GAME\n", GOLD);
+
         data = SaveData();
 
-        cout << "What is your name?\n";
-        getline(cin, data.player.name);
+        data.player.name = PromptString("What is your name?");
 
         data.Save(filename); // Create save file
     }
 
-    cout << "Your name is " << data.player.name << ".\n\n";
-    cout << "Input \"" << Gold("save") << "\" at any time to save the game " << Colored("without closing", 0xFFFFFF) << ".\n";
-    cout << "Input \"" << Gold("quit") << "\" at any time to save and close the game.\n";
-    cout << "Closing the window without inputting \"" << Gold("quit") << "\" will NOT save your progress.\n";
-    cout << "This game auto-saves occasionally. \"" << Skyblue("[Saving...]") << "\" will be shown when this happens.\n\n";
+    cout
+        << "Your name is " << data.player.name << ".\n"
+        << '\n'
+        << "Input \"" << Colored("save", GOLD) << "\" at any time to save the game " << Colored("without closing", WHITE) << ".\n"
+        << "Input \"" << Colored("quit", GOLD) << "\" at any time to save and close the game.\n"
+        << "Closing the window without inputting \"" << Colored("quit", GOLD) << "\" will NOT save your progress.\n"
+        << "This game auto-saves occasionally. \"" << Colored("[Saving...]", SKYBLUE) << "\" will be shown when this happens.\n"
+        << '\n';
+
+    data.player.inventory.Add(Item::BASIC_SWORD);
 
     while (true)
     {
-        string input;
-        cin >> input;
+        vector<string> options = { "items" };
+        auto it = Prompt("Action", options);
 
-        if (input == "items")
-        {
-            cout << data.player.inventory;
-        }
-        if (input == "quit")
+        if (it == options.end())
         {
             data.Save(filename);
-            break;
+            return 0;
         }
+
+        if (*it == "items")
+        {
+            cout << data.player.inventory << '\n';
+        }
+
+        data.player.inventory.Add(Item::DUST);
     }
 
     return 0;
