@@ -49,6 +49,11 @@ int main()
         {
             cout << data.player.inventory << '\n';
         }
+        else if (*it == "move")
+        {
+            vector<string> moveOptions = { "left", "right", "up", "down" };
+            it = Prompt("Where", moveOptions);
+        }
 
         data.player.inventory.Add(Item::DUST);
     }
