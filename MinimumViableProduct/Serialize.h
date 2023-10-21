@@ -5,11 +5,11 @@
 
 struct SaveData
 {
-    SaveData();
+    SaveData() = default;
     SaveData(Player player); // New game constructor
 
-    void Save(const char* filename) const;
-    bool Load(const char* filename);
+    void Save() const;
+    bool Load();
 
     Player player;
 };

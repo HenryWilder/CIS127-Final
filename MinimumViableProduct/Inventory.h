@@ -30,7 +30,7 @@ inline Item ItemEnumFromName(const string& name) { return ItemEnumFromName(name.
 
 struct ItemSlot
 {
-    ItemSlot();
+    ItemSlot() = default;
     ItemSlot(Item item);
     ItemSlot(Item item, int count);
 
@@ -39,13 +39,12 @@ struct ItemSlot
 };
 
 ostream& operator<<(ostream& stream, const ItemSlot& slot);
-
 istream& operator>>(istream& stream, ItemSlot& slot);
 
 
 struct Inventory
 {
-    Inventory();
+    Inventory() = default;
     Inventory(initializer_list<ItemSlot> items);
 
     bool Contains(Item checkFor) const;

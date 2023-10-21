@@ -20,30 +20,12 @@ Item ItemEnumFromName(const char* name)
 }
 
 
-ItemSlot::ItemSlot() = default;
-
 ItemSlot::ItemSlot(Item item) :
     item(item), count(1) {}
 
 ItemSlot::ItemSlot(Item item, int count) :
     item(item), count(count) {}
 
-ostream& operator<<(ostream& stream, const ItemSlot& slot)
-{
-    return stream << slot.count << ' ' << ItemEnumToName(slot.item);
-}
-
-istream& operator>>(istream& stream, ItemSlot& slot)
-{
-    stream >> slot.count;
-    string name;
-    getline(stream, name);
-    slot.item = ItemEnumFromName(name);
-    return stream; 
-}
-
-
-Inventory::Inventory() = default;
 
 Inventory::Inventory(initializer_list<ItemSlot> items) :
     items(items) {}
@@ -103,9 +85,15 @@ bool Inventory::Use(Item item, _In_range_(>,0) int count)
     return false;
 }
 
+
+ostream& operator<<(ostream& stream, const ItemSlot& slot)
+{
+    return stream << "  " << slot.count << ' ' << ItemEnumToName(slot.item);
+}
+
 ostream& operator<<(ostream& stream, const Inventory& inventory)
 {
-    stream << inventory.items.size() << '\n';
+    stream << inventory.items.size() << " items:\n";
     for (const ItemSlot& slot : inventory.items)
     {
         stream << slot << '\n';
@@ -113,11 +101,23 @@ ostream& operator<<(ostream& stream, const Inventory& inventory)
     return stream;
 }
 
+
+istream& operator>>(istream& stream, ItemSlot& slot)
+{
+    stream >> slot.count;
+    string name;
+    stream.ignore(1, ' ');
+    getline(stream, name);
+    slot.item = ItemEnumFromName(name);
+    return stream; 
+}
+
 istream& operator>>(istream& stream, Inventory& inventory)
 {
     size_t size;
     stream >> size;
     inventory.items.reserve(size);
+    stream.ignore(16, '\n');
     while (inventory.items.size() < inventory.items.capacity())
     {
         ItemSlot slot;

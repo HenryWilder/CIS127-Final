@@ -18,42 +18,34 @@
 
 int main()
 {
-    const char* filename = "save.txt";
-
-    if (!data.Load(filename)) // New game
+    if (!data.Load()) // New game
     {
-        cout << Colored("STARTING NEW GAME\n", GOLD);
+        cout << Colored<GOLD>("STARTING NEW GAME\n");
 
         data = SaveData();
 
         data.player.name = PromptString("What is your name?");
 
-        data.Save(filename); // Create save file
+        data.player.inventory.Add(Item::BASIC_SWORD);
+
+        data.Save(); // Create save file
     }
 
     cout
         << "Your name is " << data.player.name << ".\n"
         << '\n'
-        << "Input \"" << Colored("save", GOLD) << "\" at any time to save the game " << Colored("without closing", WHITE) << ".\n"
-        << "Input \"" << Colored("quit", GOLD) << "\" at any time to save and close the game.\n"
-        << "Closing the window without inputting \"" << Colored("quit", GOLD) << "\" will NOT save your progress.\n"
-        << "This game auto-saves occasionally. \"" << Colored("[Saving...]", SKYBLUE) << "\" will be shown when this happens.\n"
+        << "Input \"" << Colored<GOLD>("save") << "\" at any time to save the game " << Colored<WHITE>("without closing") << ".\n"
+        << "Input \"" << Colored<GOLD>("quit") << "\" at any time to save and close the game.\n"
+        << "Closing the window without inputting \"" << Colored<GOLD>("quit") << "\" will NOT save your progress.\n"
+        << "This game auto-saves occasionally. \"" << Colored<SKYBLUE>("[Saving...]") << "\" will be shown when this happens.\n"
         << '\n';
-
-    data.player.inventory.Add(Item::BASIC_SWORD);
 
     while (true)
     {
-        vector<string> options = { "items" };
+        vector<string> options = { "inv" };
         auto it = Prompt("Action", options);
 
-        if (it == options.end())
-        {
-            data.Save(filename);
-            return 0;
-        }
-
-        if (*it == "items")
+        if (*it == "inv")
         {
             cout << data.player.inventory << '\n';
         }

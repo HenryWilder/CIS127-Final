@@ -11,17 +11,20 @@ void Player::Move(int horizontal, int vertical)
     y += vertical;
 }
 
+using DialogueTree = void(*)();
+
+
 ostream& operator<<(ostream& stream, const Player& character)
 {
-    return stream << character.name << '\n' << character.inventory;
+    return stream << "name: " << character.name << '\n' << character.inventory;
 }
 
 istream& operator>>(istream& stream, Player& character)
 {
+    stream.ignore(16, ' ');
     return getline(stream, character.name) >> character.inventory;
 }
 
-using DialogueTree = void(*)();
 
 ostream& operator<<(ostream& stream, const vector<BaseNPC*>& npcs)
 {
@@ -37,7 +40,6 @@ istream& operator>>(istream& stream, _Inout_ vector<BaseNPC*>& npcs)
 {
     size_t numSavedNPCs;
     stream >> numSavedNPCs;
-
 
     for (size_t i = 0; i < numSavedNPCs; ++i)
     {

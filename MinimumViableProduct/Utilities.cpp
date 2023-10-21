@@ -1,4 +1,5 @@
 #include "Utilities.h"
+#include "Serialize.h" // Allows us to use the SaveData `data`
 
 ColoredText Colored(const string& text, _In_range_(0, 255) byte r, _In_range_(0, 255) byte g, _In_range_(0, 255) byte b)
 {
@@ -29,10 +30,26 @@ ostream& operator<<(ostream& stream, const ColoredText& text)
 
 string PromptString(const string& query)
 {
-    cout << query << "\n> ";
-    string input;
-    getline(cin, input);
-    return input;
+    cout << query << '\n';
+    while (true)
+    {
+        cout << "> ";
+        string input;
+        getline(cin, input);
+        if (input == "save")
+        {
+            data.Save();
+        }
+        else if (input == "quit")
+        {
+            data.Save();
+            exit(0);
+        }
+        else
+        {
+            return input;
+        }
+    }
 }
 
 vector<string>::const_iterator Prompt(const string& query, const vector<string>& options)
@@ -41,7 +58,7 @@ vector<string>::const_iterator Prompt(const string& query, const vector<string>&
     for (const auto& option : options)
     {
         string optText = option;
-        cout << "\n: " << Colored(optText, GOLD);
+        cout << "\n: " << Colored<GOLD>(optText);
     }
     cout << '\n';
 
@@ -51,11 +68,20 @@ vector<string>::const_iterator Prompt(const string& query, const vector<string>&
         cout << "> ";
         string input;
         getline(cin, input);
-        it = find(options.begin(), options.end(), input);
-        if (it == options.end() && input == "quit")
+        if (it == options.end())
         {
-            return options.end();
+            if (input == "save")
+            {
+                data.Save();
+                continue;
+            }
+            if (input == "quit")
+            {
+                data.Save();
+                exit(0);
+            }
         }
+        it = find(options.begin(), options.end(), input);
     }
 
     return it;

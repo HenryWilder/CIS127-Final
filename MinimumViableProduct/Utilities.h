@@ -37,6 +37,18 @@ struct ColoredText
 ColoredText Colored(const string& text, _In_range_(0, 255) byte r, _In_range_(0, 255) byte g, _In_range_(0, 255) byte b);
 ColoredText Colored(const string& text, _In_range_(0, 0xFFFFFF) int hex);
 
+template<int _Hex>
+ColoredText Colored(const string& text)
+    requires(0 <= _Hex && _Hex <= 0xFFFFFF)
+{
+    return {
+        text,
+        (byte)(_Hex >> 020),
+        (byte)(_Hex >> 010),
+        (byte)(_Hex >> 000)
+    };
+}
+
 ostream& operator<<(ostream& stream, const ColoredText& text);
 
 constexpr int SKYBLUE = 0x0080FF;

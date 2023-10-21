@@ -1,14 +1,14 @@
 #include "Serialize.h"
 
-SaveData::SaveData() = default;
-
 SaveData::SaveData(Player player) :
     player(player) {}
 
-void SaveData::Save(const char* filename) const
+const char* filename = "save.txt";
+
+void SaveData::Save() const
 {
     cout << Colored("[Saving...]", SKYBLUE);
-    ofstream ofs(filename, ofstream::trunc);
+    ofstream ofs(filename, ofstream::out | ofstream::trunc);
     if (ofs.is_open())
     {
         ofs << player;
@@ -20,10 +20,10 @@ void SaveData::Save(const char* filename) const
     cout << Colored("[Save failed]\n", RED);
 }
 
-bool SaveData::Load(const char* filename)
+bool SaveData::Load()
 {
     cout << Colored("[Loading...]", SKYBLUE);
-    ifstream ifs(filename);
+    ifstream ifs(filename, ofstream::in);
     if (ifs.is_open())
     {
         ifs >> player;
