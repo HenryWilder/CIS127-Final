@@ -100,3 +100,13 @@ PromptOptionIter Prompt(const string& query, const PromptOptionList& options)
 
     return it;
 }
+
+ostream& operator<<(ostream& stream, IVec2 v)
+{
+    return stream << v.x << ' ' << v.y;
+}
+
+istream& operator>>(istream& stream, IVec2& v)
+{
+    return stream >> v.x >> v.y;
+}

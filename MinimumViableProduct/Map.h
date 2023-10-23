@@ -1,47 +1,30 @@
 #pragma once
 #include "Utilities.h"
-#include "Character.h"
 
-// Base class
-class Entity
+class Player;
+class Entity;
+
+struct Tile
 {
-public:
-    // The name of the category
-    // This is what the user would type in to access the entity
-    virtual string GetCategoryName() const = 0;
-    virtual void DoInteraction(Player* player) = 0;
-
-    inline int GetX() const { return x; }
-    inline int GetY() const { return y; }
-    inline bool IsAtPosition(int x, int y) const { return this->x == x && this->y == y; }
-
-private:
-    int x, y;
+    bool isWall;
+    Entity* entity; // The entity located at the tile
 };
-
-ostream& operator<<(ostream& stream, const Entity& map);
-istream& operator>>(istream& stream, Entity& map);
-
 
 class Map
 {
 public:
     void DoMovement(Player* player);
 
-    bool IsValidTile(int x, int y) const;
+    // @brief If position is in fog of war, a new tile is generated.
+    // @returns true if the tile is floor (empty space), false if the tile is wall.
+    Tile GetTile(IVec2 position);
 
-    // Returns nullptr if there is no entity
-    const Entity* GetEntityAtPosition(int x, int y) const;
-     
+    // Call at the end of the program to release all entities
+    void Free();
+
 private:
-    // Returns nullptr if there is no entity
-    Entity* GetEntityAtPosition(int x, int y);
-
-    // Returns entities.size() if no entity at supplied position
-    size_t EntityIndexFromPosition(int x, int y) const;
-
-    vector<Entity*> entities;
-    vector<bool> tiles;
+    size_t seed;                      // Allows predictable generation after loading the map from a file.
+    unordered_map<IVec2, Tile> tiles; // Procedurally generated as player explores. Tiles in "fog of war" do not exist.
 };
 
 ostream& operator<<(ostream& stream, const Map& map);

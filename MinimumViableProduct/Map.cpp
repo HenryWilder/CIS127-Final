@@ -1,38 +1,39 @@
 #include "Map.h"
+#include "Entity.h"
+#include "Character.h"
 
 void Map::DoMovement(Player* player)
 {
     PromptOptionList options;
 
     // Anonymous structure - easier to use thanks to C++17 structured binding
-    struct { string name; int x, y; }
+    struct { string name; IVec2 offset; }
     const directions[] =
     {
-        { "west",  -1,  0 },
-        { "east",  +1,  0 },
-        { "north",  0, -1 },
-        { "south",  0, +1 },
+        { "west",  { -1,  0 } },
+        { "east",  { +1,  0 } },
+        { "north", {  0, -1 } },
+        { "south", {  0, +1 } },
     };
 
     // Add/remove movement options conditionally
     {
         for (size_t i = 0; i < _countof(directions); ++i)
         {
-            const auto& [directionName, xOffset, yOffset] = directions[i];
+            const auto& [directionName, offset] = directions[i];
 
-            int xPrime = player->x + xOffset;
-            int yPrime = player->y + yOffset;
+            IVec2 posPrime = player->position + offset;
 
-            if (!IsValidTile(xPrime, yPrime))
+            Tile tile = GetTile(posPrime);
+
+            if (tile.isWall)
             {
                 continue;
             }
 
-            const Entity* entity = GetEntityAtPosition(xPrime, yPrime);
-
-            if (entity) // Implied "!= nullptr" because nullptr is 0
+            if (tile.entity) // Implied "!= nullptr" because nullptr is 0
             {
-                string categoryName = entity->GetCategoryName();
+                string categoryName = tile.entity->GetCategoryName();
                 PromptOption opt =
                 {
                     directionName + ' ' + categoryName,
@@ -55,90 +56,77 @@ void Map::DoMovement(Player* player)
     // Handle input
     {
         auto it = Prompt("Where", options);
-        string selectedName = it->input;
+        string selectedName  = it->input;
         size_t selectedIndex = it - options.begin();
 
-        int xPrime, yPrime;
-        for (const auto& [directionName, xOffset, yOffset] : directions)
+        IVec2 posPrime;
+        for (const auto& [directionName, offset] : directions)
         {
             if (selectedName.starts_with(directionName))
             {
-                xPrime = player->x + xOffset;
-                yPrime = player->y + yOffset;
+                posPrime = player->position + offset;
             }
         }
 
         // Explicit movement - never has a space
         if (selectedName.find(' ') == string::npos)
         {
-            player->x = xPrime;
-            player->y = yPrime;
+            player->position = posPrime;
             return;
         }
+
+        Entity* entity = GetTile(posPrime).entity;
+        _ASSERTE(!!entity); // There must be an entity if there is a space in selectedName
 
         // Entity interaction
-        {
-            Entity* entity = entities[EntityIndexFromPosition(xPrime, yPrime)];
-            _ASSERTE(!!entity);
-            entity->DoInteraction(player);
-            return;
-        }
+        entity->DoInteraction(player);
     }
 }
 
-bool Map::IsValidTile(int x, int y) const
+Tile Map::GetTile(IVec2 position)
 {
-    // todo
-    return true;
-}
-
-const Entity* Map::GetEntityAtPosition(int x, int y) const
-{
-    for (Entity* entity : entities)
+    auto it = tiles.find(position);
+    if (it == tiles.end()) // Generate new tile
     {
-        if (entity->IsAtPosition(x, y))
+        // The space will generate the same no matter what route you take to reach it
+        srand(seed ^ position.x ^ position.y);
+        int r = rand();
+
+        constexpr int WALL_BIT = 128;
+        constexpr int NUM_ENTITY_TYPES = 1;
+        static_assert(NUM_ENTITY_TYPES <= WALL_BIT,
+            "Entities greater than WALL_BIT will necessarily only spawn in walls (and therefore won't spawn at all)");
+
+        bool isWall = r & WALL_BIT;
+        Entity* tileEntity;
+
+        if (isWall)
         {
-            return entity;
+            tileEntity = nullptr;
         }
+        else
+        {
+            switch (r % NUM_ENTITY_TYPES)
+            {
+            default: tileEntity = nullptr; break;
+                // todo: cases for each entity type
+            }
+        }
+
+        tiles.insert({ position, { isWall, tileEntity } });
     }
-    return nullptr;
+    return it->second;
 }
 
-Entity* Map::GetEntityAtPosition(int x, int y)
+void Map::Free()
 {
-    for (Entity* entity : entities)
+    for (auto& [_, tile] : tiles)
     {
-        if (entity->IsAtPosition(x, y))
+        if (tile.entity)
         {
-            return entity;
+            delete tile.entity;
         }
     }
-    return nullptr;
-}
-
-size_t Map::EntityIndexFromPosition(int x, int y) const
-{
-    const size_t numEntities = entities.size();
-    for (size_t i = 0; i < numEntities; ++i)
-    {
-        if (entities[i]->IsAtPosition(x, y))
-        {
-            return i;
-        }
-    }
-    return numEntities;
-}
-
-ostream& operator<<(ostream& stream, const Entity& map)
-{
-    // todo
-    return stream;
-}
-
-istream& operator>>(istream& stream, Entity& map)
-{
-    // todo
-    return stream;
 }
 
 ostream& operator<<(ostream& stream, const Map& map)

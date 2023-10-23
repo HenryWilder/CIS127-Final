@@ -132,7 +132,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="IVec2.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Serialize.cpp" />
@@ -140,7 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Inventory.h" />
+    <ClInclude Include="IVec2.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Serialize.h" />
     <ClInclude Include="Utilities.h" />

@@ -9,6 +9,7 @@
 #include <variant>
 #include <optional>
 #include <algorithm>
+#include "IVec2.h"
 using std::find;
 using std::find_if;
 using std::cin;
@@ -85,3 +86,6 @@ using PromptOptionIter = vector<PromptOption>::const_iterator;
 
 // Returns an iterator so that both value and index can be known without redundantly searching the option list
 PromptOptionIter Prompt(const string& query, const PromptOptionList& options);
+
+ostream& operator<<(ostream& stream, IVec2 v);
+istream& operator>>(istream& stream, IVec2& v);
