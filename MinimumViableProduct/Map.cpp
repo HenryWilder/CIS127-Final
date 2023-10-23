@@ -2,20 +2,16 @@
 
 void Map::DoMovement(Player* player)
 {
-    vector<string> options;
-
-    // Will always have same number of elements as options
-    // Tiles without entities will have nullptr
-    vector<const Entity*> entityObjects;
+    PromptOptionList options;
 
     // Anonymous structure - easier to use thanks to C++17 structured binding
-    struct { const char* name; int x, y; }
-    constexpr directions[] =
+    struct { string name; int x, y; }
+    const directions[] =
     {
-        { "left",  -1,  0 },
-        { "right", +1,  0 },
-        { "up",     0, -1 },
-        { "down",   0, +1 },
+        { "west",  -1,  0 },
+        { "east",  +1,  0 },
+        { "north",  0, -1 },
+        { "south",  0, +1 },
     };
 
     // Add/remove movement options conditionally
@@ -33,12 +29,25 @@ void Map::DoMovement(Player* player)
             }
 
             const Entity* entity = GetEntityAtPosition(xPrime, yPrime);
-            options.push_back(directionName);
-            entityObjects.push_back(entity);
 
             if (entity) // Implied "!= nullptr" because nullptr is 0
             {
-                options.back() += ' ' + entity->GetCategoryName();
+                string categoryName = entity->GetCategoryName();
+                PromptOption opt =
+                {
+                    directionName + ' ' + categoryName,
+                    "Interact with the " + categoryName + " " + directionName + " of you"
+                };
+                options.push_back(opt);
+            }
+            else
+            {
+                PromptOption opt =
+                {
+                    directionName,
+                    string("Move one space to the ") + directionName
+                };
+                options.push_back(opt);
             }
         }
     }
@@ -46,23 +55,33 @@ void Map::DoMovement(Player* player)
     // Handle input
     {
         auto it = Prompt("Where", options);
-        string selectedName = *it;
+        string selectedName = it->input;
         size_t selectedIndex = it - options.begin();
 
-        // Explicit movement
+        int xPrime, yPrime;
         for (const auto& [directionName, xOffset, yOffset] : directions)
         {
-            if (selectedName == directionName)
+            if (selectedName.starts_with(directionName))
             {
-                player->Move(xOffset, yOffset);
-                return;
+                xPrime = player->x + xOffset;
+                yPrime = player->y + yOffset;
             }
+        }
+
+        // Explicit movement - never has a space
+        if (selectedName.find(' ') == string::npos)
+        {
+            player->x = xPrime;
+            player->y = yPrime;
+            return;
         }
 
         // Entity interaction
         {
-            const Entity* entity = entityObjects[selectedIndex];
-            // todo
+            Entity* entity = entities[EntityIndexFromPosition(xPrime, yPrime)];
+            _ASSERTE(!!entity);
+            entity->DoInteraction(player);
+            return;
         }
     }
 }
@@ -75,8 +94,39 @@ bool Map::IsValidTile(int x, int y) const
 
 const Entity* Map::GetEntityAtPosition(int x, int y) const
 {
-    // todo
+    for (Entity* entity : entities)
+    {
+        if (entity->IsAtPosition(x, y))
+        {
+            return entity;
+        }
+    }
     return nullptr;
+}
+
+Entity* Map::GetEntityAtPosition(int x, int y)
+{
+    for (Entity* entity : entities)
+    {
+        if (entity->IsAtPosition(x, y))
+        {
+            return entity;
+        }
+    }
+    return nullptr;
+}
+
+size_t Map::EntityIndexFromPosition(int x, int y) const
+{
+    const size_t numEntities = entities.size();
+    for (size_t i = 0; i < numEntities; ++i)
+    {
+        if (entities[i]->IsAtPosition(x, y))
+        {
+            return i;
+        }
+    }
+    return numEntities;
 }
 
 ostream& operator<<(ostream& stream, const Entity& map)

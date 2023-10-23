@@ -25,7 +25,7 @@ int main()
 
         data = SaveData();
 
-        data.player.name = PromptString("What is your name?");
+        data.player.SetName(PromptString("What is your name?"));
 
         data.player.inventory.Add(Item::BASIC_SWORD);
 
@@ -33,7 +33,7 @@ int main()
     }
 
     cout
-        << "Your name is " << data.player.name << ".\n"
+        << "Your name is " << data.player.GetName() << ".\n"
         << '\n'
         << "Input \"" << Colored<GOLD>("save") << "\" at any time to save the game " << Colored<WHITE>("without closing") << ".\n"
         << "Input \"" << Colored<GOLD>("quit") << "\" at any time to save and close the game.\n"
@@ -43,12 +43,12 @@ int main()
 
     while (true)
     {
-        vector<string> options =
+        PromptOptionList options =
         {
-            "inv",
-            "move",
+            { "inv",  "Open inventory" },
+            { "move", "Move or interact with things in the world" },
         };
-        string action = *Prompt("Action", options);
+        string action = Prompt("Action", options)->input;
 
         if (action == "inv")
         {

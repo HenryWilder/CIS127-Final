@@ -15,10 +15,10 @@ class Player :
     public Character
 {
 public:
-    const string& GetName() const override;
+    inline const string& GetName() const override { return name; }
+    inline void SetName(const string& name) { this->name = name; }
 
-    void Move(int horizontal, int vertical);
-
+private:
     string name;
 };
 
@@ -34,5 +34,10 @@ public:
     virtual void Interact(Player& player) = 0;
 };
 
+ostream& operator<<(ostream& stream, const BaseNPC* npc);
+istream& operator>>(istream& stream, BaseNPC* npc);
+
 ostream& operator<<(ostream& stream, const vector<BaseNPC*>& npcs);
-istream& operator>>(istream& stream, _Inout_ vector<BaseNPC*>& npcs);
+// Expects npcs to already exist; only modifies them
+// todo: Consider using unordered_map instead of vector
+istream& operator>>(istream& stream, vector<BaseNPC*>& npcs);

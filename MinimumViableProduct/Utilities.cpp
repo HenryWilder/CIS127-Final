@@ -36,7 +36,11 @@ string PromptString(const string& query)
         cout << "> ";
         string input;
         getline(cin, input);
-        if (input == "save")
+        if (input == "") // presses enter without typing anything
+        {
+            continue;
+        }
+        else if (input == "save")
         {
             data.Save();
         }
@@ -52,17 +56,27 @@ string PromptString(const string& query)
     }
 }
 
-vector<string>::const_iterator Prompt(const string& query, const vector<string>& options)
+PromptOptionIter Prompt(const string& query, const PromptOptionList& options)
 {
-    cout << query;
-    for (const auto& option : options)
+    size_t maxPromptOptionWidth = 0;
+    for (const PromptOption& option : options)
     {
-        string optText = option;
-        cout << "\n: " << Colored<GOLD>(optText);
+        maxPromptOptionWidth = std::max(maxPromptOptionWidth, option.input.size());
     }
-    cout << '\n';
 
-    auto it = options.end();
+    cout << query << '\n';
+    for (const PromptOption& option : options)
+    {
+        const auto& [input, description] = option;
+        cout << "] " << Colored<GOLD>(input) << string(maxPromptOptionWidth - input.size(), ' ');
+        if (description.has_value())
+        {
+            cout << " - " << description.value();
+        }
+        cout << '\n';
+    }
+
+    PromptOptionIter it = options.end();
     while (it == options.end())
     {
         cout << "> ";
@@ -81,45 +95,7 @@ vector<string>::const_iterator Prompt(const string& query, const vector<string>&
                 exit(0);
             }
         }
-        it = find(options.begin(), options.end(), input);
-    }
-
-    return it;
-}
-
-const string* Prompt(const string& query, const string* options, size_t numOptions)
-{
-    cout << query;
-    for (size_t i = 0; i < numOptions; ++i)
-    {
-        string optText = options[i];
-        cout << "\n: " << Colored<GOLD>(optText);
-    }
-    cout << '\n';
-
-    const string* begin = options;
-    const string* end = options + numOptions;
-
-    const string* it = end;
-    while (it == end)
-    {
-        cout << "> ";
-        string input;
-        getline(cin, input);
-        if (it == end)
-        {
-            if (input == "save")
-            {
-                data.Save();
-                continue;
-            }
-            if (input == "quit")
-            {
-                data.Save();
-                exit(0);
-            }
-        }
-        it = find(begin, end, input);
+        it = find_if(options.begin(), options.end(), [input](PromptOption option) { return input == option.input; });
     }
 
     return it;

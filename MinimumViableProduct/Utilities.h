@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <concepts>
 #include <variant>
+#include <optional>
 #include <algorithm>
 using std::find;
 using std::find_if;
@@ -26,6 +27,8 @@ using std::same_as;
 using std::initializer_list;
 using std::pair;
 using std::variant;
+using std::optional;
+using std::nullopt;
 using std::exception;
 using byte = unsigned char;
 
@@ -64,14 +67,21 @@ constexpr int GOLD    = 0xFFD700;
 
 string PromptString(const string& query);
 
-// Returns an iterator so that both value and index can be known without redundantly searching the option list
-vector<string>::const_iterator Prompt(const string& query, const vector<string>& options);
-
-// Returns a pointer which can be compared to the array to get index
-const string* Prompt(const string& query, const string* options, size_t numOptions);
-
-template<size_t _NumElements>
-const string* Prompt(const string& query, const string(&options)[_NumElements])
+struct PromptOption
 {
-    return Prompt(query, options, _NumElements);
-}
+    PromptOption() = default;
+
+    PromptOption(string input) :
+        input(input), description(nullopt) {}
+
+    PromptOption(string input, string description) :
+        input(input), description(description) {}
+
+    string input;
+    optional<string> description;
+};
+using PromptOptionList = vector<PromptOption>;
+using PromptOptionIter = vector<PromptOption>::const_iterator;
+
+// Returns an iterator so that both value and index can be known without redundantly searching the option list
+PromptOptionIter Prompt(const string& query, const PromptOptionList& options);
