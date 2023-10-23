@@ -14,6 +14,7 @@
 #include "Utilities.h"
 #include "Inventory.h"
 #include "Character.h"
+#include "Map.h"
 #include "Serialize.h"
 
 int main()
@@ -42,20 +43,21 @@ int main()
 
     while (true)
     {
-        vector<string> options = { "inv" };
-        auto it = Prompt("Action", options);
-
-        if (*it == "inv")
+        vector<string> options =
         {
-            cout << data.player.inventory << '\n';
-        }
-        else if (*it == "move")
-        {
-            vector<string> moveOptions = { "left", "right", "up", "down" };
-            it = Prompt("Where", moveOptions);
-        }
+            "inv",
+            "move",
+        };
+        string action = *Prompt("Action", options);
 
-        data.player.inventory.Add(Item::DUST);
+        if (action == "inv")
+        {
+            data.player.inventory.DoInventory();
+        }
+        else if (action == "move")
+        {
+            data.map.DoMovement(&data.player);
+        }
     }
 
     return 0;

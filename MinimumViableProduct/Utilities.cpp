@@ -86,3 +86,41 @@ vector<string>::const_iterator Prompt(const string& query, const vector<string>&
 
     return it;
 }
+
+const string* Prompt(const string& query, const string* options, size_t numOptions)
+{
+    cout << query;
+    for (size_t i = 0; i < numOptions; ++i)
+    {
+        string optText = options[i];
+        cout << "\n: " << Colored<GOLD>(optText);
+    }
+    cout << '\n';
+
+    const string* begin = options;
+    const string* end = options + numOptions;
+
+    const string* it = end;
+    while (it == end)
+    {
+        cout << "> ";
+        string input;
+        getline(cin, input);
+        if (it == end)
+        {
+            if (input == "save")
+            {
+                data.Save();
+                continue;
+            }
+            if (input == "quit")
+            {
+                data.Save();
+                exit(0);
+            }
+        }
+        it = find(begin, end, input);
+    }
+
+    return it;
+}

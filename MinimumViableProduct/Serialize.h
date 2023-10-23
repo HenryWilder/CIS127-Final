@@ -2,6 +2,7 @@
 #include "Utilities.h"
 #include "Inventory.h"
 #include "Character.h"
+#include "Map.h"
 
 struct SaveData
 {
@@ -12,6 +13,7 @@ struct SaveData
     bool Load();
 
     Player player;
+    Map map;
 };
 
 extern SaveData data;

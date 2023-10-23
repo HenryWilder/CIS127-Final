@@ -12,6 +12,7 @@ void SaveData::Save() const
     if (ofs.is_open())
     {
         ofs << player;
+        ofs << map;
 
         ofs.close();
         cout << Colored("[Save successful]\n", SKYBLUE);
@@ -27,6 +28,7 @@ bool SaveData::Load()
     if (ifs.is_open())
     {
         ifs >> player;
+        ifs >> map;
 
         ifs.close();
         cout << Colored("[Load successful]\n", SKYBLUE);

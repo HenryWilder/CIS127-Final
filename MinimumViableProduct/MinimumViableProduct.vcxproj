@@ -134,12 +134,14 @@
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Serialize.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
     <ClInclude Include="Inventory.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Serialize.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>

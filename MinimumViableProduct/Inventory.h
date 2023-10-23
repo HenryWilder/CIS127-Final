@@ -53,6 +53,8 @@ struct Inventory
     void Add(Item item, _In_range_(> , 0) int count = 1);
     bool Use(Item item, _In_range_(> , 0) int count = 1);
 
+    void DoInventory();
+
     vector<ItemSlot> items;
 };
 

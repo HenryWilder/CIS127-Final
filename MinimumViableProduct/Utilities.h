@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <tuple>
 #include <unordered_map>
 #include <concepts>
 #include <variant>
@@ -12,6 +13,8 @@ using std::find_if;
 using std::cin;
 using std::cout;
 using std::getline;
+using std::tuple;
+using std::get;
 using std::string;
 using std::vector;
 using std::unordered_map;
@@ -60,4 +63,15 @@ constexpr int GOLD    = 0xFFD700;
 
 
 string PromptString(const string& query);
+
+// Returns an iterator so that both value and index can be known without redundantly searching the option list
 vector<string>::const_iterator Prompt(const string& query, const vector<string>& options);
+
+// Returns a pointer which can be compared to the array to get index
+const string* Prompt(const string& query, const string* options, size_t numOptions);
+
+template<size_t _NumElements>
+const string* Prompt(const string& query, const string(&options)[_NumElements])
+{
+    return Prompt(query, options, _NumElements);
+}

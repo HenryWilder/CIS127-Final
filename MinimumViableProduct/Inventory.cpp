@@ -85,6 +85,11 @@ bool Inventory::Use(Item item, _In_range_(>,0) int count)
     return false;
 }
 
+void Inventory::DoInventory()
+{
+    cout << *this << '\n';
+}
+
 
 ostream& operator<<(ostream& stream, const ItemSlot& slot)
 {
