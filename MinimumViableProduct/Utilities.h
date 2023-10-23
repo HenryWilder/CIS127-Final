@@ -9,6 +9,7 @@
 #include <variant>
 #include <optional>
 #include <algorithm>
+#include "stl_overloads.h"
 #include "IVec2.h"
 using std::find;
 using std::find_if;
@@ -32,6 +33,7 @@ using std::optional;
 using std::nullopt;
 using std::exception;
 using byte = unsigned char;
+using cstring_t = const char*;
 
 constexpr bool USE_COLORED_TEXT = true;
 
@@ -72,10 +74,10 @@ struct PromptOption
 {
     PromptOption() = default;
 
-    PromptOption(string input) :
+    constexpr PromptOption(string input) :
         input(input), description(nullopt) {}
 
-    PromptOption(string input, string description) :
+    constexpr PromptOption(string input, string description) :
         input(input), description(description) {}
 
     string input;

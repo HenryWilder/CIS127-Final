@@ -28,7 +28,7 @@ public:
     {
         return position;
     }
-    inline IVec2 Move(IVec2 offset) 
+    inline void Move(IVec2 offset)
     {
         position = position + offset;
     }

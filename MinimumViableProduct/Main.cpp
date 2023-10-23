@@ -56,7 +56,7 @@ int main()
         }
         else if (action == "move")
         {
-            data.map.DoMovement(&data.player);
+            data.map.DoMovement(data.player);
         }
     }
 

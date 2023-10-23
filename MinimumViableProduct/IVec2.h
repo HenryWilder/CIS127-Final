@@ -19,3 +19,19 @@ struct IVec2
 
     int x, y;
 };
+
+// This is how we allow position-based unordered_map
+
+#include <xhash>
+namespace std
+{
+    template<>
+    struct hash<IVec2>
+    {
+        size_t operator()(const IVec2 v) const noexcept
+        {
+            size_t hashResult = ((size_t)v.y << (8ull * sizeof(int))) | (size_t)v.x;
+            return hashResult;
+        }
+    };
+}

@@ -1,24 +1,5 @@
 #include "Inventory.h"
 
-string ItemEnumToName(Item item)
-{
-    return itemNames[(size_t)item];
-}
-
-Item ItemEnumFromName(const char* name)
-{
-    constexpr size_t NUM_ITEMS = _countof(itemNames);
-
-    for (size_t itemIndex = 1; itemIndex < NUM_ITEMS; ++itemIndex)
-    {
-        if (strcmp(name, itemNames[itemIndex]) == 0)
-        {
-            return (Item)itemIndex;
-        }
-    }
-    return Item::UNKNOWN;
-}
-
 
 ItemSlot::ItemSlot(Item item) :
     item(item), count(1) {}
@@ -30,36 +11,19 @@ ItemSlot::ItemSlot(Item item, int count) :
 Inventory::Inventory(initializer_list<ItemSlot> items) :
     items(items) {}
 
-bool Inventory::Contains(Item checkFor) const
+_Ret_maybenull_ ItemSlot* Inventory::GetSlot(Item item)
 {
-    for (const ItemSlot& item : items)
-    {
-        if (item.item == checkFor)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-size_t Inventory::IndexOf(Item item) const
-{
-    for (size_t i = 0; i < items.size(); ++i)
-    {
-        if (items[i].item == item)
-        {
-            return i;
-        }
-    }
-    return items.size();
+    for (ItemSlot& slot : items)
+        if (slot.item == item) return &slot;
+    return nullptr;
 }
 
 void Inventory::Add(Item item, _In_range_(>,0) int count)
 {
-    size_t index = IndexOf(item);
-    if (index < items.size())
+    ItemSlot* slot = GetSlot(item);
+    if (slot)
     {
-        items[index].count += count;
+        slot->count += count;
     }
     else
     {
@@ -67,19 +31,12 @@ void Inventory::Add(Item item, _In_range_(>,0) int count)
     }
 }
 
-bool Inventory::Use(Item item, _In_range_(>,0) int count)
+bool Inventory::TryRemove(Item item, _In_range_(>,0) int count)
 {
-    size_t index = IndexOf(item);
-    if (index < items.size() && items[index].count <= count)
+    ItemSlot* slot = GetSlot(item);
+    if (slot && slot->count <= count)
     {
-        if (items[index].count == count)
-        {
-            items.erase(items.begin() + index);
-        }
-        else
-        {
-            items[index].count -= count;
-        }
+        slot->count -= count;
         return true;
     }
     return false;
@@ -93,16 +50,38 @@ void Inventory::DoInventory()
 
 ostream& operator<<(ostream& stream, const ItemSlot& slot)
 {
-    return stream << "  " << slot.count << ' ' << ItemEnumToName(slot.item);
+    return stream << "  " << slot.count << " " << GetItemInfo(slot.item).shortName;
 }
+
+bool IsEmptySlot   (const ItemSlot& slot) { return slot.count == 0; }
+bool IsNonEmptySlot(const ItemSlot& slot) { return slot.count != 0; }
 
 ostream& operator<<(ostream& stream, const Inventory& inventory)
 {
+    size_t numNotZero = count_if(inventory.items, IsNonEmptySlot);
+
+    stream << numNotZero << " items:\n";
+    for (const ItemSlot& slot : inventory.items)
+    {
+        if (!IsEmptySlot(slot))
+        {
+            stream << slot << '\n';
+        }
+    }
+
+    return stream;
+}
+
+ostream& operator<<(ostream& stream, Inventory& inventory)
+{
+    erase_if(inventory.items, IsEmptySlot);
+
     stream << inventory.items.size() << " items:\n";
     for (const ItemSlot& slot : inventory.items)
     {
         stream << slot << '\n';
     }
+
     return stream;
 }
 
@@ -113,7 +92,7 @@ istream& operator>>(istream& stream, ItemSlot& slot)
     string name;
     stream.ignore(1, ' ');
     getline(stream, name);
-    slot.item = ItemEnumFromName(name);
+    slot.item = GetItemInfo(name).id;
     return stream; 
 }
 

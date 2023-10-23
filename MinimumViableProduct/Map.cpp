@@ -2,7 +2,7 @@
 #include "Entity.h"
 #include "Character.h"
 
-void Map::DoMovement(Player* player)
+void Map::DoMovement(Player& player)
 {
     PromptOptionList options;
 
@@ -22,7 +22,7 @@ void Map::DoMovement(Player* player)
         {
             const auto& [directionName, offset] = directions[i];
 
-            IVec2 posPrime = player->position + offset;
+            IVec2 posPrime = player.GetPosition() + offset;
 
             Tile tile = GetTile(posPrime);
 
@@ -59,23 +59,23 @@ void Map::DoMovement(Player* player)
         string selectedName  = it->input;
         size_t selectedIndex = it - options.begin();
 
-        IVec2 posPrime;
-        for (const auto& [directionName, offset] : directions)
+        IVec2 offset;
+        for (const auto& [directionName, directionOffset] : directions)
         {
             if (selectedName.starts_with(directionName))
             {
-                posPrime = player->position + offset;
+                offset = directionOffset;
             }
         }
 
         // Explicit movement - never has a space
         if (selectedName.find(' ') == string::npos)
         {
-            player->position = posPrime;
+            player.Move(offset);
             return;
         }
 
-        Entity* entity = GetTile(posPrime).entity;
+        Entity* entity = GetTile(player.GetPosition() + offset).entity;
         _ASSERTE(!!entity); // There must be an entity if there is a space in selectedName
 
         // Entity interaction
@@ -89,7 +89,7 @@ Tile Map::GetTile(IVec2 position)
     if (it == tiles.end()) // Generate new tile
     {
         // The space will generate the same no matter what route you take to reach it
-        srand(seed ^ position.x ^ position.y);
+        srand(seed ^ (unsigned int)position.x ^ (unsigned int)position.y);
         int r = rand();
 
         constexpr int WALL_BIT = 128;
@@ -109,6 +109,7 @@ Tile Map::GetTile(IVec2 position)
             switch (r % NUM_ENTITY_TYPES)
             {
             default: tileEntity = nullptr; break;
+            case 1:  tileEntity = new BakerNPC(); break;
                 // todo: cases for each entity type
             }
         }
@@ -116,17 +117,6 @@ Tile Map::GetTile(IVec2 position)
         tiles.insert({ position, { isWall, tileEntity } });
     }
     return it->second;
-}
-
-void Map::Free()
-{
-    for (auto& [_, tile] : tiles)
-    {
-        if (tile.entity)
-        {
-            delete tile.entity;
-        }
-    }
 }
 
 ostream& operator<<(ostream& stream, const Map& map)

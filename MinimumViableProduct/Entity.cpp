@@ -12,12 +12,12 @@ ostream& operator<<(ostream& stream, const Entity& entity)
     return stream;
 }
 
-void BaseNPC::DoTrade(Player* player)
+void BaseNPC::DoTrade(Player& player)
 {
     // todo
 }
 
-void BakerNPC::DoInteraction(Player* player)
+void BakerNPC::DoInteraction(Player& player)
 {
     // todo
 }

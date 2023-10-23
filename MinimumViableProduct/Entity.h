@@ -12,7 +12,7 @@ public:
     virtual string GetCategoryName() const = 0;
 
     // What happens when the player chooses to interact with the entity?
-    virtual void DoInteraction(Player* player) = 0;
+    virtual void DoInteraction(Player& player) = 0;
 
     virtual void ToStream  (ostream& stream) const = 0;
     virtual void FromStream(istream& stream) = 0;
@@ -30,8 +30,8 @@ public:
     virtual string GetCategoryName() const override = 0;
     virtual string GetName() const override = 0;
 
-    void DoTrade(Player* player);
-    virtual void DoInteraction(Player* player) override = 0;
+    void DoTrade(Player& player);
+    virtual void DoInteraction(Player& player) override = 0;
 
     inline virtual void ToStream(ostream& stream) const override
     {
@@ -57,5 +57,5 @@ public:
         return "baker";
     }
 
-    void DoInteraction(Player* player) override;
+    void DoInteraction(Player& player) override;
 };
