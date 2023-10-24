@@ -24,16 +24,15 @@ int main()
         cout << Colored<GOLD>("STARTING NEW GAME\n");
 
         data = SaveData();
-
-        data.player.SetName(PromptString("What is your name?"));
-
-        data.player.inventory.Add(Item::BASIC_SWORD);
+        data.player = Player(PromptString("What is your name?"), IVec2(0, 0));
+        data.map = Map(PromptString("Map seed"));
 
         data.Save(); // Create save file
     }
 
     cout
-        << "Your name is " << data.player.GetName() << ".\n"
+        << "Your name is " << data.player.GetDisplayName() << ".\n"
+        << "Map seed: " << data.map.GetSeed() << "\n"
         << '\n'
         << "Input \"" << Colored<GOLD>("save") << "\" at any time to save the game " << Colored<WHITE>("without closing") << ".\n"
         << "Input \"" << Colored<GOLD>("quit") << "\" at any time to save and close the game.\n"

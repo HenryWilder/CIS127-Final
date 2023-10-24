@@ -27,7 +27,7 @@ void Inventory::Add(Item item, _In_range_(>,0) int count)
     }
     else
     {
-        items.push_back({ item, count });
+        items.emplace_back(item, count);
     }
 }
 
@@ -63,7 +63,7 @@ ostream& operator<<(ostream& stream, const Inventory& inventory)
     stream << numNotZero << " items:\n";
     for (const ItemSlot& slot : inventory.items)
     {
-        if (!IsEmptySlot(slot))
+        if (IsNonEmptySlot(slot))
         {
             stream << slot << '\n';
         }

@@ -9,6 +9,7 @@
 #include <variant>
 #include <optional>
 #include <algorithm>
+#include <functional>
 #include "stl_overloads.h"
 #include "IVec2.h"
 using std::find;
@@ -19,6 +20,9 @@ using std::getline;
 using std::tuple;
 using std::get;
 using std::string;
+using std::wstring;
+using std::to_wstring;
+using std::basic_string;
 using std::vector;
 using std::unordered_map;
 using std::ifstream;
@@ -30,6 +34,7 @@ using std::initializer_list;
 using std::pair;
 using std::variant;
 using std::optional;
+using std::hash;
 using std::nullopt;
 using std::exception;
 using byte = unsigned char;
@@ -91,3 +96,27 @@ PromptOptionIter Prompt(const string& query, const PromptOptionList& options);
 
 ostream& operator<<(ostream& stream, IVec2 v);
 istream& operator>>(istream& stream, IVec2& v);
+
+template<class _Ty>
+concept wstringable_convertable = requires(_Ty value)
+{
+    { to_wstring(value) } -> same_as<wstring>;
+};
+
+template<wstringable_convertable _Ty>
+wstring operator+(const wstring a, _Ty b)
+{
+    return a + to_wstring(b);
+}
+
+inline wstring operator+(const wstring a, const string b)
+{
+    return a + wstring(b.begin(), b.end());
+}
+
+inline wstring operator+(const wstring a, const char* b)
+{
+    return a + string(b);
+}
+
+#define assert(cond, msg) _ASSERT_EXPR((cond), (std::wstring(L"") + msg).c_str())

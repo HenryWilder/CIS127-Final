@@ -20,9 +20,9 @@ struct IVec2
     int x, y;
 };
 
-// This is how we allow position-based unordered_map
-
 #include <xhash>
+
+// This is how we allow position-based unordered_map
 namespace std
 {
     template<>

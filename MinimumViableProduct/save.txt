@@ -1,4 +1,3 @@
-name: Henry
-2 items:
-  1 Basic Sword
-  9 Dust
+Henry
+0 0
+0 items:

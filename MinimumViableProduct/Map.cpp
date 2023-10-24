@@ -2,56 +2,47 @@
 #include "Entity.h"
 #include "Character.h"
 
+void Map::_GetMovementOptionsFromPosition(PromptOptionList& options, IVec2 position)
+{
+    for (size_t i = 0; i < _countof(directions); ++i)
+    {
+        const auto& [directionName, offset] = directions[i];
+
+        IVec2 posPrime = position + offset;
+
+        Tile tile = GetTile(posPrime);
+
+        if (tile.isWall)
+        {
+            continue;
+        }
+
+        if (tile.entity) // Implied "!= nullptr" because nullptr is 0
+        {
+            string categoryName = tile.entity->GetTypeName();
+            PromptOption opt =
+            {
+                directionName + ' ' + categoryName,
+                "Interact with the " + categoryName + " " + directionName + " of you"
+            };
+            options.push_back(opt);
+        }
+        else
+        {
+            PromptOption opt =
+            {
+                directionName,
+                string("Move one space to the ") + directionName
+            };
+            options.push_back(opt);
+        }
+    }
+}
+
 void Map::DoMovement(Player& player)
 {
     PromptOptionList options;
-
-    // Anonymous structure - easier to use thanks to C++17 structured binding
-    struct { string name; IVec2 offset; }
-    const directions[] =
-    {
-        { "west",  { -1,  0 } },
-        { "east",  { +1,  0 } },
-        { "north", {  0, -1 } },
-        { "south", {  0, +1 } },
-    };
-
-    // Add/remove movement options conditionally
-    {
-        for (size_t i = 0; i < _countof(directions); ++i)
-        {
-            const auto& [directionName, offset] = directions[i];
-
-            IVec2 posPrime = player.GetPosition() + offset;
-
-            Tile tile = GetTile(posPrime);
-
-            if (tile.isWall)
-            {
-                continue;
-            }
-
-            if (tile.entity) // Implied "!= nullptr" because nullptr is 0
-            {
-                string categoryName = tile.entity->GetCategoryName();
-                PromptOption opt =
-                {
-                    directionName + ' ' + categoryName,
-                    "Interact with the " + categoryName + " " + directionName + " of you"
-                };
-                options.push_back(opt);
-            }
-            else
-            {
-                PromptOption opt =
-                {
-                    directionName,
-                    string("Move one space to the ") + directionName
-                };
-                options.push_back(opt);
-            }
-        }
-    }
+    _GetMovementOptionsFromPosition(options, player.GetPosition());
 
     // Handle input
     {
@@ -76,7 +67,7 @@ void Map::DoMovement(Player& player)
         }
 
         Entity* entity = GetTile(player.GetPosition() + offset).entity;
-        _ASSERTE(!!entity); // There must be an entity if there is a space in selectedName
+        assert(!!entity, "There must be an entity if there is a space in " + selectedName);
 
         // Entity interaction
         entity->DoInteraction(player);
@@ -85,38 +76,26 @@ void Map::DoMovement(Player& player)
 
 Tile Map::GetTile(IVec2 position)
 {
-    auto it = tiles.find(position);
-    if (it == tiles.end()) // Generate new tile
+    if (auto it = tiles.find(position); it != tiles.end())
     {
+        return it->second;
+    }
+    else // Generate new tile
+    {
+        constexpr int WALL_BIT = 0b10000000;
+        constexpr int NUM_ENTITY_TYPES = (int)EntityType::_NUM;
+        static_assert(NUM_ENTITY_TYPES <= WALL_BIT,
+            "Entities greater than WALL_BIT will necessarily only spawn in walls and therefore won't spawn at all.");
+
         // The space will generate the same no matter what route you take to reach it
         srand(seed ^ (unsigned int)position.x ^ (unsigned int)position.y);
-        int r = rand();
-
-        constexpr int WALL_BIT = 128;
-        constexpr int NUM_ENTITY_TYPES = 1;
-        static_assert(NUM_ENTITY_TYPES <= WALL_BIT,
-            "Entities greater than WALL_BIT will necessarily only spawn in walls (and therefore won't spawn at all)");
+        int r = rand() & 0xFF;
 
         bool isWall = r & WALL_BIT;
-        Entity* tileEntity;
-
-        if (isWall)
-        {
-            tileEntity = nullptr;
-        }
-        else
-        {
-            switch (r % NUM_ENTITY_TYPES)
-            {
-            default: tileEntity = nullptr; break;
-            case 1:  tileEntity = new BakerNPC(); break;
-                // todo: cases for each entity type
-            }
-        }
-
-        tiles.insert({ position, { isWall, tileEntity } });
+        Entity* tileEntity = isWall ? nullptr : NewEntityOfType((EntityType)(r % NUM_ENTITY_TYPES));
+        
+        return tiles.emplace(position, Tile(isWall, tileEntity)).first->second;
     }
-    return it->second;
 }
 
 ostream& operator<<(ostream& stream, const Map& map)
