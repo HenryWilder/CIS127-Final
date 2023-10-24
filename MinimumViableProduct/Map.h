@@ -20,6 +20,9 @@ struct Tile
     Entity* entity; // The entity located at the tile
 };
 
+ostream& operator<<(ostream& stream, const Tile& tile);
+istream& operator>>(istream& stream,       Tile& tile);
+
 class Map
 {
     void _GetMovementOptionsFromPosition(PromptOptionList& options, IVec2 position);
@@ -39,6 +42,10 @@ public:
     Tile GetTile(IVec2 position);
 
     inline unsigned int GetSeed() const { return seed; }
+
+    // Simplifies loading saving/loading
+    friend ostream& operator<<(ostream&, const Map&);
+    friend istream& operator>>(istream&, Map&);
 
 private:
     unsigned int seed;                // Allows predictable generation after loading the map from a file.

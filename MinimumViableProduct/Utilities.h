@@ -10,8 +10,10 @@
 #include <optional>
 #include <algorithm>
 #include <functional>
+#include <format>
 #include "stl_overloads.h"
 #include "IVec2.h"
+using std::format;
 using std::find;
 using std::find_if;
 using std::cin;
@@ -39,6 +41,7 @@ using std::nullopt;
 using std::exception;
 using byte = unsigned char;
 using cstring_t = const char*;
+using template_cstring_t = const char[];
 
 constexpr bool USE_COLORED_TEXT = true;
 

@@ -98,14 +98,38 @@ Tile Map::GetTile(IVec2 position)
     }
 }
 
+ostream& operator<<(ostream& stream, const Tile& tile)
+{
+    return stream << (tile.isWall ? "wall" : "free") << ' ' << tile.entity;
+}
+
+istream& operator>>(istream& stream, Tile& tile)
+{
+    string isWallStr;
+    stream >> isWallStr >> tile.entity;
+    tile.isWall = isWallStr == "wall";
+    assert(isWallStr == "wall" || isWallStr == "free", "Expected \"wall\" or \"free\"; got \"" + isWallStr + "\".");
+    return stream;
+}
+
 ostream& operator<<(ostream& stream, const Map& map)
 {
-    // todo
+    stream << map.seed << ' ' << map.tiles.size() << '\n';
+    for (const auto& [pos, tile] : map.tiles)
+    {
+        stream << "  " << pos << tile << '\n';
+    }
     return stream;
 }
 
 istream& operator>>(istream& stream, Map& map)
 {
-    // todo
+    size_t numTiles;
+    stream >> map.seed >> numTiles;
+    map.tiles.reserve(numTiles);
+    while (map.tiles.size() < numTiles)
+    {
+        map.tiles.emplace();
+    }
     return stream;
 }
