@@ -41,18 +41,7 @@ int main()
         << '\n';
 
 #if 1
-    {
-        IVec2 pos = data.player.GetPosition();
-        IVec2 offset;
-        for (offset.y = -50; offset.y <= 50; ++offset.y)
-        {
-            for (offset.x = -100; offset.x <= 100; ++offset.x)
-            {
-                data.map.GetTile(pos + offset);
-            }
-        }
-        data.map._PrintDebug(pos);
-    }
+    data.map._PrintDebug(data.player.GetPosition());
 #endif
 
     data.map.GetTile(data.player.GetPosition());

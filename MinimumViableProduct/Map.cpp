@@ -70,14 +70,61 @@ void Map::PrintArea(IVec2 playerPos, int extent) const
         playerPos.y + extent);
 }
 
-void Map::Generate(const string& seed)
+void Map::Generate()
 {
-    // todo
+    srand(GetSeedHash());
+
+    vector<double> buffer(MAP_AREA, 0.0);
+
+    // Walls
+    for (int resolution = 1; resolution <= MAP_WIDTH; resolution <<= 1)
+    {
+        int step = MAP_WIDTH / resolution;
+        for (int y = -MAP_EXTENT; y <= MAP_EXTENT; y += step)
+        {
+            for (int x = -MAP_EXTENT; x <= MAP_EXTENT; x += step)
+            {
+                int yEnd = y + step;
+                int xEnd = x + step;
+                double value = (double)rand() / RAND_MAX;
+                for (int y1 = y; y1 < yEnd; ++y1)
+                {
+                    for (int x1 = x; x1 < xEnd; ++x1)
+                    {
+                        size_t index = TileIndex(x1, y1);
+                        buffer.at(index) += value;
+                    }
+                }
+            }
+        }
+    }
+
+    tiles.clear(); // in case
+    tiles.reserve(MAP_AREA);
+
+    // Convert double to bool
+    for (double value : buffer)
+    {
+        tiles.push_back(value < 0.2 ? Tile::WALL : Tile::FREE);
+    }
+
+    //entities.clear();
+    //entities.reserve(NUM_ENTITIES);
+    //
+    //// Entities
+    //for (size_t i = 0; i < NUM_ENTITIES; ++i)
+    //{
+    //    entities.push_back(NewEntityOfType(EntityType::ENT_CHEST));
+    //    entities.back()->SetPosition(rand() % MAP_WIDTH - MAP_EXTENT, rand() % MAP_WIDTH - MAP_EXTENT);
+    //}
 }
 
 size_t Map::TileIndex(int x, int y) const
 {
-    return (size_t)(((long long)y * MAP_WIDTH + MAP_EXTENT) + (long long)x + MAP_EXTENT);
+    long long yRel = (long long)y + MAP_EXTENT;
+    long long xRel = (long long)x + MAP_EXTENT;
+    size_t index = yRel * MAP_WIDTH + xRel;
+    return index;
 }
 
 void Map::GetEntitiesInArea(_Inout_ vector<Entity*>& inArea, int xMin, int yMin, int xMax, int yMax) const
@@ -252,8 +299,10 @@ ostream& operator<<(ostream& stream, const Map& map)
 
 istream& operator>>(istream& stream, Map& map)
 {
+    string seed;
     size_t numEntities;
-    stream >> map.seed >> numEntities;
+    getline(stream, seed) >> numEntities;
+    map = Map(seed);
     map.entities.reserve(numEntities);
     for (size_t i = 0; i < numEntities; ++i)
     {

@@ -12,12 +12,13 @@ enum class Tile : bool
 
 class Map
 {
+    static constexpr int NUM_ENTITIES = 64;
     static constexpr int MAP_WIDTH = 64;
     static constexpr int MAP_EXTENT = MAP_WIDTH / 2;
     static constexpr int MAP_AREA = MAP_WIDTH * MAP_WIDTH;
+    static constexpr int MAP_TILES = MAP_AREA + MAP_WIDTH + 1;
 
-    // Randomly generates the map
-    void Generate(const string& seed);
+    void Generate();
 
     size_t TileIndex(int x, int y) const;
     inline size_t TileIndex(IVec2 p) const
@@ -36,7 +37,7 @@ public:
     Map() = default;
 
     Map(const string& seed) :
-        seed(seed) { Generate(seed); }
+        seed(seed) { Generate(); }
 
     void DoMovement(Player& player);
 
