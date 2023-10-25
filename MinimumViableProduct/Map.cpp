@@ -155,12 +155,12 @@ void Map::DoMovement(Player& player)
         {
             cstring_t typeName = entity->GetTypeName();
             input       = format("{} {}", directionName, typeName);
-            description = format("Interact with the {} {} of you", typeName, directionName);
+            description = format("Interact with the {} to your {}", typeName, directionName);
         }
         else
         {
             input       = directionName;
-            description = format("Move one space to the {}", directionName);
+            description = format("Move one tile {}", directionName);
         }
         options.emplace_back(input, description);
     }
@@ -173,11 +173,11 @@ void Map::DoMovement(Player& player)
 
     // Handle input
     {
-        auto it = Prompt("Where", options);
+        auto it = Prompt("What would you like to do?", options);
         string selectedName  = it->input;
         size_t selectedIndex = it - options.begin();
 
-        IVec2 offset;
+        IVec2 offset{};
         bool found = false;
         string selectionDirectionName = selectedName.substr(0, selectedName.find(' '));
         for (const auto& [directionName, directionOffset] : directions)
@@ -189,6 +189,7 @@ void Map::DoMovement(Player& player)
                 break;
             }
         }
+        assert(found, "Direction unknown");
 
         // Explicit movement - never has a space
         if (selectedName.find(' ') == string::npos)

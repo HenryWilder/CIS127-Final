@@ -38,15 +38,17 @@ class BaseNPC :
     public Entity,
     public Character
 {
-private:
+protected:
     void DoTrade(Player& player);
+
+    virtual constexpr cstring_t GetLastName() const = 0;
+    virtual string GenName(int nameID) const;
 
 public:
     constexpr BaseNPC() = default;
 
-    virtual constexpr EntityType  GetType       () const override = 0;
-    virtual constexpr const char* GetTypeName   () const override = 0;
-    virtual           string      GetDisplayName() const override = 0;
+    virtual constexpr EntityType  GetType    () const override = 0;
+    virtual constexpr const char* GetTypeName() const override = 0;
 
     virtual void DoInteraction(Player& player) override = 0;
 
@@ -58,12 +60,14 @@ public:
 class BakerNPC :
     public BaseNPC
 {
+protected:
+    constexpr cstring_t GetLastName() const override { return "Baker"; }
+
 public:
     constexpr BakerNPC() = default;
 
-    constexpr EntityType  GetType       () const override { return EntityType::NPC_BAKER; }
-    constexpr const char* GetTypeName   () const override { return "baker"; }
-    inline    string      GetDisplayName() const override { return "Baker"; }
+    constexpr EntityType  GetType    () const override { return EntityType::NPC_BAKER; }
+    constexpr const char* GetTypeName() const override { return "baker"; }
 
     void DoInteraction(Player& player) override;
 };
@@ -71,12 +75,14 @@ public:
 class BlacksmithNPC :
     public BaseNPC
 {
+protected:
+    constexpr cstring_t GetLastName() const override { return "Smith"; }
+
 public:
     constexpr BlacksmithNPC() = default;
 
-    constexpr EntityType  GetType       () const override { return EntityType::NPC_BLACKSMITH; }
-    constexpr const char* GetTypeName   () const override { return "blacksmith"; }
-    inline    string      GetDisplayName() const override { return "Blacksmith"; }
+    constexpr EntityType  GetType    () const override { return EntityType::NPC_BLACKSMITH; }
+    constexpr const char* GetTypeName() const override { return "blacksmith"; }
 
     void DoInteraction(Player& player) override;
 };

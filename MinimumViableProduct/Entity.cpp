@@ -16,15 +16,112 @@ void BaseNPC::DoTrade(Player& player)
     // todo
 }
 
+string BaseNPC::GenName(int nameID) const
+{
+    constexpr cstring_t firstNames[] =
+    {
+        "James",
+        "Jace",
+        "Julian",
+        "Jude",
+        "Jasmine",
+        "Jesse",
+        "Jamie",
+        "Jagger",
+        "Jack",
+        "Jade",
+        "Jacob",
+        "Joshua",
+        "Jonah",
+        "Jacqueline",
+        "Jeremy",
+        "John",
+        "Jasper",
+        "Jayden",
+        "Jay",
+        "Jaden",
+        "Joel",
+        "Jane",
+        "Joseph",
+        "June",
+        "Judah",
+        "Joseph",
+        "Juliette",
+        "Javier",
+        "Journee",
+        "Juniper",
+        "Jason",
+        "Jacalyn",
+        "Janey",
+        "Jango",
+        "Janez",
+        "Janiece",
+        "Janiel",
+        "Janifer",
+        "Jelle",
+        "Jemal",
+        "Jemall",
+        "Jemar",
+        "Jem",
+        "Jeminah",
+        "Jemmie",
+        "Jemma",
+        "Jemarr",
+        "Jillie",
+        "Jim",
+        "Jimbo",
+        "Jillion",
+        "Jorrell",
+        "Jorry",
+        "Jerry",
+        "Jose",
+        "Jos\x82",
+        "Josep",
+        "Joslynne",
+        "Jospeh",
+        "Josphine",
+        "Joss",
+        "Jossalyn",
+        "Journee",
+        "Journey",
+        "Just", // pff "Just Baker"
+        "Jovana",
+        "Joy",
+        "Joyann",
+        "Jowell",
+        "Judi",
+        "Judy",
+        "Juel",
+        "Judyth",
+        "Julet",
+        "Julia",
+        "Justin",
+        "Justine",
+        "Julie",
+        "Julio",
+        "J\xA3lio",
+        "July",
+        "Junio",
+        "Juno",
+        "Jupiter",
+        "Jaclyn",
+    };
+
+    size_t firstNameIndex = nameID % _countof(firstNames);
+    cstring_t firstNamePick = firstNames[firstNameIndex];
+
+    return format("{} {}", firstNameIndex, GetLastName());
+}
+
 
 void BakerNPC::DoInteraction(Player& player)
 {
-    // todo
+    cout << "Hi, I'm " << GetDisplayName() << '\n';
 }
 
 void BlacksmithNPC::DoInteraction(Player& player)
 {
-    // todo
+    cout << "Hi, I'm " << GetDisplayName() << '\n';
 }
 
 
