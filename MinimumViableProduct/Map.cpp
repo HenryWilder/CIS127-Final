@@ -178,11 +178,15 @@ void Map::DoMovement(Player& player)
         size_t selectedIndex = it - options.begin();
 
         IVec2 offset;
+        bool found = false;
+        string selectionDirectionName = selectedName.substr(0, selectedName.find(' '));
         for (const auto& [directionName, directionOffset] : directions)
         {
-            if (selectedName.substr(0, selectedName.find(' ') - 1) == directionName)
+            if (selectionDirectionName == directionName)
             {
                 offset = directionOffset;
+                found = true;
+                break;
             }
         }
 
@@ -193,7 +197,8 @@ void Map::DoMovement(Player& player)
             return;
         }
 
-        Entity* entity = GetTile(player.GetPosition() + offset).entity;
+        IVec2 posPrime = player.GetPosition() + offset;
+        Entity* entity = GetTile(posPrime).entity;
         assert(!!entity, "There must be an entity if there is a space in " + selectedName);
 
         // Entity interaction
