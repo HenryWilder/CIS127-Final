@@ -3,7 +3,8 @@
 #include "Character.h"
 
 #if _DEBUG
-void Map::_PrintDebug(IVec2 playerPos) const
+
+void Map::_PrintArea(IVec2 playerPos, int xMin, int yMin, int xMax, int yMax) const
 {
     // See https://cplusplus.com/doc/ascii/
 
@@ -14,17 +15,6 @@ void Map::_PrintDebug(IVec2 playerPos) const
     constexpr char npc_ch      = '\x01';
     constexpr char player_ch   = '\xA7';
 
-    long xMin = LONG_MAX;
-    long yMin = LONG_MAX;
-    long xMax = LONG_MIN;
-    long yMax = LONG_MIN;
-    for (auto& [pos, _] : tiles)
-    {
-        xMin = min(xMin, (long)pos.x);
-        yMin = min(yMin, (long)pos.y);
-        xMax = max(xMax, (long)pos.x);
-        yMax = max(yMax, (long)pos.y);
-    }
     size_t height = (size_t)(yMax - yMin);
     size_t width  = (size_t)(xMax - xMin);
     size_t buffHeight = height + 1; // +1 to convert max index to count
@@ -34,13 +24,13 @@ void Map::_PrintDebug(IVec2 playerPos) const
 
     // Index of pos in the buffer
     auto index = [&](IVec2 pos)
-    {
-        size_t x = (size_t)((long)pos.x - xMin);
-        size_t y = (size_t)((long)pos.y - yMin);
-        assert(0 <= x && x <= width,  format("{} is outside of the range [0..{}]", x, width));
-        assert(0 <= y && y <= height, format("{} is outside of the range [0..{}]", y, height));
-        return y * buffWidth + x;
-    };
+        {
+            size_t x = (size_t)((long)pos.x - xMin);
+            size_t y = (size_t)((long)pos.y - yMin);
+            assert(0 <= x && x <= width,  format("{} is outside of the range [0..{}]", x, width));
+            assert(0 <= y && y <= height, format("{} is outside of the range [0..{}]", y, height));
+            return y * buffWidth + x;
+        };
 
     // Add a newline char to the end of each line.
     for (size_t line = 1; line <= buffHeight; ++line)
@@ -50,6 +40,12 @@ void Map::_PrintDebug(IVec2 playerPos) const
 
     for (auto& [pos, tile] : tiles)
     {
+        if (!(xMin <= pos.x && pos.x <= xMax &&
+              yMin <= pos.y && pos.y <= yMax))
+        {
+            continue;
+        }
+
         char tileChar;
         if (tile.isWall)
         {
@@ -79,6 +75,32 @@ void Map::_PrintDebug(IVec2 playerPos) const
 
     cout << buff << std::endl;
 }
+
+void Map::_PrintDebug(IVec2 playerPos) const
+{
+    long xMin = LONG_MAX;
+    long yMin = LONG_MAX;
+    long xMax = LONG_MIN;
+    long yMax = LONG_MIN;
+    for (auto& [pos, _] : tiles)
+    {
+        xMin = min(xMin, (long)pos.x);
+        yMin = min(yMin, (long)pos.y);
+        xMax = max(xMax, (long)pos.x);
+        yMax = max(yMax, (long)pos.y);
+    }
+    _PrintArea(playerPos, xMin, yMin, xMax, yMax);
+}
+
+void Map::PrintArea(IVec2 playerPos, int extent) const
+{
+    _PrintArea(playerPos,
+        playerPos.x - extent * 2,
+        playerPos.y - extent,
+        playerPos.x + extent * 2,
+        playerPos.y + extent);
+}
+
 #else
 void Map::_PrintDebug() const {}
 #endif
@@ -101,18 +123,30 @@ void Map::DoMovement(Player& player)
 
     PromptOptionList options;
 
+    IVec2 playerPos = player.GetPosition();
+
     // Populate options list
     for (size_t i = 0; i < _countof(directions); ++i)
     {
         const auto& [directionName, offset] = directions[i];
 
-        IVec2 posPrime = player.GetPosition() + offset;
+        IVec2 posPrime = playerPos + offset;
 
         Tile tile = GetTile(posPrime);
 
         if (tile.isWall)
         {
             continue;
+        }
+
+        if (posPrime.x != 0 && posPrime.y != 0)
+        {
+            IVec2 xPosPrime = IVec2(posPrime.x, playerPos.y);
+            IVec2 yPosPrime = IVec2(playerPos.x, posPrime.y);
+            if (GetTile(xPosPrime).isWall && GetTile(yPosPrime).isWall)
+            {
+                continue;
+            }
         }
 
         string input;
@@ -131,7 +165,11 @@ void Map::DoMovement(Player& player)
         options.emplace_back(input, description);
     }
 
+#if 0
     _PrintDebug(player.GetPosition());
+#else
+    PrintArea(player.GetPosition(), 3);
+#endif
 
     // Handle input
     {
@@ -142,7 +180,7 @@ void Map::DoMovement(Player& player)
         IVec2 offset;
         for (const auto& [directionName, directionOffset] : directions)
         {
-            if (selectedName.starts_with(directionName))
+            if (selectedName.substr(0, selectedName.find(' ') - 1) == directionName)
             {
                 offset = directionOffset;
             }
