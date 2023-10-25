@@ -4,16 +4,19 @@ EntityType Entity::TypeFromName(string typeName)
 {
     if (typeName == "undefined"); // Jumps straight to end
 
+    // todo: chest
     else if (typeName ==      BakerNPC().GetTypeName()) return EntityType::NPC_BAKER;
     else if (typeName == BlacksmithNPC().GetTypeName()) return EntityType::NPC_BLACKSMITH;
 
-    return EntityType::_ENTITY; // Null entity
+    return EntityType::_NIL;
 }
 
 
 void BaseNPC::DoTrade(Player& player)
 {
+    cout << "Trade started\n";
     // todo
+    cout << "Trade ended\n";
 }
 
 string BaseNPC::GenName(int nameID) const
@@ -117,11 +120,13 @@ string BaseNPC::GenName(int nameID) const
 void BakerNPC::DoInteraction(Player& player)
 {
     cout << "Hi, I'm " << GetDisplayName() << '\n';
+    // todo
 }
 
 void BlacksmithNPC::DoInteraction(Player& player)
 {
     cout << "Hi, I'm " << GetDisplayName() << '\n';
+    // todo
 }
 
 

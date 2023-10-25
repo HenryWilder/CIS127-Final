@@ -15,10 +15,10 @@ public:
         return name;
     }
 
-    Inventory inventory;
-
 protected:
     string name;
+public:
+    Inventory inventory;
 };
 
 
@@ -53,7 +53,7 @@ public:
     friend istream& operator>>(istream&, Player&);
 
 private:
-    IVec2 position;
+    IVec2 position = IVec2(0, 0);
 };
 
 ostream& operator<<(ostream& stream, const Player& player);

@@ -40,18 +40,19 @@ int main()
         << "This game auto-saves occasionally. \"" << Colored<SKYBLUE>("[Saving...]") << "\" will be shown when this happens.\n"
         << '\n';
 
-#if _DEBUG
-    //data.map = Map(PromptString("Map seed"));
-    //IVec2 pos = data.player.GetPosition();
-    //IVec2 offset;
-    //for (offset.y = -55; offset.y <= 55; ++offset.y)
-    //{
-    //    for (offset.x = -110; offset.x <= 110; ++offset.x)
-    //    {
-    //        data.map.GetTile(pos + offset);
-    //    }
-    //}
-    //data.map._PrintDebug();
+#if 1
+    {
+        IVec2 pos = data.player.GetPosition();
+        IVec2 offset;
+        for (offset.y = -50; offset.y <= 50; ++offset.y)
+        {
+            for (offset.x = -100; offset.x <= 100; ++offset.x)
+            {
+                data.map.GetTile(pos + offset);
+            }
+        }
+        data.map._PrintDebug(pos);
+    }
 #endif
 
     data.map.GetTile(data.player.GetPosition());

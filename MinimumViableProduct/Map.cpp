@@ -2,8 +2,6 @@
 #include "Entity.h"
 #include "Character.h"
 
-#if _DEBUG
-
 void Map::_PrintArea(IVec2 playerPos, int xMin, int yMin, int xMax, int yMax) const
 {
     // See https://cplusplus.com/doc/ascii/
@@ -20,80 +18,51 @@ void Map::_PrintArea(IVec2 playerPos, int xMin, int yMin, int xMax, int yMax) co
     size_t buffHeight = height + 1; // +1 to convert max index to count
     size_t buffWidth  = width  + 2; // +1 extra for newline
     size_t buffSize = buffHeight * buffWidth;
-    string buff = string(buffSize, fogOfWar_ch);
 
-    // Index of pos in the buffer
-    auto index = [&](IVec2 pos)
+    string buff;
+    buff.reserve(buffSize);
+
+    auto BuffIndex = [=](IVec2 pos)
         {
-            size_t x = (size_t)((long)pos.x - xMin);
-            size_t y = (size_t)((long)pos.y - yMin);
-            assert(0 <= x && x <= width,  format("{} is outside of the range [0..{}]", x, width));
-            assert(0 <= y && y <= height, format("{} is outside of the range [0..{}]", y, height));
-            return y * buffWidth + x;
+            size_t xRel = (size_t)((long long)pos.x - xMin);
+            size_t yRel = (size_t)((long long)pos.y - yMin);
+            size_t index = yRel * buffWidth + xRel;
+            return index;
         };
 
-    // Add a newline char to the end of each line.
-    for (size_t line = 1; line <= buffHeight; ++line)
+    for (int y = yMin; y <= xMax; ++y)
     {
-        buff.at(line * buffWidth - 1) = '\n';
+        for (int x = xMin; x <= xMax; ++x)
+        {
+            bool isWall = tiles.at(TileIndex(x, y)) == Tile::WALL;
+            buff.push_back(isWall ? wall_ch : free_ch);
+        }
+        buff.push_back('\n');
     }
 
-    for (auto& [pos, tile] : tiles)
+    vector<Entity*> entitiesInPrintArea;
+    GetEntitiesInArea(entitiesInPrintArea, xMin, yMin, xMax, yMax);
+    for (Entity* entity : entitiesInPrintArea)
     {
-        if (!(xMin <= pos.x && pos.x <= xMax &&
-              yMin <= pos.y && pos.y <= yMax))
-        {
-            continue;
-        }
-
-        char tileChar;
-        if (tile.isWall)
-        {
-            tileChar = wall_ch;
-        }
-        else if (tile.entity)
-        {
-            bool isNPC = (int)tile.entity->GetType() & (int)EntityType::_NPC;
-            if (isNPC) // is npc
-            {
-                tileChar = npc_ch;
-            }
-            else
-            {
-                tileChar = ent_ch;
-            }
-        }
-        else
-        {
-            tileChar = free_ch;
-        }
-
-        buff.at(index(pos)) = tileChar;
+        bool isNPC = entity->IsNPC();
+        buff.at(BuffIndex(entity->GetPosition())) = isNPC ? npc_ch : ent_ch;
     }
 
-    buff.at(index(playerPos)) = player_ch;
+    buff.at(BuffIndex(playerPos)) = player_ch;
 
     cout << buff << std::endl;
 }
 
 void Map::_PrintDebug(IVec2 playerPos) const
 {
-    long xMin = LONG_MAX;
-    long yMin = LONG_MAX;
-    long xMax = LONG_MIN;
-    long yMax = LONG_MIN;
-    for (auto& [pos, _] : tiles)
-    {
-        xMin = min(xMin, (long)pos.x);
-        yMin = min(yMin, (long)pos.y);
-        xMax = max(xMax, (long)pos.x);
-        yMax = max(yMax, (long)pos.y);
-    }
-    _PrintArea(playerPos, xMin, yMin, xMax, yMax);
+#if _DEBUG
+    _PrintArea(playerPos, -MAP_EXTENT, -MAP_EXTENT, MAP_EXTENT, MAP_EXTENT);
+#endif
 }
 
 void Map::PrintArea(IVec2 playerPos, int extent) const
 {
+    // horizontally 2x as wide as vertically
     _PrintArea(playerPos,
         playerPos.x - extent * 2,
         playerPos.y - extent,
@@ -101,9 +70,45 @@ void Map::PrintArea(IVec2 playerPos, int extent) const
         playerPos.y + extent);
 }
 
-#else
-void Map::_PrintDebug() const {}
-#endif
+void Map::Generate(const string& seed)
+{
+    // todo
+}
+
+size_t Map::TileIndex(int x, int y) const
+{
+    return (size_t)(((long long)y * MAP_WIDTH + MAP_EXTENT) + (long long)x + MAP_EXTENT);
+}
+
+void Map::GetEntitiesInArea(_Inout_ vector<Entity*>& inArea, int xMin, int yMin, int xMax, int yMax) const
+{
+    for (Entity* entity : entities)
+    {
+        assert(entity != nullptr, "Map should not contain null entities.");
+
+        auto [x, y] = entity->GetPosition();
+
+        if (xMin <= x && x <= xMax &&
+            yMin <= y && y <= yMax)
+        {
+            inArea.push_back(entity);
+        }
+    }
+}
+
+_Ret_maybenull_ Entity* Map::GetEntityAt(_In_ const vector<Entity*>& from, IVec2 position)
+{
+    for (Entity* entity : from)
+    {
+        assert(entity != nullptr, "Map should not contain null entities.");
+
+        if (entity->GetPosition() == position)
+        {
+            return entity;
+        }
+    }
+    return nullptr;
+}
 
 void Map::DoMovement(Player& player)
 {
@@ -125,6 +130,13 @@ void Map::DoMovement(Player& player)
 
     IVec2 playerPos = player.GetPosition();
 
+    vector<Entity*> entitiesNearPlayer;
+    GetEntitiesInArea(entitiesNearPlayer,
+        playerPos.x - 1,
+        playerPos.y - 1,
+        playerPos.x + 1,
+        playerPos.y + 1);
+
     // Populate options list
     for (size_t i = 0; i < _countof(directions); ++i)
     {
@@ -134,7 +146,7 @@ void Map::DoMovement(Player& player)
 
         Tile tile = GetTile(posPrime);
 
-        if (tile.isWall)
+        if (tile == Tile::WALL)
         {
             continue;
         }
@@ -143,7 +155,8 @@ void Map::DoMovement(Player& player)
         {
             IVec2 xPosPrime = IVec2(posPrime.x, playerPos.y);
             IVec2 yPosPrime = IVec2(playerPos.x, posPrime.y);
-            if (GetTile(xPosPrime).isWall && GetTile(yPosPrime).isWall)
+            if (GetTile(xPosPrime) == Tile::WALL &&
+                GetTile(yPosPrime) == Tile::WALL)
             {
                 continue;
             }
@@ -151,9 +164,11 @@ void Map::DoMovement(Player& player)
 
         string input;
         string description;
-        if (Entity* entity = tile.entity) // Implied "!= nullptr" because nullptr is 0
+        Entity* tileEntity = GetEntityAt(entitiesNearPlayer, posPrime);
+
+        if (tileEntity) // Implied "!= nullptr" because nullptr is 0
         {
-            cstring_t typeName = entity->GetTypeName();
+            cstring_t typeName = tileEntity->GetTypeName();
             input       = format("{} {}", directionName, typeName);
             description = format("Interact with the {} to your {}", typeName, directionName);
         }
@@ -162,6 +177,7 @@ void Map::DoMovement(Player& player)
             input       = directionName;
             description = format("Move one tile {}", directionName);
         }
+
         options.emplace_back(input, description);
     }
 
@@ -199,7 +215,7 @@ void Map::DoMovement(Player& player)
         }
 
         IVec2 posPrime = player.GetPosition() + offset;
-        Entity* entity = GetTile(posPrime).entity;
+        Entity* entity = GetEntityAt(posPrime);
         assert(!!entity, "There must be an entity if there is a space in " + selectedName);
 
         // Entity interaction
@@ -207,100 +223,43 @@ void Map::DoMovement(Player& player)
     }
 }
 
-// Always generates the same value for the same seed and position
-double NoiseValue(unsigned int seed, IVec2 position)
+double NoiseValue(unsigned int seed, IVec2 pos)
 {
-    constexpr double TAU = 3.1415926535897932384 * 2.0;
-    
-    double value = 0.0;
-
     srand(seed);
-
-    for (int octave = 1; octave <= 8; ++octave)
-    {
-        double frequency = 8.0 / octave;
-        double offset = TAU * ((double)rand() / (double)RAND_MAX);
-        value += cos(frequency * position.x + offset) / (double)octave;
-    }
-
-    for (int octave = 1; octave <= 8; ++octave)
-    {
-        double frequency = 8.0 / octave;
-        double offset = TAU * ((double)rand() / (double)RAND_MAX);
-        value += sin(frequency * position.y + offset) / (double)octave;
-    }
-
-    return value;
+    // todo
+    return 0.0;
 }
 
-// todo: Improve map generation to make more traversable maps
+bool Chance(int n, int in_every)
+{
+    return rand() % in_every < n;
+}
+
 Tile Map::GetTile(IVec2 position)
 {
-    if (auto it = tiles.find(position); it != tiles.end())
-    {
-        return it->second;
-    }
-    else // Generate new tile
-    {
-        constexpr int IS_WALL_MASK    = 0b1100000000;
-        constexpr int HAS_ENTITY_MASK = 0b0011100000;
-        constexpr int ENTITY_MASK     = 0b0000011111;
-        constexpr int NOISE_MAX       = 0b1111111111;
-
-        bool isWall;
-        Entity* tileEntity = nullptr;
-
-        int tileRand = (int)(NoiseValue(seed, position) * RAND_MAX) % RAND_MAX;
-
-        isWall = (tileRand & IS_WALL_MASK) == IS_WALL_MASK;
-        if (!isWall)
-        {
-            bool isEntityAtTile = (tileRand & HAS_ENTITY_MASK) == HAS_ENTITY_MASK;
-            if (isEntityAtTile)
-            {
-                tileEntity = NewEntityOfType((EntityType)(tileRand % (int)EntityType::_NUM));
-            }
-        }
-        
-        return tiles.emplace(position, Tile(isWall, tileEntity)).first->second;
-    }
-}
-
-ostream& operator<<(ostream& stream, const Tile& tile)
-{
-    return stream << (tile.isWall ? "wall" : "free") << ' ' << tile.entity;
-}
-
-istream& operator>>(istream& stream, Tile& tile)
-{
-    string isWallStr;
-    stream >> isWallStr >> tile.entity;
-    tile.isWall = isWallStr == "wall";
-    assert(isWallStr == "wall" || isWallStr == "free", "Expected \"wall\" or \"free\"; got \"" + isWallStr + "\".");
-    return stream;
+    return tiles.at(TileIndex(position));
 }
 
 ostream& operator<<(ostream& stream, const Map& map)
 {
-    stream << map.seed << ' ' << map.tiles.size() << '\n';
-    for (const auto& [pos, tile] : map.tiles)
+    stream << map.seed << '\n' << map.entities.size();
+    for (Entity* ent : map.entities)
     {
-        stream << "  " << pos << ' ' << tile << '\n';
+        stream << '\n' << ent;
     }
     return stream;
 }
 
 istream& operator>>(istream& stream, Map& map)
 {
-    size_t numTiles;
-    stream >> map.seed >> numTiles;
-    map.tiles.reserve(numTiles);
-    for (size_t i = 0; i < numTiles; ++i)
+    size_t numEntities;
+    stream >> map.seed >> numEntities;
+    map.entities.reserve(numEntities);
+    for (size_t i = 0; i < numEntities; ++i)
     {
-        IVec2 pos;
-        Tile tile;
-        stream >> pos >> tile;
-        map.tiles.emplace(pos, tile);
+        Entity* entity;
+        stream >> entity;
+        map.entities.push_back(entity);
     }
     return stream;
 }

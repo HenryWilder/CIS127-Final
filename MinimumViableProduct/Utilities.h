@@ -125,3 +125,6 @@ inline wstring operator+(const wstring a, const char* b)
 }
 
 #define assert(cond, msg) _ASSERT_EXPR((cond), (std::wstring(L"") + msg).c_str())
+
+constexpr double PI = 3.14159265358979323846;
+constexpr double TAU = PI * 2.0;
