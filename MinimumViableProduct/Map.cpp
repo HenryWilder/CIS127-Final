@@ -3,7 +3,7 @@
 #include "Character.h"
 
 #if _DEBUG
-void Map::_PrintDebug() const
+void Map::_PrintDebug(IVec2 playerPos) const
 {
     // See https://cplusplus.com/doc/ascii/
 
@@ -12,6 +12,7 @@ void Map::_PrintDebug() const
     constexpr char free_ch     = ' ';
     constexpr char ent_ch      = '\x04';
     constexpr char npc_ch      = '\x01';
+    constexpr char player_ch   = '\xA7';
 
     long xMin = LONG_MAX;
     long yMin = LONG_MAX;
@@ -31,6 +32,16 @@ void Map::_PrintDebug() const
     size_t buffSize = buffHeight * buffWidth;
     string buff = string(buffSize, fogOfWar_ch);
 
+    // Index of pos in the buffer
+    auto index = [&](IVec2 pos)
+    {
+        size_t x = (size_t)((long)pos.x - xMin);
+        size_t y = (size_t)((long)pos.y - yMin);
+        assert(0 <= x && x <= width,  format("{} is outside of the range [0..{}]", x, width));
+        assert(0 <= y && y <= height, format("{} is outside of the range [0..{}]", y, height));
+        return y * buffWidth + x;
+    };
+
     // Add a newline char to the end of each line.
     for (size_t line = 1; line <= buffHeight; ++line)
     {
@@ -39,12 +50,6 @@ void Map::_PrintDebug() const
 
     for (auto& [pos, tile] : tiles)
     {
-        size_t x = (size_t)((long)pos.x - xMin);
-        size_t y = (size_t)((long)pos.y - yMin);
-        assert(0 <= x && x <= width,  format("{} is outside of the range [0..{}]", x, width));
-        assert(0 <= y && y <= height, format("{} is outside of the range [0..{}]", y, height));
-        size_t index = y * buffWidth + x; // Index of pos in the buffer
-
         char tileChar;
         if (tile.isWall)
         {
@@ -52,7 +57,8 @@ void Map::_PrintDebug() const
         }
         else if (tile.entity)
         {
-            if ((int)tile.entity->GetType() & (int)EntityType::_NPC) // is npc
+            bool isNPC = (int)tile.entity->GetType() & (int)EntityType::_NPC;
+            if (isNPC) // is npc
             {
                 tileChar = npc_ch;
             }
@@ -66,8 +72,10 @@ void Map::_PrintDebug() const
             tileChar = free_ch;
         }
 
-        buff.at(index) = tileChar;
+        buff.at(index(pos)) = tileChar;
     }
+
+    buff.at(index(playerPos)) = player_ch;
 
     cout << buff << std::endl;
 }
@@ -81,10 +89,14 @@ void Map::DoMovement(Player& player)
     // @type Anonymous structure - easier to use thanks to C++17 structured bindings
     constexpr struct { const char* name; IVec2 offset; } directions[] =
     {
-        { "west",  { -1,  0 } },
-        { "east",  { +1,  0 } },
-        { "north", {  0, -1 } },
-        { "south", {  0, +1 } },
+        { "north",     {  0, -1 } },
+        { "northeast", { +1, -1 } },
+        { "east",      { +1,  0 } },
+        { "southeast", { +1, +1 } },
+        { "south",     {  0, +1 } },
+        { "southwest", { -1, +1 } },
+        { "west",      { -1,  0 } },
+        { "northwest", { -1, -1 } },
     };
 
     PromptOptionList options;
@@ -119,7 +131,7 @@ void Map::DoMovement(Player& player)
         options.emplace_back(input, description);
     }
 
-    _PrintDebug();
+    _PrintDebug(player.GetPosition());
 
     // Handle input
     {

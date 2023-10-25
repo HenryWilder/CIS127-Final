@@ -89,10 +89,15 @@ PromptOptionIter Prompt(const string& query, const PromptOptionList& options)
                 data.Save();
                 continue;
             }
-            if (input == "quit")
+            else if (input == "quit")
             {
                 data.Save();
                 exit(0);
+            }
+            else if (input == "inv")
+            {
+                data.player.inventory.DoInventory();
+                continue;
             }
         }
         it = find_if(options.begin(), options.end(), [input](PromptOption option) { return input == option.input; });

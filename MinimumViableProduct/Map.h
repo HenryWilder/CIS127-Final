@@ -31,7 +31,7 @@ public:
 
     inline unsigned int GetSeed() const { return seed; }
 
-    void _PrintDebug() const;
+    void _PrintDebug(IVec2 playerPos) const;
 
     // Simplifies loading saving/loading
     friend ostream& operator<<(ostream&, const Map&);

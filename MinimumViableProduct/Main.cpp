@@ -54,23 +54,10 @@ int main()
     //data.map._PrintDebug();
 #endif
 
+    data.map.GetTile(data.player.GetPosition());
     while (true)
     {
-        PromptOptionList options =
-        {
-            { "inv",  "Open inventory" },
-            { "move", "Move or interact with things in the world" },
-        };
-        string action = Prompt("Action", options)->input;
-
-        if (action == "inv")
-        {
-            data.player.inventory.DoInventory();
-        }
-        else if (action == "move")
-        {
-            data.map.DoMovement(data.player);
-        }
+        data.map.DoMovement(data.player);
     }
 
     return 0;
