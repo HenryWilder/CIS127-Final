@@ -39,6 +39,8 @@ using std::optional;
 using std::hash;
 using std::nullopt;
 using std::exception;
+using std::min;
+using std::max;
 using byte = unsigned char;
 using cstring_t = const char*;
 using template_cstring_t = const char[];

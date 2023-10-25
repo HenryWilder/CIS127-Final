@@ -85,5 +85,5 @@ public:
 // Used for loading from a file.
 _Ret_maybenull_ Entity* NewEntityOfType(EntityType type);
 
-istream& operator>>(istream& stream, _Out_ Entity*& entity);
-ostream& operator<<(ostream& stream, _In_ const Entity& entity);
+istream& operator>>(istream& stream, Entity*& entity);
+ostream& operator<<(ostream& stream, const Entity* entity);

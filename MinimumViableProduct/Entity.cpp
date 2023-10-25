@@ -40,19 +40,32 @@ _Ret_maybenull_ inline Entity* NewEntityOfType(EntityType type)
     }
 }
 
-istream& operator>>(istream& stream, _Out_ Entity*& entity)
+istream& operator>>(istream& stream, Entity*& entity)
 {
-    string categoryName;
-    stream >> categoryName;
-    entity = NewEntityOfType(Entity::TypeFromName(categoryName));
-    assert(!!entity, "File corrupted");
-    entity->FromStream(stream);
+    string typeName;
+    stream >> typeName;
+    if (typeName != "-")
+    {
+        entity = NewEntityOfType(Entity::TypeFromName(typeName));
+        entity->FromStream(stream);
+    }
+    else
+    {
+        entity = nullptr;
+    }
     return stream;
 }
 
-ostream& operator<<(ostream& stream, _In_ const Entity& entity)
+ostream& operator<<(ostream& stream, const Entity* entity)
 {
-    stream << entity.GetTypeName() << ' ';
-    entity.ToStream(stream);
+    if (entity)
+    {
+        stream << entity->GetTypeName() << ' ';
+        entity->ToStream(stream);
+    }
+    else
+    {
+        stream << "-";
+    }
     return stream;
 }

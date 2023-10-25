@@ -4,16 +4,6 @@
 class Player;
 class Entity;
 
-// Set of directions with names and offsets - used for providing movement options to the player
-// @type Anonymous structure - easier to use thanks to C++17 structured bindings
-constexpr struct { cstring_t name; IVec2 offset; } directions[] =
-{
-    { "west",  { -1,  0 } },
-    { "east",  { +1,  0 } },
-    { "north", {  0, -1 } },
-    { "south", {  0, +1 } },
-};
-
 struct Tile
 {
     bool isWall;
@@ -25,8 +15,6 @@ istream& operator>>(istream& stream,       Tile& tile);
 
 class Map
 {
-    void _GetMovementOptionsFromPosition(PromptOptionList& options, IVec2 position);
-
 public:
     Map() = default;
 
@@ -43,9 +31,12 @@ public:
 
     inline unsigned int GetSeed() const { return seed; }
 
+    void _PrintDebug() const;
+
     // Simplifies loading saving/loading
     friend ostream& operator<<(ostream&, const Map&);
     friend istream& operator>>(istream&, Map&);
+
 
 private:
     unsigned int seed;                // Allows predictable generation after loading the map from a file.
