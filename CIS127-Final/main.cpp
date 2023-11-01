@@ -40,6 +40,17 @@ class NotImplementedException :
     }
 };
 
+string ChooseRandom(const vector<string>& options)
+{
+    return options.at(rand() % options.size());
+}
+
+template<size_t _Size>
+string ChooseRandom(const array<string, _Size>& options)
+{
+    return options.at(rand() % options.size());
+}
+
 int main()
 {
     const array<string, 14> topics = {
@@ -193,11 +204,11 @@ int main()
             string topic_or_effect;
             if (action == "talk")
             {
-                topic_or_effect = topics.at(rand() % topics.size());
+                topic_or_effect = ChooseRandom(topics);
             }
             else if (action == "potion")
             {
-                topic_or_effect = potionEffects.at(rand() % potionEffects.size());
+                topic_or_effect = ChooseRandom(potionEffects);
             }
             
             // Echo
@@ -250,22 +261,97 @@ int main()
                 {
                     if (!surroundings.empty())
                     {
-                        array<string, 6> possibleResponses = {
+                        const array<string, 10> possibleResponses = {
                             "found it rather odd",
                             "thinks you might need a checkup",
                             "considers your points rather thought-provoking and insightful, if a little one-sided",
                             "is too distracted by your utterly repulsive views to care that you were talking to a stone wall",
                             "is confused who you were talking to",
                             "looked around to check if there were any hidden familiars you may have been putting on a performance for",
+                            "gave you a weird look",
+                            "thinks you underestimate the effectiveness of brute force",
+                            "thinks you ",
                         };
+                        
                         // It is by design that the responder might be inanimate. I thought it would be funny.
-                        string responder = surroundings.at(rand() % surroundings.size());
-                        string response = possibleResponses.at(rand() % possibleResponses.size());
+                        string responder = ChooseRandom(surroundings);
+                        string response = ChooseRandom(possibleResponses);
+                        if (response == "thinks you ")
+                        {
+                            array<string, 7> contextualOpinion = {
+                                "may have overlooked",
+                                "exaggerated",
+                                "are overestimating",
+                                "underestimate",
+                                "may forget",
+                                "fail to appriciate",
+                                "are perpetuating harmful propaganda regarding",
+                            };
+                            response += ChooseRandom(contextualOpinion) + ' ';
+                            array<string, 3> contextualResponses;
+                            if (topic_or_effect == TOPIC_WINEFISH)
+                            {
+                                contextualResponses = {
+                                    "the resiliance of aquatic livers",
+                                    "the work ethic of drunk merfolk",
+                                    "how that would affect the wine market",
+                                };
+                            }
+                            else if (topic_or_effect == TOPIC_SKELESTOCK)
+                            {
+                                contextualResponses = {
+                                    "the staying power of good steel",
+                                    "the dwindling numbers of the skeleton army",
+                                    "how important armor is to the health of the Skeleton Alliance's trade sector",
+                                };
+                            }
+                            else if (topic_or_effect == TOPIC_WP_SIEGE)
+                            {
+                                contextualResponses = {
+                                    "an average woodpecker's endurance",
+                                    "the fact that a woodpecker pecks wood, not stone",
+                                    "the effectiveness of hot oil on an army of woodpeckers",
+                                };
+                            }
+                            else if (topic_or_effect == TOPIC_BS_TELEKEN)
+                            {
+                                contextualResponses = {
+                                    "the power of hydrokenesis when used to cool hot steel",
+                                    "the craftsmanship needed to shape tools with one's mind",
+                                    "the quality of a blade heated with telekenetic precision",
+                                };
+                            }
+                            else if (topic_or_effect == TOPIC_WOODCHUCK)
+                            {
+                                contextualResponses = {
+                                    "where they'd even get all that wood",
+                                    "how long a woodchuck's arms are",
+                                    "the possibility of seven or more woodchucks banding together and forming a woodchuck mega-fusion",
+                                };
+                            }
+                            else if (topic_or_effect == TOPIC_PENGUIN_BTL)
+                            {
+                                contextualResponses = {
+                                    "what happened the last six times the Penguin Guild and the Old Realm got into a fight like this in the past",
+                                    "just how much DNA the Penguin Guild's members actually share with real penguins",
+                                    "how prone the Old Realm's shadow government is to shooting themselves in the foot when it comes to matters like this",
+                                };
+                            }
+                            else // make up some catch-all bs
+                            {
+                                contextualResponses = {
+                                    "how much salt that would take",
+                                    "the pulsating, glowing red mass",
+                                    "the power of teamwork",
+                                };
+                            }
+                            response += ChooseRandom(contextualResponses);
+                        }
                         cout << "The " << responder << " " << response << ".";
                     }
                     else
                     {
-                        cout << "Fortunately nobody was around to hear it.";
+                        cout << (rand() & 1 ? "Fortunately" : "Sadly") << ", nobody was around to hear it...";
                     }
                 }
                 else if (action == "grab")
@@ -385,7 +471,7 @@ void RerollSurroundings(vector<string>& surroundings)
 {
     surroundings.clear();
     
-    vector<string> possible = {
+    const array<string, 5> possible = {
         "door",   // Do nothing :P
         "baker",  // Give bread
         "smith",  // Repair sword
@@ -393,13 +479,17 @@ void RerollSurroundings(vector<string>& surroundings)
         "enemy",  // Hurt the player
     };
     
-    for (int i = 0; i < 4; ++i) // Four possible items per position; often nothing
+    for (int i = 0; i < 4; ++i) // Four possible items per roll
     {
-        size_t index = rand() % possible.size() * 2;
-        if (index < possible.size())
+        if (rand() & 1) // Whether to *try* adding something to surroundings (not guaranteed)
         {
-            surroundings.push_back(possible.at(index));
-            possible.erase(possible.begin() + index);
+            string choice = ChooseRandom(possible);
+            
+            // Duplicates are not added
+            if (find(surroundings.begin(), surroundings.end(), choice) == surroundings.end())
+            {
+                surroundings.push_back(choice);
+            }
         }
     }
 }
