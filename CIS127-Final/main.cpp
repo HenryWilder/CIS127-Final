@@ -7,25 +7,6 @@
 #include <map>
 using namespace std;
 
-#ifndef _countof
-#define _countof(arr) (sizeof((arr)) / sizeof(decltype((arr)[0])))
-#endif
-
-#define TOPIC_WINEFISH      "the effects of water-wine alchemy on the local fish population"
-#define TOPIC_SKELESTOCK    "the volatile stock price of enchanted skeleton armor"
-#define TOPIC_WP_SIEGE      "how many woodpeckers it would take to breach the castle wall"
-#define TOPIC_NECROFARM     "the ethicacy of using necromancy in farming-related fields"
-#define TOPIC_BLOODMOON     "when the next blood moon may occur"
-#define TOPIC_MOLE_MNT      "whether enough moles could in fact make a mountain out of their hill"
-#define TOPIC_MF_RECIPE     "what recipes to use for preparing mind flayer"
-#define TOPIC_GOD_FISTFIGHT "which gods could win in a fistfight against each other"
-#define TOPIC_THESEUS       "why Theseus has been getting so fussy about their ship lately"
-#define TOPIC_BS_TELEKEN    "what form of telekenesis would be the most effective for a blacksmith to use"
-#define TOPIC_NO_GARLIC     "how the elder wizards should handle the recent garlic & holy water defecits"
-#define TOPIC_PENGUIN_BTL   "whether the Old Realm needs more supplies or troops to survive their war of attrition against the Penguin Guild"
-#define TOPIC_PET_MNTL_HP   "the effects of mind-altering spells on the mental health of familiars"
-#define TOPIC_WOODCHUCK     "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature"
-
 string Prompt(const string& prompt, const vector<string>& options);
 string PromptItem(const string& prompt, const map<string, int>& options);
 
@@ -69,6 +50,21 @@ bool isvowel(char ch)
 
 int main()
 {
+#define TOPIC_WINEFISH      "the effects of water-wine alchemy on the local fish population"
+#define TOPIC_SKELESTOCK    "the volatile stock price of enchanted skeleton armor"
+#define TOPIC_WP_SIEGE      "how many woodpeckers it would take to breach the castle wall"
+#define TOPIC_NECROFARM     "the ethicacy of using necromancy in farming-related fields"
+#define TOPIC_BLOODMOON     "when the next blood moon may occur"
+#define TOPIC_MOLE_MNT      "whether enough moles could in fact make a mountain out of their hill"
+#define TOPIC_MF_RECIPE     "what recipes to use for preparing mind flayer"
+#define TOPIC_GOD_FISTFIGHT "which gods could win in a fistfight against each other"
+#define TOPIC_THESEUS       "why Theseus has been getting so fussy about their ship lately"
+#define TOPIC_BS_TELEKEN    "what form of telekenesis would be the most effective for a blacksmith to use"
+#define TOPIC_NO_GARLIC     "how the elder wizards should handle the recent garlic & holy water defecits"
+#define TOPIC_PENGUIN_BTL   "whether the Old Realm needs more supplies or troops to survive their war of attrition against the Penguin Guild"
+#define TOPIC_PET_MNTL_HP   "the effects of mind-altering spells on the mental health of familiars"
+#define TOPIC_WOODCHUCK     "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature"
+    
     const array<string, 14> topics = {
         TOPIC_WINEFISH,
         TOPIC_SKELESTOCK,
@@ -850,7 +846,7 @@ int main()
                             reactingTo = ChooseRandom({ "foolishness", "lack of self-preservation", "disrespect" });
                         }
                         
-                        cout << "The monster seems " << reaction << " by your " << reactingTo << ", staring at you until you release it from your grip. ";
+                        cout << "The monster seems " << reaction << " by your " << reactingTo << ", staring at you until you release it from your grip.\n";
                         
                         if (reaction == "flustered" || ((reaction == "impressed" || reaction == "surprised") && reactingTo == "forwardness"))
                         {
@@ -905,12 +901,60 @@ int main()
                         }
                         else
                         {
-                            
+                            string reaction = ChooseRandom({ "scowels", "scoffs", "screams", "screeches", "foams", "growls", "hisses", });
+                            cout << reaction << " at the very idea of accepting a gift from you, slapping it out of your hand and onto the floor.";
                         }
                     }
                     else if (action == "sword")
                     {
-                        cout << "[TODO]\n";
+                        bool isSuccessful = rand() & 1; // 50% chance
+                        if (!isSuccessful && luck > 0)
+                        {
+                            --luck;
+                            isSuccessful = true;
+                        }
+                        
+                        if (isSuccessful)
+                        {
+                            string bodyCovering = ChooseRandom({ "gooey", "vaporous", "slimey", "meaty", "fuzzy", "fur-covered" });
+                            cout << "Your sword slashes through the monster, splitting it into two " << bodyCovering << " chunks on the floor. ";
+                            AddItem("gold", 1);
+                            cout << "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.";
+                        }
+                        else
+                        {
+                            TryRemoveItem("sword", 1);
+                            bool isSwordSurviving = items.contains("sword");
+                            
+                            string reaction = ChooseRandom({
+                                "grabs your sword mid-swing, gripping it tightly in its claws",
+                                "swats your sword out of your hand, flinging it into the wall",
+                                "squeezes your sword's blade with two hands",
+                                "bites down on your sword violently with its massive shark-teeth",
+                            });
+                            
+                            string impact;
+                            if (isSwordSurviving)
+                            {
+                                // adverb
+                                impact = ChooseRandom({ "slightly", "somewhat", "lightly", "partly", "gently", });
+                                // verb
+                                impact = " " + ChooseRandom({ "bending", "dulling", "denting", "melting", "cracking", "chipping", });
+                                impact += " it";
+                            }
+                            else
+                            {
+                                // adverb
+                                impact = ChooseRandom({ "completely", "totally", "fully", "absolutely", "utterly", "instantly", });
+                                // verb
+                                impact += " " + ChooseRandom({ "shattering", "obliterating", "liquifying", "anihilating", "evaporating", "disintegrating",
+                                    "digesting", // Yes, even for non-mouth reactions
+                                });
+                                impact += " everything above the hilt";
+                            }
+                            
+                            cout << "The monster " << reaction << " and " << impact << '.';
+                        }
                     }
                     else if (action == "potion")
                     {
@@ -918,7 +962,7 @@ int main()
                     }
                     else if (action == "gold")
                     {
-                        cout << "[TODO]\n";
+                        cout << "The monster doesn't know what to do with the gold, tilting its head curiously but quickly losing interest.";
                     }
                     else
                     {
@@ -927,34 +971,7 @@ int main()
                 }
                 else
                 {
-                    if (action == "talk")
-                    {
-                        cout << "[TODO]\n";
-                    }
-                    else if (action == "grab")
-                    {
-                        cout << "[TODO]\n";
-                    }
-                    else if (action == "bread")
-                    {
-                        cout << "[TODO]\n";
-                    }
-                    else if (action == "sword")
-                    {
-                        cout << "[TODO]\n";
-                    }
-                    else if (action == "potion")
-                    {
-                        cout << "[TODO]\n";
-                    }
-                    else if (action == "gold")
-                    {
-                        cout << "[TODO]\n";
-                    }
-                    else
-                    {
-                        throw new NotImplementedException();
-                    }
+                    throw new NotImplementedException();
                 }
                 
                 cout << endl;
