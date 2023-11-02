@@ -5,7 +5,44 @@
 #include <fstream>
 #include <algorithm>
 #include <map>
+#include <set>
 using namespace std;
+
+constexpr size_t NUM_COLLECTIVES = 10;
+
+// Interface for classes that can be mutated but not reassigned
+// Useful for objects used exclusively as properties
+class NotCopyable
+{
+protected:
+    // Default ctor/dtor
+    
+    constexpr NotCopyable() = default;
+    ~NotCopyable() = default;
+    
+    // Delete assignment operators
+    
+    NotCopyable(const NotCopyable&) = delete;
+    NotCopyable& operator=(const NotCopyable&) = delete;
+};
+
+constexpr bool IsExactlyOneFlagSet(size_t flags)
+{
+    bool isSetBitEncountered = false;
+    while (flags)
+    {
+        if (flags & 1)
+        {
+            if (isSetBitEncountered)
+            {
+                return false;
+            }
+            isSetBitEncountered = true;
+        }
+        flags >>= 1;
+    }
+    return isSetBitEncountered;
+}
 
 string Prompt(const string& prompt, const vector<string>& options);
 string PromptItem(const string& prompt, const map<string, int>& options);
@@ -21,49 +58,598 @@ class NotImplementedException :
     }
 };
 
-string ChooseRandom(const vector<string>& options)
-{
-    return options.at(rand() % options.size());
-}
+string ChooseRandom(const vector<string>& options);
+template<size_t _Size> string ChooseRandom(const array<string, _Size>& options);
 
-template<size_t _Size>
-string ChooseRandom(const array<string, _Size>& options)
-{
-    return options.at(rand() % options.size());
-}
+bool isvowel(char ch);
 
-bool isvowel(char ch)
+class StatusEffects :
+    private NotCopyable
 {
-    if (isalpha(ch))
+public:
+    // Bitflags
+    enum StatusFlags : char
     {
-        if (islower(ch))
+        Fire   = 1, // Cleared by water
+        Poison = 2, // Cleared by antidote
+        Tree   = 4, // Cleared by [TODO]
+    };
+    
+    // Returns the combined set of all active status flags.
+    char Get() const
+    {
+        return statuses;
+    }
+    
+    // Returns true of all of the provided statuses are active.
+    // Multiple statuses are tested at once by combining them with `|`.
+    bool HasEvery(StatusFlags testStatuses) const
+    {
+        return (statuses & testStatuses) == testStatuses;
+    }
+    
+    // Returns true of one or more of the provided statuses are active.
+    // Multiple statuses are tested at once by combining them with `|`.
+    bool HasAny(StatusFlags testStatuses) const
+    {
+        return statuses & testStatuses;
+    }
+    
+    // Alias for "HasAnyStatus()" to add clarity when testing only one status.
+    bool Has(StatusFlags testStatus) const
+    {
+        assert(IsExactlyOneFlagSet(testStatus));
+        return statuses & testStatus;
+    }
+    
+    // Sets the provided status(es) to true.
+    // Multiple statuses can be set at once by combining them with `|`.
+    void Apply(StatusFlags applyStatuses)
+    {
+        statuses |= applyStatuses;
+    }
+    
+    // Sets the provided status(es) to false.
+    // Multiple statuses can be cleared at once by combining them with `|`.
+    // Default: clears all statuses.
+    void Clear(StatusFlags clearStatuses = (StatusFlags)~0)
+    {
+        statuses &= ~clearStatuses;
+    }
+    
+private:
+    char statuses;
+};
+
+class Health :
+    private NotCopyable
+{
+public:
+    int Get() const
+    {
+        return health;
+    }
+    
+    int GetMax() const
+    {
+        return maxHealth;
+    }
+    
+    // Only for use when loading from file.
+    void Set(int health, int maxHealth)
+    {
+        this->health    = health;
+        this->maxHealth = maxHealth;
+    }
+    
+    // Returns quantity of health points exceeding the max health (and not added).
+    // If all points were added successfully, returns 0.
+    int Heal(int points)
+    {
+        assert(points > 0);
+        assert(health <= maxHealth);
+        int possibleToHeal = maxHealth - health;
+        if (possibleToHeal <= points)
         {
-            return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+            health += points;
+            return 0;
         }
         else
         {
-            return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
+            health = maxHealth;
+            return points - possibleToHeal;
         }
     }
-    return false;
+    
+    // Returns true if survived, returns false if dead.
+    bool Damage(int points)
+    {
+        assert(points > 0);
+        if (health >= points)
+        {
+            health -= points;
+        }
+        else
+        {
+            health = 0;
+        }
+        return health != 0;
+    }
+    
+public:
+    StatusEffects statuses;
+    
+private:
+    int health, maxHealth;
+};
+
+class Inventory :
+    private NotCopyable
+{
+public:
+    // Returns true if the item exists in the inventory; otherwise false.
+    bool Has(const string& key) const
+    {
+        return items.contains(key);
+    }
+    
+    // Returns the quantity of the requested item that exist in the inventory.
+    // If the item is not in the inventory, returns 0.
+    int Count(const string& key) const
+    {
+        auto it = items.find(key);
+        if (it != items.end())
+        {
+            return it->second;
+        }
+        return 0;
+    }
+    
+    // Returns a readonly reference to the inventory map.
+    const map<string, int>& GetAll() const
+    {
+        return items;
+    }
+    
+    // Increases the count of the item by
+    void Add(const string& key, int count = 1)
+    {
+        assert(count > 0);
+        if (items.contains(key))
+        {
+            items.at(key) += count;
+        }
+        else
+        {
+            items.emplace(key, count);
+        }
+    };
+    
+    // If failed to remove the item (e.g. item is missing or in insufficient quantity), returns -1.
+    // When trying to remove a greater quantity of the item than is available, none is removed.
+    // If successful, returns how many of that item remain.
+    int TryRemove(const string& key, int count = 1)
+    {
+        assert(count > 0);
+        auto it = items.find(key);
+        if (it != items.end())
+        {
+            if (it->second == count)
+            {
+                items.erase(it);
+                return 0;
+            }
+            else if (it->second > count)
+            {
+                return it->second -= count;
+            }
+        }
+        return -1;
+    };
+    
+    // Removes the specified quantity of the item. If the item is in insufficient quantity, it is entirely removed.
+    // Returns true if the removal would have been successful under normal circumstances,
+    // returns false if the quantity of the item was insufficient for the removal (but all were removed anyway).
+    bool ForceRemove(const string& key, int count = 1)
+    {
+        assert(count > 0);
+        auto it = items.find(key);
+        if (it != items.end())
+        {
+            if (it->second <= count)
+            {
+                items.erase(it);
+                return it->second == count;
+            }
+            else // it->second > count
+            {
+                it->second -= count;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // Eliminates all instances of the provided item from the inventory no matter the current quantity.
+    void RemoveAll(const string& key)
+    {
+        items.erase(key);
+    }
+    
+    // Eliminates all items from the inventory.
+    void RemoveAll()
+    {
+        items.clear();
+    }
+    
+    // Prints the inventory to the console
+    void Print() const
+    {
+        cout << "[todo]";
+    }
+    
+private:
+    map<string, int> items;
+};
+
+class Collective :
+    private NotCopyable
+{
+private:
+    // Private constructor enforces singleton-like collectives,
+    // where there are multiple collectives but each is a singleton of itself.
+    Collective(const string& shortName, const string& fullName) :
+        shortName(shortName), fullName(fullName) {}
+    
+public:
+    // Returns the shortname (key) associated with the collective.
+    const string& ShortName() const
+    {
+        return shortName;
+    }
+    
+    // Returns the fullname (displayed to the user) of the collective.
+    const string& FullName() const
+    {
+        return fullName;
+    }
+    
+    // Creates a new collective and adds it to the set of known collectives.
+    static void Create(string shortName, string fullName)
+    {
+        allCollectives.emplace(shortName, Collective(shortName, fullName));
+    }
+    
+    // Returns the collective associated with the provided shortname.
+    static const Collective& Get(const string& shortName)
+    {
+        // This function is not meant to check for the existence of a collective,
+        // only to return it.
+        assert(allCollectives.contains(shortName));
+        return allCollectives.at(shortName);
+    }
+    
+    // Returns the iterable collection of all collectives.
+    static const map<string, Collective>& GetAll()
+    {
+        return allCollectives;
+    }
+    
+private:
+    const string shortName;
+    const string fullName;
+    
+    static map<string, Collective> allCollectives;
+};
+
+// Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.
+bool DiceCheck(int chance, int outOf)
+{
+    return (rand() % outOf) < chance;
+};
+
+// Encompasses power, faith, and status; [-10..+10]
+class Influences :
+    private NotCopyable
+{
+public:
+    // Returns the influence associated with the target collective.
+    int Get(const string& targetCollective) const
+    {
+        auto it = influence.find(targetCollective);
+        if (it != influence.end())
+        {
+            return it->second;
+        }
+        return 0;
+    }
+    
+    // Returns the iterable collection of all influences.
+    const map<string, int>& GetAll() const
+    {
+        return influence;
+    }
+    
+    // Increases/decreases social status among the targeted collective (shortname) by the provided amount.
+    // Clamps influence to range [-10..+10]; -50%, 200%, etc. success would be undefined behavior.
+    void Modify(const string& targetCollective, int change)
+    {
+        auto it = influence.find(targetCollective);
+        if (it != influence.end())
+        {
+            it->second = clamp(it->second + change, -10, +10);
+        }
+        else
+        {
+            influence.emplace(targetCollective, clamp(change, -10, +10));
+        }
+    }
+    
+    // Erases all influence, effectively setting them to 0
+    void ClearAll()
+    {
+        influence.clear();
+    }
+    
+    // Should only be used when loading from a file.
+    void Set(const string& targetCollective, int amount)
+    {
+        assert(-10 <= amount && amount <= 10);
+        influence.insert_or_assign(targetCollective, amount);
+    }
+    
+    // Roll a dice for a social check such that:
+    // -10 influence gives a   0% chance of success
+    //   0 influence gives a  50% chance of success
+    // +10 influence gives a 100% chance of success
+    bool Check(const string& targetCollective) const
+    {
+        return DiceCheck(10 + Get(targetCollective), 20);
+    }
+    
+private:
+    map<string, int> influence;
+};
+
+class Luck :
+    private NotCopyable
+{
+public:
+    // If and only if the provided check would have failed naturally, one unit of good luck is consumed
+    // to override the failure and replace it with a guaranteed success.
+    //
+    // If and only if the provided check would have succeeded naturally, one unit of bad luck is consumed
+    // to override the success and replace it with a guaranteed failure.
+    //
+    // If the player has no luck--good nor bad--the success will not influenced and no luck be consumed.
+    bool Apply(bool success)
+    {
+        if (!success && luck > 0)
+        {
+            --luck;
+            return true;
+        }
+        if (success && luck < 0)
+        {
+            ++luck;
+            return false;
+        }
+        return success;
+    };
+    
+    // Returns -1, 0, or +1.
+    // If the player has good luck, returns +1 and consumes one unit of good luck.
+    // If the player has  bad luck, returns -1 and consumes one unit of bad luck.
+    // If the player has   no luck, returns  0 and consumes no luck.
+    int Check()
+    {
+        if (luck > 0)
+        {
+            --luck;
+            return 1;
+        }
+        if (luck < 0)
+        {
+            ++luck;
+            return -1;
+        }
+        return 0;
+    };
+    
+    // Positive = good luck
+    // Negative =  bad luck
+    void Give(int amount)
+    {
+        luck += amount;
+    }
+    
+    // Removes all luck, both good and bad
+    void Clear()
+    {
+        luck = 0;
+    }
+    
+    // Should only be used for loading
+    void Set(int amount)
+    {
+        luck = amount;
+    }
+    
+private:
+    int luck = 0;
+};
+
+// Abstract base for a non-player thing in the world
+// All things have names, alliances, and reactions
+class IThing
+{
+protected:
+    virtual void DoInteraction_Talk (const string& topic) = 0;
+    virtual void DoInteraction_Grab () = 0;
+    virtual void DoInteraction_Bread() = 0;
+    virtual void DoInteraction_Sword() = 0;
+    virtual void DoInteraction_Gold () = 0;
+    
+    virtual void DoInteraction_Potion_Predict() = 0;
+    virtual void DoInteraction_Potion_Heal   () = 0;
+    virtual void DoInteraction_Potion_Water  () = 0;
+    virtual void DoInteraction_Potion_Wish   () = 0;
+    virtual void DoInteraction_Potion_Ducks  () = 0;
+    virtual void DoInteraction_Potion_Force  () = 0;
+    virtual void DoInteraction_Potion_Salt   () = 0;
+    virtual void DoInteraction_Potion_Ants   () = 0;
+    virtual void DoInteraction_Potion_Demon  () = 0;
+    virtual void DoInteraction_Potion_Fire   () = 0;
+    virtual void DoInteraction_Potion_Explode() = 0;
+    virtual void DoInteraction_Potion_Tree   () = 0;
+    
+    void DoInteraction_Potion(const string& effect)
+    {
+        if      (effect == "predict") DoInteraction_Potion_Predict();
+        else if (effect == "heal"   ) DoInteraction_Potion_Heal   ();
+        else if (effect == "water"  ) DoInteraction_Potion_Water  ();
+        else if (effect == "wish"   ) DoInteraction_Potion_Wish   ();
+        else if (effect == "ducks"  ) DoInteraction_Potion_Ducks  ();
+        else if (effect == "force"  ) DoInteraction_Potion_Force  ();
+        else if (effect == "salt"   ) DoInteraction_Potion_Salt   ();
+        else if (effect == "ants"   ) DoInteraction_Potion_Ants   ();
+        else if (effect == "demon"  ) DoInteraction_Potion_Demon  ();
+        else if (effect == "fire"   ) DoInteraction_Potion_Fire   ();
+        else if (effect == "explode") DoInteraction_Potion_Explode();
+        else if (effect == "tree"   ) DoInteraction_Potion_Tree   ();
+        else throw new NotImplementedException();
+    }
+    
+public:
+    // Returns the shortname for the derived class
+    virtual string GetName() const = 0;
+    
+    // Performs the derived class's reaction to the provided interaction type
+    void DoInteraction(const string& action, const string& topicOrEffect)
+    {
+        if      (action == "talk"  ) DoInteraction_Talk  (topicOrEffect);
+        else if (action == "grab"  ) DoInteraction_Grab  ();
+        else if (action == "bread" ) DoInteraction_Bread ();
+        else if (action == "sword" ) DoInteraction_Sword ();
+        else if (action == "gold"  ) DoInteraction_Gold  ();
+        else if (action == "potion") DoInteraction_Potion(topicOrEffect);
+        else throw new NotImplementedException();
+    }
+};
+
+class Player :
+    private IThing
+{
+public:
+    string GetName() const override
+    {
+        return name;
+    }
+    
+    void SetName(const string& newName)
+    {
+        name = newName;
+    }
+    
+public: // Properties
+    Health health;
+    Inventory inventory;
+    Influences influences;
+    Luck luck;
+    
+private:
+    string name = "";
+};
+
+class Surroundings
+{
+public:
+    // Prints a list of the surroundings to the console
+    void Print() const
+    {
+        cout << "[todo]";
+    }
+    
+    bool Has(const string& shortName) const
+    {
+        return things.contains(shortName);
+    }
+    
+    const IThing& Get(const string& shortName) const
+    {
+        assert(things.contains(shortName));
+        return things.at(shortName);
+    }
+    
+    IThing& Get(const string& shortName)
+    {
+        assert(things.contains(shortName));
+        return things.at(shortName);
+    }
+    
+    void Clear()
+    {
+        things.clear();
+    }
+    
+    // Returns true if added successfully, otherwise false.
+    bool TryAdd(const string& shortName, IThing& thing)
+    {
+        if (things.contains(shortName))
+        {
+            return false;
+        }
+        things.emplace(shortName, thing);
+        return true;
+    }
+    
+    // Returns true if removed successfully, otherwise false.
+    bool TryRemove(const string& shortName)
+    {
+        if (!things.contains(shortName))
+        {
+            things.erase(shortName);
+            return true;
+        }
+        return false;
+    }
+    
+    void ReRoll()
+    {
+        Clear();
+        // todo
+    }
+    
+private:
+    map<string, IThing&> things;
+};
+
+void Load(const char* filename, Player& player, Surroundings& surroundings)
+{
+    
+}
+
+void Save(const char* filename, const Player& player, const Surroundings& surroundings)
+{
+    
 }
 
 int main()
 {
-#define TOPIC_WINEFISH      "the effects of water-wine alchemy on the local fish population"
-#define TOPIC_SKELESTOCK    "the volatile stock price of enchanted skeleton armor"
-#define TOPIC_WP_SIEGE      "how many woodpeckers it would take to breach the castle wall"
-#define TOPIC_NECROFARM     "the ethicacy of using necromancy in farming-related fields"
-#define TOPIC_BLOODMOON     "when the next blood moon may occur"
-#define TOPIC_MOLE_MNT      "whether enough moles could in fact make a mountain out of their hill"
-#define TOPIC_MF_RECIPE     "what recipes to use for preparing mind flayer"
-#define TOPIC_GOD_FISTFIGHT "which gods could win in a fistfight against each other"
-#define TOPIC_THESEUS       "why Theseus has been getting so fussy about their ship lately"
-#define TOPIC_BS_TELEKEN    "what form of telekenesis would be the most effective for a blacksmith to use"
-#define TOPIC_NO_GARLIC     "how the elder wizards should handle the recent garlic & holy water defecits"
-#define TOPIC_PENGUIN_BTL   "whether the Old Realm needs more supplies or troops to survive their war of attrition against the Penguin Guild"
-#define TOPIC_PET_MNTL_HP   "the effects of mind-altering spells on the mental health of familiars"
-#define TOPIC_WOODCHUCK     "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature"
+    const string TOPIC_WINEFISH      = "the effects of water-wine alchemy on the local fish population";
+    const string TOPIC_SKELESTOCK    = "the volatile stock price of enchanted skeleton armor";
+    const string TOPIC_WP_SIEGE      = "how many woodpeckers it would take to breach the castle wall";
+    const string TOPIC_NECROFARM     = "the ethicacy of using necromancy in farming-related fields";
+    const string TOPIC_BLOODMOON     = "when the next blood moon may occur";
+    const string TOPIC_MOLE_MNT      = "whether enough moles could in fact make a mountain out of their hill";
+    const string TOPIC_MF_RECIPE     = "what recipes to use for preparing mind flayer";
+    const string TOPIC_GOD_FISTFIGHT = "which gods could win in a fistfight against each other";
+    const string TOPIC_THESEUS       = "why Theseus has been getting so fussy about their ship lately";
+    const string TOPIC_BS_TELEKEN    = "what form of telekenesis would be the most effective for a blacksmith to use";
+    const string TOPIC_NO_GARLIC     = "how the elder wizards should handle the recent garlic & holy water defecits";
+    const string TOPIC_PENGUIN_BTL   = "whether the Old Realm needs more supplies or troops to survive their war of attrition against the Penguin Guild";
+    const string TOPIC_PET_MNTL_HP   = "the effects of mind-altering spells on the mental health of familiars";
+    const string TOPIC_WOODCHUCK     = "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature";
     
     const array<string, 14> topics = {
         TOPIC_WINEFISH,
@@ -82,83 +668,70 @@ int main()
         TOPIC_WOODCHUCK,
     };
 
+    const string ITEM_BREAD  = "bread";  // Heals
+    const string ITEM_SWORD  = "sword";  // Damages; quantity represents durability
+    const string ITEM_POTION = "potion"; // Effects are random
+    const string ITEM_GOLD   = "gold";   // 100% chance of getting items from NPCs willing to trade (higher chance than bread/talking)
+    
     const array<string, 4> itemNames = {
-        "bread",  // Heals
-        "sword",  // Hurts stuff - Player can only have one at a time, number is durability (number of swings) remaining. Smiths can repair it.
-        "potion", // Effects are random
-        "gold",   // 100% chance of getting items from NPCs
+        ITEM_BREAD,
+        ITEM_SWORD,
+        ITEM_POTION,
+        ITEM_GOLD,
     };
+    
+    const string POTION_EFFECT_PREDICT = "predict"; // Gives luck, providing an upper hand in anything the player is doing
+    const string POTION_EFFECT_HEAL    = "heal";    // Heals the target
+    const string POTION_EFFECT_WATER   = "water";   // Douces the target in water - useless because fire is not DOT and there are no fire elementals
+    const string POTION_EFFECT_WISH    = "wish";    // Gives the target a wish; wish is random unless the target is the player
+    const string POTION_EFFECT_DUCKS   = "ducks";   // Summons ducks - useless
+    const string POTION_EFFECT_FORCE   = "force";   // Pushes the target away - rerolls surroundings if player, removes target from surroundings otherwise
+    const string POTION_EFFECT_SALT    = "salt";    // Random chance to kill a monster
+    const string POTION_EFFECT_ANTS    = "ants";    // Summons ants - useless
+    const string POTION_EFFECT_DEMON   = "demon";   // Summons a random demon to attack the target
+    const string POTION_EFFECT_FIRE    = "fire";    // Deals some damage
+    const string POTION_EFFECT_EXPLODE = "explode"; // Deals high damage; can 1-hit most things including doors
+    const string POTION_EFFECT_TREE    = "tree";    // Turns the target into a tree, soft-locking the game if the target was the player.
+    
+    // Problem: Softlocking the game is a major enough risk that none of the effects are worth using potions on yourself.
+    // Perhaps there could be a chance that NPCs can un-tree the player after one turn? Throwing away a turn is less destructive than a full-on soft-lock.
 
-    // Sorted from most to least positive effects
+    // Sorted from most to least positive effects.
+    // First half are considered lucky when targeting a friend,
+    // second half are considered lucky when targeting an enemy
     const array<string, 12> potionEffects = {
-        "predict",
-        "heal",
-        "water",
-        "wish",
-        "ducks",
-        "force",
-        "salt",
-        "ants",
-        "demon",
-        "fire",
-        "explode",
-        "tree",
+        POTION_EFFECT_PREDICT,
+        POTION_EFFECT_HEAL,
+        POTION_EFFECT_WATER,
+        POTION_EFFECT_WISH,
+        POTION_EFFECT_DUCKS,
+        POTION_EFFECT_FORCE,
+        POTION_EFFECT_SALT,
+        POTION_EFFECT_ANTS,
+        POTION_EFFECT_DEMON,
+        POTION_EFFECT_FIRE,
+        POTION_EFFECT_EXPLODE,
+        POTION_EFFECT_TREE,
     };
     
-    const array<string, 10> collectives = {
-        "citizens of the Western Expanse",
-        "Valley of the Twisting Vacancy",
-        "Children of the Pond of Infinite Pathways",
-        "Followers of the Northern Seed",
-        "Earthen Swampfire district of the Northeastern Bishop's Domain",
-        "Beholders of the Critical Malstrum",
-        "Nursing Home of the Elder Kings",
-        "Holdout Clan of the Dead King's Fallen Citadel",
-        "League of Babypunching Puppykickers. You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name",
-        "monsters",
-    };
+    // Any given NPC has a random chance of being in a particular collective.
+    Collective::Create("western_expance",           "citizens of the Western Expanse");
+    Collective::Create("twisting_vacancy",          "Valley of the Twisting Vacancy");
+    Collective::Create("infinite_pathways",         "Children of the Pond of Infinite Pathways");
+    Collective::Create("northern_seed",             "Followers of the Northern Seed");
+    Collective::Create("eastern_swampfire",         "Earthen Swampfire district of the Northeastern Bishop's Domain");
+    Collective::Create("critical_malstrom",         "Beholders of the Critical Malstrom");
+    Collective::Create("elder_kings",               "Nursing Home of the Elder Kings");
+    Collective::Create("dead_king_citadel",         "Holdout Clan of the Dead King's Fallen Citadel");
+    Collective::Create("babypunching_puppykickers", "League of Babypunching Puppykickers.");
+    Collective::Create("monsters",                  "monsters");
     
-    constexpr size_t MONSTER_COLLECTIVE = 9;
+    const string COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE = "You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name";
     
     constexpr const char filename[] = "savegame.txt";
-        
-    string playerName;
-    int health = 3;
-    int luck = 0;
-    bool isATree = false;
-    array<int, collectives.size()> influence; // Encompasses power, faith, and status
-    map<string, int> items;
+    
+    Player player;
     vector<string> surroundings;
-    
-    auto AddItem = [&items](const string& key, int count)
-    {
-        if (items.contains(key))
-        {
-            items.at(key) += count;
-        }
-        else
-        {
-            items.emplace(key, count);
-        }
-    };
-    
-    auto TryRemoveItem = [&items](const string& key, int count)
-    {
-        auto it = items.find(key);
-        if (it != items.end())
-        {
-            if (it->second == count)
-            {
-                items.erase(it);
-            }
-            else if (it->second > count)
-            {
-                it->second -= count;
-            }
-            return it->second >= count;
-        }
-        return false;
-    };
     
     auto RerollSurroundings = [&surroundings]()
     {
@@ -1072,6 +1645,17 @@ string PromptItem(const string& prompt, const map<string, int>& options)
     }
 }
 
+string ChooseRandom(const vector<string>& options)
+{
+    return options.at(rand() % options.size());
+}
+
+template<size_t _Size>
+string ChooseRandom(const array<string, _Size>& options)
+{
+    return options.at(rand() % options.size());
+}
+
 void _RerollSurroundings(vector<string>& surroundings)
 {
     surroundings.clear();
@@ -1097,4 +1681,20 @@ void _RerollSurroundings(vector<string>& surroundings)
             }
         }
     }
+}
+
+bool isvowel(char ch)
+{
+    if (isalpha(ch))
+    {
+        if (islower(ch))
+        {
+            return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+        }
+        else
+        {
+            return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
+        }
+    }
+    return false;
 }
