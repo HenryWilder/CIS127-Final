@@ -96,322 +96,454 @@ int main()
         "savegame.txt";
         
     string playerName;
-    int health;
+    int health = 3;
     map<string, int> items;
     vector<string> surroundings;
     
-    // Load the game
-    {
-        ifstream ifs(filename);
-        if (ifs.is_open())
-        {
-            string pick = Prompt("Start", { "load", "new" });
-
-            if (pick == "new")
-            {
-                // causes ifs.is_open() to fail
-                ifs.close();
-            }
-        }
-        else
-        {
-            cout << "No save found. Starting a new game.\n";
-        }
-        
-        if (ifs.is_open()) // load game
-        {
-            size_t numItems, numSurroundings;
-            getline(ifs, playerName) >> health >> numItems >> numSurroundings;
-            
-            for (size_t i = 0; i < numItems; ++i)
-            {
-                string itemName;
-                int itemCount;
-                ifs >> itemName >> itemCount;
-                items.emplace(itemName, itemCount);
-            }
-            
-            surroundings.reserve(numSurroundings);
-            for (size_t i = 0; i < numSurroundings; ++i)
-            {
-                string thing;
-                ifs >> thing;
-                surroundings.push_back(thing);
-            }
-            
-            ifs.close();
-            
-            cout << "Welcome back, " << playerName;
-        }
-        else // new game
-        {
-            cout << "What is your name?";
-            playerName = "";
-            while (playerName == "")
-            {
-                cout << "\n> ";
-                getline(cin, playerName);
-            }
-            health = 3;
-            items = { { "gold", 5 }, { "sword", 100 } };
-            RerollSurroundings(surroundings);
-        }
-    }
+    bool isResetting = true;
     
-    cout << endl;
-    
-    // Game loop
-    while (true)
+    while (isResetting)
     {
-        // Echo surroundings
-        cout << "Your current surroundings:";
-        for (const string& thing : surroundings)
-        {
-            cout << "\n- " << thing;
-        }
-        cout << endl;
+        isResetting = false;
         
-        string cmd = Prompt("What would you like to do?", { "move", "use", "quit" });
-            
-        if (cmd == "move")
+        // Load the game
         {
-            (void)Prompt("Where would you like to move?", { "left", "right" "forward" });
-            RerollSurroundings(surroundings); // choice is an illusion :P
-        }
-        else if (cmd == "use")
-        {
-            // Request
-            string action = Prompt("What would you like to use?", { "talk", "grab", "item" });
-            
-            if (action == "item")
+            ifstream ifs(filename);
+            if (ifs.is_open())
             {
-                if (!items.empty())
+                string pick = Prompt("Start", { "load", "new" });
+                
+                if (pick == "new")
                 {
-                    action = PromptItem("Which item?", items);
-                    --items.at(action); // Reduce item by one when used
+                    // causes ifs.is_open() to fail
+                    ifs.close();
                 }
-                else
-                {
-                    cout << "You don't have any items.\n";
-                    continue;
-                }
-            }
-            
-            vector<string> availableTargets = surroundings;
-            availableTargets.insert(availableTargets.begin() + 0, "self");
-            string target = Prompt("On what?", availableTargets);
-            
-            string topic_or_effect;
-            if (action == "talk")
-            {
-                topic_or_effect = ChooseRandom(topics);
-            }
-            else if (action == "potion")
-            {
-                topic_or_effect = ChooseRandom(potionEffects);
-            }
-            
-            // Echo
-            cout << "You ";
-            if (action == "talk")
-            {
-                cout << "had an interesting discussion regarding " << topic_or_effect << " with";
-            }
-            else if (action == "grab")
-            {
-                cout << "grabbed";
-            }
-            else if (action == "bread")
-            {
-                cout << "gave a piece of bread to";
-            }
-            else if (action == "sword")
-            {
-                cout << "swung your sword at";
-            }
-            else if (action == "potion")
-            {
-                cout << "used a potion of " << topic_or_effect << " on";
-            }
-            else if (action == "gold")
-            {
-                cout << "gave some gold to";
             }
             else
             {
-                throw new NotImplementedException();
+                cout << "No save found. Starting a new game.\n";
             }
             
-            cout << " ";
-            
-            if (target == "self")
+            if (ifs.is_open()) // load game
             {
-                cout << "yourself";
-            }
-            else // npc
-            {
-                cout << "the " << target;
-            }
-            cout << ".\n";
-            
-            // Responses
-            if (target == "self")
-            {
-                if (action == "talk")
+                size_t numItems, numSurroundings;
+                getline(ifs, playerName) >> health >> numItems >> numSurroundings;
+                
+                for (size_t i = 0; i < numItems; ++i)
                 {
-                    if (!surroundings.empty())
+                    string itemName;
+                    int itemCount;
+                    ifs >> itemName >> itemCount;
+                    items.emplace(itemName, itemCount);
+                }
+                
+                surroundings.reserve(numSurroundings);
+                for (size_t i = 0; i < numSurroundings; ++i)
+                {
+                    string thing;
+                    ifs >> thing;
+                    surroundings.push_back(thing);
+                }
+                
+                ifs.close();
+                
+                cout << "Welcome back, " << playerName;
+            }
+            else // new game
+            {
+                cout << "What is your name?";
+                playerName = "";
+                while (playerName == "")
+                {
+                    cout << "\n> ";
+                    getline(cin, playerName);
+                }
+                health = 3;
+                items = { { "gold", 5 }, { "sword", 100 } };
+                RerollSurroundings(surroundings);
+            }
+        }
+        
+        cout << endl;
+        
+        // Game loop
+        while (true)
+        {
+            // Echo surroundings
+            cout << "Your current surroundings:";
+            for (const string& thing : surroundings)
+            {
+                cout << "\n- " << thing;
+            }
+            cout << endl;
+            
+            string cmd = Prompt("What would you like to do?", { "move", "use", "quit" });
+            
+            if (cmd == "move")
+            {
+                (void)Prompt("Where would you like to move?", { "left", "right" "forward" });
+                RerollSurroundings(surroundings); // choice is an illusion :P
+            }
+            else if (cmd == "use")
+            {
+                // Request
+                string action = Prompt("What would you like to use?", { "talk", "grab", "item" });
+                
+                if (action == "item")
+                {
+                    if (!items.empty())
                     {
-                        const array<string, 10> possibleResponses = {
-                            "found it rather odd",
-                            "thinks you might need a checkup",
-                            "considers your points rather thought-provoking and insightful, if a little one-sided",
-                            "is too distracted by your utterly repulsive views to care that you were talking to a stone wall",
-                            "is confused who you were talking to",
-                            "looked around to check if there were any hidden familiars you may have been putting on a performance for",
-                            "gave you a weird look",
-                            "thinks you underestimate the effectiveness of brute force",
-                            "thinks you ",
-                        };
-                        
-                        // It is by design that the responder might be inanimate. I thought it would be funny.
-                        string responder = ChooseRandom(surroundings);
-                        string response = ChooseRandom(possibleResponses);
-                        if (response == "thinks you ")
+                        action = PromptItem("Which item?", items);
+                        --items.at(action); // Reduce item by one when used
+                        if (items.at(action) == 0)
                         {
-                            array<string, 7> contextualOpinion = {
-                                "may have overlooked",
-                                "exaggerated",
-                                "are overestimating",
-                                "underestimate",
-                                "may forget",
-                                "fail to appriciate",
-                                "are perpetuating harmful propaganda regarding",
-                            };
-                            response += ChooseRandom(contextualOpinion) + ' ';
-                            array<string, 3> contextualResponses;
-                            if (topic_or_effect == TOPIC_WINEFISH)
-                            {
-                                contextualResponses = {
-                                    "the resiliance of aquatic livers",
-                                    "the work ethic of drunk merfolk",
-                                    "how that would affect the wine market",
-                                };
-                            }
-                            else if (topic_or_effect == TOPIC_SKELESTOCK)
-                            {
-                                contextualResponses = {
-                                    "the staying power of good steel",
-                                    "the dwindling numbers of the skeleton army",
-                                    "how important armor is to the health of the Skeleton Alliance's trade sector",
-                                };
-                            }
-                            else if (topic_or_effect == TOPIC_WP_SIEGE)
-                            {
-                                contextualResponses = {
-                                    "an average woodpecker's endurance",
-                                    "the fact that a woodpecker pecks wood, not stone",
-                                    "the effectiveness of hot oil on an army of woodpeckers",
-                                };
-                            }
-                            else if (topic_or_effect == TOPIC_BS_TELEKEN)
-                            {
-                                contextualResponses = {
-                                    "the power of hydrokenesis when used to cool hot steel",
-                                    "the craftsmanship needed to shape tools with one's mind",
-                                    "the quality of a blade heated with telekenetic precision",
-                                };
-                            }
-                            else if (topic_or_effect == TOPIC_WOODCHUCK)
-                            {
-                                contextualResponses = {
-                                    "where they'd even get all that wood",
-                                    "how long a woodchuck's arms are",
-                                    "the possibility of seven or more woodchucks banding together and forming a woodchuck mega-fusion",
-                                };
-                            }
-                            else if (topic_or_effect == TOPIC_PENGUIN_BTL)
-                            {
-                                contextualResponses = {
-                                    "what happened the last six times the Penguin Guild and the Old Realm got into a fight like this in the past",
-                                    "just how much DNA the Penguin Guild's members actually share with real penguins",
-                                    "how prone the Old Realm's shadow government is to shooting themselves in the foot when it comes to matters like this",
-                                };
-                            }
-                            else // make up some catch-all bs
-                            {
-                                contextualResponses = {
-                                    "how much salt that would take",
-                                    "the pulsating, glowing red mass",
-                                    "the power of teamwork",
-                                };
-                            }
-                            response += ChooseRandom(contextualResponses);
+                            items.erase(action);
                         }
-                        cout << "The " << responder << " " << response << ".";
                     }
                     else
                     {
-                        cout << (rand() & 1 ? "Fortunately" : "Sadly") << ", nobody was around to hear it...";
+                        cout << "You don't have any items.\n";
+                        continue;
                     }
                 }
-                else if (action == "grab")
+                
+                vector<string> availableTargets = surroundings;
+                availableTargets.insert(availableTargets.begin() + 0, "self");
+                string target = Prompt("On what?", availableTargets);
+                
+                string topic_or_effect;
+                if (action == "talk")
                 {
-                    cout << "Weirdo.";
-                }
-                else if (action == "bread")
-                {
-                    
+                    topic_or_effect = ChooseRandom(topics);
                 }
                 else if (action == "potion")
                 {
-                    
+                    topic_or_effect = ChooseRandom(potionEffects);
+                }
+                
+                // Echo
+                cout << "You ";
+                if (action == "talk")
+                {
+                    cout << "had an interesting discussion regarding " << topic_or_effect << " with";
+                }
+                else if (action == "grab")
+                {
+                    cout << "grabbed";
+                }
+                else if (action == "bread")
+                {
+                    cout << "gave a piece of bread to";
+                }
+                else if (action == "sword")
+                {
+                    cout << "swung your sword at";
+                }
+                else if (action == "potion")
+                {
+                    cout << "used a potion of " << topic_or_effect << " on";
                 }
                 else if (action == "gold")
                 {
-                    cout << "You made a show of thanking yourself kindly for the gold before returning it to your money pouch.";
+                    cout << "gave some gold to";
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-            }
-            else if (target == "door")
-            {
                 
-            }
-            else if (target == "baker")
-            {
+                cout << " ";
                 
-            }
-            else if (target == "smith")
-            {
+                if (target == "self")
+                {
+                    cout << "yourself";
+                }
+                else // npc
+                {
+                    cout << "the " << target;
+                }
+                cout << ".\n";
                 
-            }
-            else if (target == "wizard")
-            {
+                // Responses
+                if (target == "self")
+                {
+                    if (action == "talk")
+                    {
+                        if (!surroundings.empty())
+                        {
+                            const array<string, 10> possibleResponses = {
+                                "found it rather odd",
+                                "thinks you might need a checkup",
+                                "considers your points rather thought-provoking and insightful, if a little one-sided",
+                                "is too distracted by your utterly repulsive views to care that you were talking to a stone wall",
+                                "is confused who you were talking to",
+                                "looked around to check if there were any hidden familiars you may have been putting on a performance for",
+                                "gave you a weird look",
+                                "thinks you underestimate the effectiveness of brute force",
+                                "thinks you ",
+                            };
+                            
+                            // It is by design that the responder might be inanimate. I thought it would be funny.
+                            string responder = ChooseRandom(surroundings);
+                            string response = ChooseRandom(possibleResponses);
+                            if (response == "thinks you ")
+                            {
+                                array<string, 7> contextualOpinion = {
+                                    "may have overlooked",
+                                    "exaggerated",
+                                    "are overestimating",
+                                    "underestimate",
+                                    "may forget",
+                                    "fail to appriciate",
+                                    "are perpetuating harmful propaganda regarding",
+                                };
+                                response += ChooseRandom(contextualOpinion) + ' ';
+                                array<string, 3> contextualResponses;
+                                if (topic_or_effect == TOPIC_WINEFISH)
+                                {
+                                    contextualResponses = {
+                                        "the resiliance of aquatic livers",
+                                        "the work ethic of drunk merfolk",
+                                        "how that would affect the wine market",
+                                    };
+                                }
+                                else if (topic_or_effect == TOPIC_SKELESTOCK)
+                                {
+                                    contextualResponses = {
+                                        "the staying power of good steel",
+                                        "the dwindling numbers of the skeleton army",
+                                        "how important armor is to the health of the Skeleton Alliance's trade sector",
+                                    };
+                                }
+                                else if (topic_or_effect == TOPIC_WP_SIEGE)
+                                {
+                                    contextualResponses = {
+                                        "an average woodpecker's endurance",
+                                        "the fact that a woodpecker pecks wood, not stone",
+                                        "the effectiveness of hot oil on an army of woodpeckers",
+                                    };
+                                }
+                                else if (topic_or_effect == TOPIC_BS_TELEKEN)
+                                {
+                                    contextualResponses = {
+                                        "the power of hydrokenesis when used to cool hot steel",
+                                        "the craftsmanship needed to shape tools with one's mind",
+                                        "the quality of a blade heated with telekenetic precision",
+                                    };
+                                }
+                                else if (topic_or_effect == TOPIC_WOODCHUCK)
+                                {
+                                    contextualResponses = {
+                                        "where they'd even get all that wood",
+                                        "how long a woodchuck's arms are",
+                                        "the possibility of seven or more woodchucks banding together and forming a woodchuck mega-fusion",
+                                    };
+                                }
+                                else if (topic_or_effect == TOPIC_PENGUIN_BTL)
+                                {
+                                    contextualResponses = {
+                                        "what happened the last six times the Penguin Guild and the Old Realm got into a fight like this in the past",
+                                        "just how much DNA the Penguin Guild's members actually share with real penguins",
+                                        "how prone the Old Realm's shadow government is to shooting themselves in the foot when it comes to matters like this",
+                                    };
+                                }
+                                else // make up some catch-all bs
+                                {
+                                    contextualResponses = {
+                                        "how much salt that would take",
+                                        "the pulsating, glowing red mass",
+                                        "the power of teamwork",
+                                    };
+                                }
+                                response += ChooseRandom(contextualResponses);
+                            }
+                            cout << "The " << responder << " " << response << ".";
+                        }
+                        else
+                        {
+                            cout << (rand() & 1 ? "Fortunately" : "Sadly") << ", nobody was around to hear it...";
+                        }
+                    }
+                    else if (action == "grab")
+                    {
+                        cout << "Weirdo.";
+                    }
+                    else if (action == "bread")
+                    {
+                        ++health;
+                        cout << "It was delicious, replenishing 1 point of health.";
+                    }
+                    else if (action == "potion")
+                    {
+                        if (topic_or_effect == "fire")
+                        {
+                            --health;
+                            cout << "It hurt quite a bit, taking away 1 point of health.";
+                        }
+                        else if (topic_or_effect == "heal")
+                        {
+                            ++health;
+                            cout << "You felt rejuvenated, recovering 1 point of health.";
+                        }
+                        else if (topic_or_effect == "water")
+                        {
+                            cout << "It soothes your wounds. Hopefully this doesn't rust your armor.";
+                        }
+                        else if (topic_or_effect == "ducks")
+                        {
+                            cout << "A dozen ducks pop into existence around you. They seem lost and disoriented for a moment before waddling northeast towards the nearest pond.";
+                        }
+                        else if (topic_or_effect == "explode")
+                        {
+                            health -= 3;
+                            cout << "You feel your armor heat up tremendously, practically baking you within it. You feel 3 health points drain from your soul.";
+                        }
+                        else if (topic_or_effect == "wish")
+                        {
+                            cout << "A genie appears from the the potion bottle.";
+                            
+                            string wish = Prompt("\"What would you like for your wish, " + playerName + "?\"", {
+                                "wealth", "health", "power", "status", "luck", "faith"
+                            });
+                            cout << "The genie pauses for a moment before replying, \"Granted.\"\n";
+                            
+                            if (wish == "wealth")
+                            {
+                                if (items.contains("gold"))
+                                {
+                                    items.at("gold") += 3;
+                                }
+                                else
+                                {
+                                    items.emplace("gold", 3);
+                                }
+                                cout << "You feel your money pouch get a little heavier.";
+                            }
+                            else if (wish == "health")
+                            {
+                                if (!surroundings.empty() && (rand() & 1))
+                                {
+                                    cout << "\"You wished for health, you didn't specify for whom\"\nYou notice the "
+                                        << ChooseRandom(surroundings) << "appears to have regained some health...";
+                                }
+                                else
+                                {
+                                    cout << "You feel your wounds heal, replenishing 2 health points.";
+                                }
+                            }
+                            else if (wish == "power")
+                            {
+                                if ((rand() & 1))
+                                {
+                                    array<string, 9> collective = {
+                                        "citizens of the Western Expanse",
+                                        "Valley of the Twisting Vacancy",
+                                        "Children of the Pond of Infinite Pathways",
+                                        "Followers of the Northern Seed",
+                                        "Earthen Swampfire district of the Northeastern Bishop's Domain",
+                                        "Beholders of the Critical Malstrum",
+                                        "Nursing Home of the Elder Kings",
+                                        "Holdout Clan of the Dead King's Fallen Citadel",
+                                        "League of Babypunching Puppykickers. You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name",
+                                    };
+                                    cout << "You feel an inexplicable sensation of political influence over the " << ChooseRandom(collective) << ".";
+                                }
+                                else
+                                {
+                                    if (items.contains("sword"))
+                                    {
+                                        items.at("sword") += 10;
+                                    }
+                                    else
+                                    {
+                                        items.emplace("sword", 10);
+                                    }
+                                    cout << "Your blade seems to magically sharpen itself, regaining 10 durability.";
+                                }
+                            }
+                            else if (wish == "status")
+                            {
+                                
+                            }
+                            else if (wish == "luck")
+                            {
+                                
+                            }
+                            else if (wish == "faith")
+                            {
+                                
+                            }
+                            cout << " The genie disappears.";
+                        }
+                    }
+                    else if (action == "gold")
+                    {
+                        cout << "You made a show of thanking yourself kindly for the gold before returning it to your money pouch.";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+                else if (target == "door")
+                {
+                    
+                }
+                else if (target == "baker")
+                {
+                    
+                }
+                else if (target == "smith")
+                {
+                    
+                }
+                else if (target == "wizard")
+                {
+                    
+                }
+                else if (target == "enemy")
+                {
+                    
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
                 
+                cout << endl;
             }
-            else if (target == "enemy")
+            else if (cmd == "quit")
             {
-                
-            }
-            else
-            {
-                throw new NotImplementedException();
+                isResetting = false;
+                break;
             }
             
-            cout << endl;
-        }
-        else if (cmd == "quit")
-        {
-            break;
+            if (health <= 0)
+            {
+                cout << "Your health has dropped to zero and you have died.\n";
+                string tryAgain = Prompt("Would you like to start again?", { "yes", "no" });
+                if (tryAgain == "yes")
+                {
+                    isResetting = true;
+                    break;
+                }
+            }
         }
     }
     
     // Save the game
     {
         ofstream ofs(filename, ofstream::trunc);
-        ofs << playerName << endl;
+        ofs << playerName << '\n';
+        ofs << health << ' ' << items.size() << ' ' << surroundings.size() << '\n';
+        for (const auto& item : items)
+        {
+            ofs << item.first << ' ' << item.second << '\n';
+        }
+        for (const string& thing : surroundings)
+        {
+            ofs << thing << '\n';
+        }
         ofs.close();
     }
     
@@ -455,14 +587,7 @@ string PromptItem(const string& prompt, const map<string, int>& options)
         auto it = options.find(input);
         if (it != options.end())
         {
-            if (it->second != 0)
-            {
-                return it->first;
-            }
-            else
-            {
-                cout << "You don't have any " << it->first << ".\n";
-            }
+            return it->first;
         }
     }
 }
