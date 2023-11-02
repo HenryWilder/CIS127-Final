@@ -51,6 +51,22 @@ string ChooseRandom(const array<string, _Size>& options)
     return options.at(rand() % options.size());
 }
 
+bool isvowel(char ch)
+{
+    if (isalpha(ch))
+    {
+        if (islower(ch))
+        {
+            return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
+        }
+        else
+        {
+            return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
+        }
+    }
+    return false;
+}
+
 int main()
 {
     const array<string, 14> topics = {
@@ -92,13 +108,58 @@ int main()
         "predict",
     };
     
+    const array<string, 9> collectives = {
+        "citizens of the Western Expanse",
+        "Valley of the Twisting Vacancy",
+        "Children of the Pond of Infinite Pathways",
+        "Followers of the Northern Seed",
+        "Earthen Swampfire district of the Northeastern Bishop's Domain",
+        "Beholders of the Critical Malstrum",
+        "Nursing Home of the Elder Kings",
+        "Holdout Clan of the Dead King's Fallen Citadel",
+        "League of Babypunching Puppykickers. You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name",
+    };
+    
     constexpr const char filename[] =
         "savegame.txt";
         
     string playerName;
     int health = 3;
+    int luck = 0;
+    bool isATree = false;
+    array<int, collectives.size()> influence; // Encompasses power, faith, and status
     map<string, int> items;
     vector<string> surroundings;
+    
+    auto AddItem = [&items](const string& key, int count)
+    {
+        if (items.contains(key))
+        {
+            items.at(key) += count;
+        }
+        else
+        {
+            items.emplace(key, count);
+        }
+    };
+    
+    auto TryRemoveItem = [&items](const string& key, int count)
+    {
+        auto it = items.find(key);
+        if (it != items.end())
+        {
+            if (it->second == count)
+            {
+                items.erase(it);
+            }
+            else if (it->second > count)
+            {
+                it->second -= count;
+            }
+            return it->second >= count;
+        }
+        return false;
+    };
     
     bool isResetting = true;
     
@@ -127,7 +188,12 @@ int main()
             if (ifs.is_open()) // load game
             {
                 size_t numItems, numSurroundings;
-                getline(ifs, playerName) >> health >> numItems >> numSurroundings;
+                getline(ifs, playerName) >> health >> luck >> isATree >> numItems >> numSurroundings;
+                
+                for (int& amnt : influence)
+                {
+                    ifs >> amnt;
+                }
                 
                 for (size_t i = 0; i < numItems; ++i)
                 {
@@ -159,6 +225,8 @@ int main()
                     getline(cin, playerName);
                 }
                 health = 3;
+                luck = 0;
+                isATree = false;
                 items = { { "gold", 5 }, { "sword", 100 } };
                 RerollSurroundings(surroundings);
             }
@@ -177,7 +245,17 @@ int main()
             }
             cout << endl;
             
-            string cmd = Prompt("What would you like to do?", { "move", "use", "quit" });
+            vector<string> commandOptions;
+            if (isATree)
+            {
+                commandOptions = { "quit", "restart" };
+            }
+            else
+            {
+                commandOptions = { "move", "use", "quit", "restart" };
+            }
+            
+            string cmd = Prompt("What would you like to do?", commandOptions);
             
             if (cmd == "move")
             {
@@ -194,11 +272,7 @@ int main()
                     if (!items.empty())
                     {
                         action = PromptItem("Which item?", items);
-                        --items.at(action); // Reduce item by one when used
-                        if (items.at(action) == 0)
-                        {
-                            items.erase(action);
-                        }
+                        TryRemoveItem(action, 1);
                     }
                     else
                     {
@@ -423,11 +497,13 @@ int main()
                             {
                                 if (!surroundings.empty() && (rand() & 1))
                                 {
+                                    // They didn't :P
                                     cout << "\"You wished for health, you didn't specify for whom\"\nYou notice the "
-                                        << ChooseRandom(surroundings) << "appears to have regained some health...";
+                                        << ChooseRandom(surroundings) << " appears to have regained some health...";
                                 }
                                 else
                                 {
+                                    health += 2;
                                     cout << "You feel your wounds heal, replenishing 2 health points.";
                                 }
                             }
@@ -435,18 +511,10 @@ int main()
                             {
                                 if ((rand() & 1))
                                 {
-                                    array<string, 9> collective = {
-                                        "citizens of the Western Expanse",
-                                        "Valley of the Twisting Vacancy",
-                                        "Children of the Pond of Infinite Pathways",
-                                        "Followers of the Northern Seed",
-                                        "Earthen Swampfire district of the Northeastern Bishop's Domain",
-                                        "Beholders of the Critical Malstrum",
-                                        "Nursing Home of the Elder Kings",
-                                        "Holdout Clan of the Dead King's Fallen Citadel",
-                                        "League of Babypunching Puppykickers. You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name",
-                                    };
-                                    cout << "You feel an inexplicable sensation of political influence over the " << ChooseRandom(collective) << ".";
+                                    size_t collectiveIndex = rand() % collectives.size();
+                                    string among = collectives.at(collectiveIndex);
+                                    ++influence.at(collectiveIndex);
+                                    cout << "You feel an inexplicable sensation of political influence over the " << among << ".";
                                 }
                                 else
                                 {
@@ -463,17 +531,93 @@ int main()
                             }
                             else if (wish == "status")
                             {
-                                
+                                size_t collectiveIndex = rand() % collectives.size();
+                                string among = collectives.at(collectiveIndex);
+                                ++influence.at(collectiveIndex);
+                                cout << "You feel an inexplicable sensation of high status among the " << among << ".";
                             }
                             else if (wish == "luck")
                             {
-                                
+                                luck += 5;
+                                cout << "Nothing seems to have changed. You aren't even sure if the wish did anything.";
                             }
                             else if (wish == "faith")
                             {
-                                
+                                size_t collectiveIndex = rand() % collectives.size();
+                                string among = collectives.at(collectiveIndex);
+                                ++influence.at(collectiveIndex);
+                                cout << "You feel an inexplicable sensation of religious influence over the " << among << ".";
                             }
                             cout << " The genie disappears.";
+                        }
+                        else if (topic_or_effect == "demon")
+                        {
+                            array<string, 4> demonTypes = {
+                                "imp",
+                                "warewolf",
+                                "tentacle",
+                                "vampire",
+                            };
+                            string demon = ChooseRandom(demonTypes);
+                            cout << "You are surprised by the sudden appearance of " << (isvowel(demon[0]) ? "an" : "a") << " " << demon << ". ";
+                            
+                            if (demon == "imp")
+                            {
+                                health -= 2;
+                                cout << "The imp seems rather annoyed, throwing a fireball at you before de-summoning itself. You take 2 points of damage.";
+                            }
+                            else if (demon == "warewolf")
+                            {
+                                if (luck > 0)
+                                {
+                                    --luck;
+                                    cout << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
+                                }
+                                else
+                                {
+                                    health -= 2;
+                                    cout << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. You are protected from most of the attack thanks to your armor, but it still takes away 2 points of your health.";
+                                }
+                            }
+                            else if (demon == "tentacle")
+                            {
+                                --health;
+                                cout << "The tentacle slaps you violently, causing you to spin around in place before it slithers back down into its hole, disappearing from view. You lost 1 point of health.";
+                            }
+                            else if (demon == "vampire")
+                            {
+                                if (luck > 0)
+                                {
+                                    --luck;
+                                    AddItem("bread", 3);
+                                    cout << "The vampire seemed confused as to why they were summoned, but decides now is as decent a time as any to dispose of the garlic bread people keep throwing at them. They " << ChooseRandom({ "plop", "stuff", "drop", "place" }) << " it down into your hand and promptly transform into a small black bat, flying away into the darkness.";
+                                }
+                                else
+                                {
+                                    cout << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. You take no damage, but it still stings.";
+                                }
+                            }
+                        }
+                        else if (topic_or_effect == "salt")
+                        {
+                            cout << "Your wounds begin burning and you feel dehydrated.";
+                        }
+                        else if (topic_or_effect == "tree")
+                        {
+                            cout << "You transform into a tree.";
+                        }
+                        else if (topic_or_effect == "ants")
+                        {
+                            throw new NotImplementedException();
+                        }
+                        else if (topic_or_effect == "force")
+                        {
+                            throw new NotImplementedException();
+                        }
+                        else if (topic_or_effect == "predict")
+                        {
+                            luck += 5;
+                            cout << "You recieve foresight of everything that will happen in the near future, and plan accordingly.";
                         }
                     }
                     else if (action == "gold")
@@ -487,23 +631,23 @@ int main()
                 }
                 else if (target == "door")
                 {
-                    
+                    throw new NotImplementedException();
                 }
                 else if (target == "baker")
                 {
-                    
+                    throw new NotImplementedException();
                 }
                 else if (target == "smith")
                 {
-                    
+                    throw new NotImplementedException();
                 }
                 else if (target == "wizard")
                 {
-                    
+                    throw new NotImplementedException();
                 }
                 else if (target == "enemy")
                 {
-                    
+                    throw new NotImplementedException();
                 }
                 else
                 {
@@ -515,6 +659,11 @@ int main()
             else if (cmd == "quit")
             {
                 isResetting = false;
+                break;
+            }
+            else if (cmd == "restart")
+            {
+                isResetting = true;
                 break;
             }
             
@@ -535,15 +684,24 @@ int main()
     {
         ofstream ofs(filename, ofstream::trunc);
         ofs << playerName << '\n';
-        ofs << health << ' ' << items.size() << ' ' << surroundings.size() << '\n';
+        ofs << health << ' ' << luck << ' ' << isATree << ' ' << items.size() << ' ' << surroundings.size();
+        
+        for (int& amnt : influence)
+        {
+            ofs << ' ' << amnt;
+        }
+        ofs << '\n';
+        
         for (const auto& item : items)
         {
             ofs << item.first << ' ' << item.second << '\n';
         }
+        
         for (const string& thing : surroundings)
         {
             ofs << thing << '\n';
         }
+        
         ofs.close();
     }
     
