@@ -29,7 +29,7 @@ using namespace std;
 string Prompt(const string& prompt, const vector<string>& options);
 string PromptItem(const string& prompt, const map<string, int>& options);
 
-void RerollSurroundings(vector<string>& surroundings);
+void _RerollSurroundings(vector<string>& surroundings);
 
 class NotImplementedException :
     public exception
@@ -93,22 +93,23 @@ int main()
         "gold",   // 100% chance of getting items from NPCs
     };
 
+    // Sorted from most to least positive effects
     const array<string, 12> potionEffects = {
-        "fire",
+        "predict",
         "heal",
         "water",
-        "ducks",
-        "explode",
         "wish",
-        "demon",
-        "salt",
-        "tree",
-        "ants",
+        "ducks",
         "force",
-        "predict",
+        "salt",
+        "ants",
+        "demon",
+        "fire",
+        "explode",
+        "tree",
     };
     
-    const array<string, 9> collectives = {
+    const array<string, 10> collectives = {
         "citizens of the Western Expanse",
         "Valley of the Twisting Vacancy",
         "Children of the Pond of Infinite Pathways",
@@ -118,10 +119,12 @@ int main()
         "Nursing Home of the Elder Kings",
         "Holdout Clan of the Dead King's Fallen Citadel",
         "League of Babypunching Puppykickers. You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name",
+        "monsters",
     };
     
-    constexpr const char filename[] =
-        "savegame.txt";
+    constexpr size_t MONSTER_COLLECTIVE = 9;
+    
+    constexpr const char filename[] = "savegame.txt";
         
     string playerName;
     int health = 3;
@@ -161,6 +164,11 @@ int main()
         return false;
     };
     
+    auto RerollSurroundings = [&surroundings]()
+    {
+        _RerollSurroundings(surroundings);
+    };
+    
     bool isResetting = true;
     
     while (isResetting)
@@ -182,7 +190,7 @@ int main()
             }
             else
             {
-                cout << "No save found. Starting a new game.\n";
+                cout << "No save found. Starting a new game.\n\n";
             }
             
             if (ifs.is_open()) // load game
@@ -227,8 +235,9 @@ int main()
                 health = 3;
                 luck = 0;
                 isATree = false;
-                items = { { "gold", 5 }, { "sword", 100 } };
-                RerollSurroundings(surroundings);
+                influence.fill(0);
+                items = { { "gold", 5 }, { "sword", 20 } };
+                RerollSurroundings();
             }
         }
         
@@ -238,10 +247,15 @@ int main()
         while (true)
         {
             // Echo surroundings
-            cout << "Your current surroundings:";
+            cout << "Your current surroundings:\n";
             for (const string& thing : surroundings)
             {
-                cout << "\n- " << thing;
+                cout << "- " << thing << '\n';
+            }
+            cout << "Your current inventory:\n";
+            for (const auto& item : items)
+            {
+                cout << "- " << item.second << " " << item.first << "\n";
             }
             cout << endl;
             
@@ -259,8 +273,8 @@ int main()
             
             if (cmd == "move")
             {
-                (void)Prompt("Where would you like to move?", { "left", "right" "forward" });
-                RerollSurroundings(surroundings); // choice is an illusion :P
+                (void)Prompt("Where would you like to move?", { "left", "right", "forward" });
+                RerollSurroundings(); // choice is an illusion :P
             }
             else if (cmd == "use")
             {
@@ -281,6 +295,12 @@ int main()
                     }
                 }
                 
+                if (action == "phonenumber")
+                {
+                    cout << "If only you had a phone...\n\n";
+                    continue;
+                }
+                
                 vector<string> availableTargets = surroundings;
                 availableTargets.insert(availableTargets.begin() + 0, "self");
                 string target = Prompt("On what?", availableTargets);
@@ -292,51 +312,69 @@ int main()
                 }
                 else if (action == "potion")
                 {
-                    topic_or_effect = ChooseRandom(potionEffects);
+                    if (luck > 0)
+                    {
+                        --luck;
+                        int potionEffectsHalfSize = potionEffects.size() / 2;
+                        if (target == "self") // Lower half
+                        {
+                            topic_or_effect = potionEffects.at(rand() % potionEffectsHalfSize);
+                        }
+                        else // Upper half
+                        {
+                            topic_or_effect = potionEffects.at(potionEffectsHalfSize + (rand() % (potionEffects.size() - potionEffectsHalfSize)));
+                        }
+                    }
+                    else
+                    {
+                        topic_or_effect = ChooseRandom(potionEffects);
+                    }
                 }
                 
                 // Echo
-                cout << "You ";
-                if (action == "talk")
                 {
-                    cout << "had an interesting discussion regarding " << topic_or_effect << " with";
+                    cout << "You ";
+                    if (action == "talk")
+                    {
+                        cout << "had an interesting discussion regarding " << topic_or_effect << " with";
+                    }
+                    else if (action == "grab")
+                    {
+                        cout << "grabbed";
+                    }
+                    else if (action == "bread")
+                    {
+                        cout << "gave a piece of bread to";
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "swung your sword at";
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "used a potion of " << topic_or_effect << " on";
+                    }
+                    else if (action == "gold")
+                    {
+                        cout << "gave some gold to";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
+                    
+                    cout << " ";
+                    
+                    if (target == "self")
+                    {
+                        cout << "yourself";
+                    }
+                    else // npc
+                    {
+                        cout << "the " << target;
+                    }
+                    cout << ".\n";
                 }
-                else if (action == "grab")
-                {
-                    cout << "grabbed";
-                }
-                else if (action == "bread")
-                {
-                    cout << "gave a piece of bread to";
-                }
-                else if (action == "sword")
-                {
-                    cout << "swung your sword at";
-                }
-                else if (action == "potion")
-                {
-                    cout << "used a potion of " << topic_or_effect << " on";
-                }
-                else if (action == "gold")
-                {
-                    cout << "gave some gold to";
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-                
-                cout << " ";
-                
-                if (target == "self")
-                {
-                    cout << "yourself";
-                }
-                else // npc
-                {
-                    cout << "the " << target;
-                }
-                cout << ".\n";
                 
                 // Responses
                 if (target == "self")
@@ -446,6 +484,10 @@ int main()
                     {
                         ++health;
                         cout << "It was delicious, replenishing 1 point of health.";
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "[TODO]\n";
                     }
                     else if (action == "potion")
                     {
@@ -608,11 +650,11 @@ int main()
                         }
                         else if (topic_or_effect == "ants")
                         {
-                            throw new NotImplementedException();
+                            cout << "[TODO]\n";
                         }
                         else if (topic_or_effect == "force")
                         {
-                            throw new NotImplementedException();
+                            cout << "[TODO]\n";
                         }
                         else if (topic_or_effect == "predict")
                         {
@@ -622,7 +664,8 @@ int main()
                     }
                     else if (action == "gold")
                     {
-                        cout << "You made a show of thanking yourself kindly for the gold before returning it to your money pouch.";
+                        AddItem("gold", 1);
+                        cout << "You make a show of thanking yourself kindly for the gold before returning it to your money pouch.";
                     }
                     else
                     {
@@ -631,27 +674,287 @@ int main()
                 }
                 else if (target == "door")
                 {
-                    throw new NotImplementedException();
+                    if (action == "talk")
+                    {
+                        cout << "The door listens silently.";
+                    }
+                    else if (action == "grab")
+                    {
+                        RerollSurroundings();
+                        cout << "The door opens, allowing you through.";
+                    }
+                    else if (action == "bread")
+                    {
+                        ++luck;
+                        cout << "The door says nothing, but you get the odd sensation that it appriciates the gift.";
+                    }
+                    else if (action == "sword")
+                    {
+                        if (rand() & 3) // 3/4 chance - 01, 10, 11 = true; 00 = false
+                        {
+                            cout << "The door does not yield.";
+                        }
+                        else
+                        {
+                            RerollSurroundings();
+                            cout << "The door crumbles to bits and you walk through it.";
+                        }
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "gold")
+                    {
+                        cout << "The door remains silent and unmoved. It has no concept for money.";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 else if (target == "baker")
                 {
-                    throw new NotImplementedException();
+                    if (action == "talk")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "grab")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "bread")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "gold")
+                    {
+                        AddItem("bread", 1);
+                        cout << "The baker thanks you for the gold and hands you a piece of bread.";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 else if (target == "smith")
                 {
-                    throw new NotImplementedException();
+                    if (action == "talk")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "grab")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "bread")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "gold")
+                    {
+                        AddItem("sword", 10);
+                        cout << "The blacksmith thanks you for the gold and adds some durability to your sword.";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 else if (target == "wizard")
                 {
-                    throw new NotImplementedException();
+                    if (action == "talk")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "grab")
+                    {
+                        bool isPositive = rand() & 1;
+                        string reaction, actionDescriptor;
+                        if (isPositive)
+                        {
+                            reaction = ChooseRandom({ "intrigued", "embarrassed" });
+                            actionDescriptor = ChooseRandom({ "surprised", "unamused", "annoyed", "" });
+                        }
+                        else
+                        {
+                            reaction = ChooseRandom({ "surprised", "unamused", "annoyed", "" });
+                            actionDescriptor = ChooseRandom({ "surprised", "unamused", "annoyed", "" });
+                        }
+                        cout << "The wizard appears " << reaction << " by your " << actionDescriptor << " action.";
+                    }
+                    else if (action == "bread")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "gold")
+                    {
+                        AddItem("potion", 1);
+                        cout << "The wizard thanks you for the gold and gives you a potion.";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
-                else if (target == "enemy")
+                else if (target == "monster")
                 {
-                    throw new NotImplementedException();
+                    bool isPositive = (rand() % 20) < influence.at(MONSTER_COLLECTIVE);
+                    
+                    // Only uses luck if you wouldn't have succeeded and weren't trying to hurt it
+                    if (!isPositive && luck > 0 && action != "sword" && action != "potion")
+                    {
+                        --luck;
+                        isPositive = true;
+                    }
+                    
+                    if (action == "talk")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "grab")
+                    {
+                        string reaction, reactingTo;
+                        if (isPositive)
+                        {
+                            reaction = ChooseRandom({ "surprised", "impressed", "confused", "baffled", "amused", "astonished", "flustered", "bewildered" });
+                            reactingTo = ChooseRandom({ "forwardness", "strength", "agility", "fearlessness", "courage" });
+                        }
+                        else
+                        {
+                            reaction = ChooseRandom({ "surprised", "confused", "unamused", "annoyed", "upset", "angered" });
+                            reactingTo = ChooseRandom({ "foolishness", "lack of self-preservation", "disrespect" });
+                        }
+                        
+                        cout << "The monster seems " << reaction << " by your " << reactingTo << ", staring at you until you release it from your grip. ";
+                        
+                        if (reaction == "flustered" || ((reaction == "impressed" || reaction == "surprised") && reactingTo == "forwardness"))
+                        {
+                            AddItem("phonenumber", 1);
+                            cout << "Upon being released, it discretely slips something into your pocket.";
+                        }
+                        else if (isPositive)
+                        {
+                            ++influence.at(MONSTER_COLLECTIVE);
+                            cout << "It gives a little nod of respect.";
+                        }
+                        else // negative
+                        {
+                            health -= 3;
+                            cout << "It decides to return the favor, squeezing you in its massive claws as you feel your armor dent and tighten around your fragile, squishy body. ";
+                            cout << "You lose 3 points of health.";
+                        }
+                    }
+                    else if (action == "bread")
+                    {
+                        cout << "The monster ";
+                        if (isPositive)
+                        {
+                            string reaction = ChooseRandom({
+                                "is delighted by",
+                                "is overjoyed at",
+                                "looks longingly at",
+                                "appriciates",
+                                "tears up over",
+                                "stares in surprise at",
+                                "curiously examines",
+                                "curiously investigates",
+                            });
+                            string response = ChooseRandom({
+                                "scarfing it down hungrily",
+                                "taking long, deliberate bites out of it",
+                                "tucking it away for later",
+                                "sheathing it on its back like a sword",
+                                "sliding the entire loaf down its neck in one bite",
+                                "slipping the loaf into its conveniently-sized hat",
+                                "stuffing the loaf through what you had previously mistaken for a cycloptic eye",
+                                "letting the bread melt and assimilate into its smooth, featureless face",
+                            });
+                            string gratitude = ChooseRandom({
+                                "nodding its head with what is meant to be a genuine smile, though it has difficulty trying not to look frightening",
+                                "giving you what is meant to be a pat on the head; unintentionally causing your helmet to clang against the neck of your breastplate",
+                                "wrapping its long, heavy arms around you in thanks. It drops you onto the floor after a few seconds, and you lie there stunned for a moment before managing to stand back up",
+                                "pulling you into a warm bear hug for a full thirty seconds before setting you down",
+                            });
+                            ++influence.at(MONSTER_COLLECTIVE);
+                            cout << reaction << " the gift, quietly accepting it and " << response << " before " << gratitude << ".";
+                        }
+                        else
+                        {
+                            
+                        }
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "gold")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    if (action == "talk")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "grab")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "bread")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "sword")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "potion")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else if (action == "gold")
+                    {
+                        cout << "[TODO]\n";
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
                 
                 cout << endl;
@@ -666,6 +969,8 @@ int main()
                 isResetting = true;
                 break;
             }
+            
+            cout << endl;
             
             if (health <= 0)
             {
@@ -750,16 +1055,16 @@ string PromptItem(const string& prompt, const map<string, int>& options)
     }
 }
 
-void RerollSurroundings(vector<string>& surroundings)
+void _RerollSurroundings(vector<string>& surroundings)
 {
     surroundings.clear();
     
     const array<string, 5> possible = {
-        "door",   // Do nothing :P
-        "baker",  // Give bread
-        "smith",  // Repair sword
-        "wizard", // Give potion
-        "enemy",  // Hurt the player
+        "door",    // Do nothing :P
+        "baker",   // Give bread
+        "smith",   // Repair sword
+        "wizard",  // Give potion
+        "monster", // Hurt the player
     };
     
     for (int i = 0; i < 4; ++i) // Four possible items per roll
