@@ -23,13 +23,13 @@ string Surroundings::Prompt(const string& prompt) const
     {
         cout << "\n- " << it.first;
     }
-    cout << endl;
+    cout << "\n- self" << endl;
     while (true) // repeats until return
     {
         string input;
         cout << "> ";
         getline(cin, input);
-        if (things.contains(input))
+        if (things.contains(input) || input == "self")
         {
             return input;
         }
