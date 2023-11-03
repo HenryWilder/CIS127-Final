@@ -1,6 +1,7 @@
 #ifndef Monster_hpp
 #define Monster_hpp
 
+#include "utilities.hpp"
 #include "Interactable.hpp"
 
 class Monster :

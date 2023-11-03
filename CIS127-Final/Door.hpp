@@ -1,6 +1,7 @@
 #ifndef Door_hpp
 #define Door_hpp
 
+#include "utilities.hpp"
 #include "Interactable.hpp"
 
 class Door :

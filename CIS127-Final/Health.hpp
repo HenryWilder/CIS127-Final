@@ -2,6 +2,7 @@
 #define Health_hpp
 
 #include "utilities.hpp"
+#include "StatusEffects.hpp"
 
 class Health :
     private NotCopyable

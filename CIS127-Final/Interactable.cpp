@@ -71,10 +71,10 @@ void Interactable::DoInteraction(const string& action, const string& topicOrEffe
 
 Interactable* NewThingOfType(const string& shortName)
 {
-    if      (shortName == Door      ().GetName()) return new Door      ();
-    else if (shortName == Baker     ().GetName()) return new Baker     ();
-    else if (shortName == Blacksmith().GetName()) return new Blacksmith();
-    else if (shortName == Wizard    ().GetName()) return new Wizard    ();
-    else if (shortName == Monster   ().GetName()) return new Monster   ();
+    if      (shortName == "door"   ) return new Door      ();
+    else if (shortName == "baker"  ) return new Baker     ();
+    else if (shortName == "smith"  ) return new Blacksmith();
+    else if (shortName == "wizard" ) return new Wizard    ();
+    else if (shortName == "monster") return new Monster   ();
     else throw new NotImplementedException();
 }

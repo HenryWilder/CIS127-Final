@@ -1,6 +1,7 @@
 #ifndef Blacksmith_hpp
 #define Blacksmith_hpp
 
+#include "utilities.hpp"
 #include "Interactable.hpp"
 
 class Blacksmith :

@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <algorithm>
 #include <map>
 #include <set>
+#include <algorithm>
 using namespace std;
 
 // Interface for classes that can be mutated but not reassigned
@@ -26,7 +26,23 @@ protected:
     NotCopyable& operator=(const NotCopyable&) = delete;
 };
 
-constexpr bool IsExactlyOneBitSet(size_t flags);
+constexpr bool IsExactlyOneBitSet(size_t flags)
+{
+    bool isSetBitEncountered = false;
+    while (flags)
+    {
+        if (flags & 1)
+        {
+            if (isSetBitEncountered)
+            {
+                return false;
+            }
+            isSetBitEncountered = true;
+        }
+        flags >>= 1;
+    }
+    return isSetBitEncountered;
+}
 
 string Prompt(const string& prompt, const vector<string>& options);
 string PromptItem(const string& prompt, const map<string, int>& options);
@@ -40,7 +56,12 @@ class NotImplementedException :
 };
 
 string ChooseRandom(const vector<string>& options);
-template<size_t _Size> string ChooseRandom(const array<string, _Size>& options);
+
+template<size_t _Size>
+string ChooseRandom(const array<string, _Size>& options)
+{
+    return options.at(rand() % options.size());
+}
 
 bool isvowel(char ch);
 

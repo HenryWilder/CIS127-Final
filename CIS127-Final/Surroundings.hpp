@@ -1,9 +1,7 @@
 #ifndef Surroundings_hpp
 #define Surroundings_hpp
 
-#include <string>
-#include <map>
-using namespace std;
+#include "utilities.hpp"
 
 class Interactable;
 

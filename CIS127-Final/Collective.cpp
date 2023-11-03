@@ -1,4 +1,7 @@
 #include "Collective.hpp"
+#include "utilities.hpp"
+
+map<string, Collective> Collective::allCollectives;
 
 const string& Collective::ShortName() const
 {
@@ -12,7 +15,7 @@ const string& Collective::FullName() const
 
 void Collective::Create(string shortName, string fullName)
 {
-    allCollectives.emplace(shortName, Collective(shortName, fullName));
+    allCollectives.insert({ shortName, Collective(shortName, fullName) });
 }
 
 const Collective& Collective::Get(const string& shortName)

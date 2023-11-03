@@ -1,8 +1,7 @@
 #ifndef Interactable_hpp
 #define Interactable_hpp
 
-#include <string>
-using namespace std;
+#include "utilities.hpp"
 
 class Surroundings;
 

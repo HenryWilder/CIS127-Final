@@ -1,23 +1,5 @@
 #include "utilities.hpp"
 
-constexpr bool IsExactlyOneBitSet(size_t flags)
-{
-    bool isSetBitEncountered = false;
-    while (flags)
-    {
-        if (flags & 1)
-        {
-            if (isSetBitEncountered)
-            {
-                return false;
-            }
-            isSetBitEncountered = true;
-        }
-        flags >>= 1;
-    }
-    return isSetBitEncountered;
-}
-
 string Prompt(const string& prompt, const vector<string>& options)
 {
     cout << prompt;
@@ -40,12 +22,6 @@ string Prompt(const string& prompt, const vector<string>& options)
 }
 
 string ChooseRandom(const vector<string>& options)
-{
-    return options.at(rand() % options.size());
-}
-
-template<size_t _Size>
-string ChooseRandom(const array<string, _Size>& options)
 {
     return options.at(rand() % options.size());
 }

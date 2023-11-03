@@ -1,6 +1,7 @@
 #ifndef Wizard_hpp
 #define Wizard_hpp
 
+#include "utilities.hpp"
 #include "Interactable.hpp"
 
 class Wizard :

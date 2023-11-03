@@ -3,8 +3,7 @@
 
 #include "utilities.hpp"
 
-class Collective :
-    private NotCopyable
+class Collective
 {
 private:
     // Private constructor enforces singleton-like collectives,

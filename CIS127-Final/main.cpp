@@ -1,5 +1,10 @@
 #include "utilities.hpp"
 #include "Interactable.hpp"
+#include "Baker.hpp"
+#include "Blacksmith.hpp"
+#include "Wizard.hpp"
+#include "Monster.hpp"
+#include "Door.hpp"
 #include "Components.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
@@ -180,8 +185,7 @@ int main()
                             }
                             break;
                             
-                        case  0:
-                        case -1:
+                        default:
                             topicOrEffect = ChooseRandom(potionEffects);
                             break;
                     }

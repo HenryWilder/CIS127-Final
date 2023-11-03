@@ -1,4 +1,5 @@
 #include "serialization.hpp"
+#include "utilities.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
 #include <fstream>
@@ -94,17 +95,17 @@ void Save()
     
     for (const auto& it : player.influences.influence)
     {
-        ofs << it.first << it.second;
+        ofs << '\n' << it.first << ' ' << it.second;
     }
     
     for (const auto& item : player.inventory.items)
     {
-        ofs << item.first << item.second;
+        ofs << '\n' << item.first << ' ' << item.second;
     }
     
     for (const auto& it : surroundings.things)
     {
-        ofs << it.first;
+        ofs << '\n' << it.first;
     }
     
     ofs.close();

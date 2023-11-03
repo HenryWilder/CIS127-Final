@@ -1,6 +1,6 @@
 #include "Player.hpp"
-#include "Surroundings.hpp"
 #include "utilities.hpp"
+#include "Surroundings.hpp"
 #include "Components.hpp"
 #include <iostream>
 using namespace std;

@@ -1,6 +1,7 @@
 #ifndef Baker_hpp
 #define Baker_hpp
 
+#include "utilities.hpp"
 #include "Interactable.hpp"
 
 class Baker :
