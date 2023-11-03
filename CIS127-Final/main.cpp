@@ -12,6 +12,8 @@
 
 int main()
 {
+    const char* TURN_SPLIT = "---------------------------------";
+    
     const string TOPIC_WINEFISH      = "the effects of water-wine alchemy on the local fish population";
     const string TOPIC_SKELESTOCK    = "the volatile stock price of enchanted skeleton armor";
     const string TOPIC_WP_SIEGE      = "how many woodpeckers it would take to breach the castle wall";
@@ -116,7 +118,9 @@ int main()
         // Game loop
         while (true)
         {
+            cout << TURN_SPLIT << "\n\n";
             surroundings.Print();
+            cout << endl;
             player.inventory.Print();
             cout << endl;
             
@@ -151,14 +155,18 @@ int main()
                 
                 if (action == "item")
                 {
-                    action = player.inventory.Prompt("Which item?");
+                    do
+                    {
+                        action = player.inventory.Prompt("Which item?");
+                        
+                        if (action == "phonenumber")
+                        {
+                            cout << "If only you had a phone...\n";
+                        }
+                    }
+                    while (action == "phonenumber");
+                    
                     player.inventory.TryRemove(action, 1);
-                }
-                
-                if (action == "phonenumber")
-                {
-                    cout << "If only you had a phone...\n\n";
-                    continue;
                 }
                 
                 auto target = surroundings.Prompt("On what?");
@@ -192,7 +200,9 @@ int main()
                     }
                 }
                 
+                cout << "\n" << TURN_SPLIT << "\n\n";
                 EchoAction(action, target, topicOrEffect);
+                cout << endl;
                 
                 if (target == "self")
                 {
