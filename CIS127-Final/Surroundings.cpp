@@ -94,7 +94,7 @@ void Surroundings::ReRoll()
 {
     Clear();
     
-    const array<string, 5> possible = {
+    const vector<string> possible = {
         "door",    // Do nothing :P
         "baker",   // Give bread
         "smith",   // Repair sword

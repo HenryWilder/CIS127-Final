@@ -27,7 +27,7 @@ int main()
     const string TOPIC_PET_MNTL_HP   = "the effects of mind-altering spells on the mental health of familiars";
     const string TOPIC_WOODCHUCK     = "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature";
     
-    const array<string, 14> topics = {
+    const vector<string> topics = {
         TOPIC_WINEFISH,
         TOPIC_SKELESTOCK,
         TOPIC_WP_SIEGE,
@@ -49,7 +49,7 @@ int main()
     const string ITEM_POTION = "potion"; // Effects are random
     const string ITEM_GOLD   = "gold";   // 100% chance of getting items from NPCs willing to trade (higher chance than bread/talking)
     
-    const array<string, 4> itemNames = {
+    const vector<string> itemNames = {
         ITEM_BREAD,
         ITEM_SWORD,
         ITEM_POTION,
@@ -75,7 +75,7 @@ int main()
     // Sorted from most to least positive effects.
     // First half are considered lucky when targeting a friend,
     // second half are considered lucky when targeting an enemy
-    const array<string, 12> potionEffects = {
+    const vector<string> potionEffects = {
         POTION_EFFECT_PREDICT,
         POTION_EFFECT_HEAL,
         POTION_EFFECT_WATER,
@@ -171,17 +171,18 @@ int main()
                 }
                 else if (action == "potion")
                 {
-                    constexpr int potionEffectsHalfSize = potionEffects.size() / 2;
                     switch (player.luck.Check())
                     {
                         case +1:
-                            if (target == "self") // Lower half
+                            if (target == "self")
                             {
-                                topicOrEffect = potionEffects.at(rand() % potionEffectsHalfSize);
+                                vector lowerHalf = vector(potionEffects.begin(), potionEffects.begin() + potionEffects.size() / 2);
+                                topicOrEffect = ChooseRandom(lowerHalf);
                             }
-                            else // Upper half
+                            else
                             {
-                                topicOrEffect = potionEffects.at(potionEffectsHalfSize + (rand() % (potionEffects.size() - potionEffectsHalfSize)));
+                                vector upperHalf = vector(potionEffects.begin() + potionEffects.size() / 2, potionEffects.end());
+                                topicOrEffect = ChooseRandom(upperHalf);
                             }
                             break;
                             

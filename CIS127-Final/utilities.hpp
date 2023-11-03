@@ -4,7 +4,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <array>
 #include <map>
 #include <set>
 #include <algorithm>
@@ -56,12 +55,6 @@ class NotImplementedException :
 };
 
 string ChooseRandom(const vector<string>& options);
-
-template<size_t _Size>
-string ChooseRandom(const array<string, _Size>& options)
-{
-    return options.at(rand() % options.size());
-}
 
 bool isvowel(char ch);
 
