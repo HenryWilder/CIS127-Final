@@ -102,12 +102,33 @@ void Surroundings::ReRoll()
         "monster", // Hurt the player
     };
     
-    for (int i = 0; i < 4; ++i) // Four MAXIMUM possible items per roll
+    // 50% of rooms have a monster
+    if (DiceCheck(1, 2))
     {
-        if (DiceCheck(1, 2)) // Whether to *try* adding something to surroundings (not guaranteed)
+        TryAddNew("monster");
+        
+        // 50% chance of having 2 monsters instead of 1 (25% total)
+        if (DiceCheck(1, 2))
         {
-            TryAddNew(ChooseRandom(possible));
+            TryAddNew("monster");
+            
+            // 50% chance of having 3 monsters instead of 2 (12.5% total)
+            if (DiceCheck(1, 2))
+            {
+                TryAddNew("monster");
+            }
         }
+    }
+    // 66% of rooms without monsters have an NPC
+    else if (DiceCheck(2, 3))
+    {
+        TryAddNew(ChooseRandom({ "baker", "smith", "wizard" }));
+    }
+    
+    // 75% of all rooms have a door
+    if (DiceCheck(3, 4))
+    {
+        TryAddNew("door");
     }
 }
 
