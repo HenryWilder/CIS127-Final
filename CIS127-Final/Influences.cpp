@@ -43,3 +43,31 @@ bool Influences::Check(const string& targetCollective) const
 {
     return DiceCheck(10 + Get(targetCollective), 20);
 }
+
+void Influences::Init()
+{
+    ClearAll();
+}
+
+void Influences::Save(ostream& ofs) const
+{
+    ofs << "influences: " << influence.size() << '\n';
+    for (const auto& [collective, amount] : influence)
+    {
+        ofs << "  " << collective << " - " << amount << '\n';
+    }
+}
+
+void Influences::Load(istream& ifs)
+{
+    influence.clear();
+    size_t numInfluences;
+    ifs.ignore(16, ':') >> numInfluences;
+    for (size_t i = 0; i < numInfluences; ++i)
+    {
+        string collective;
+        int amount;
+        (ifs >> collective).ignore(3, '-') >> amount;
+        influence.emplace(collective, amount);
+    }
+}

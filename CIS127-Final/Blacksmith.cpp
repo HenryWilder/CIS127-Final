@@ -10,7 +10,7 @@ void Blacksmith::DoInteraction_Grab()
 }
 void Blacksmith::DoInteraction_Bread()
 {
-    if (player.influences.Check(collective.ShortName()))
+    if (player.influences.Check(GetCollective().ShortName()))
     {
         string returnGift = ChooseRandom({ "gold", "sword" });
         int quantity = returnGift == "sword" ? 10 : 1;
@@ -24,7 +24,7 @@ void Blacksmith::DoInteraction_Bread()
 }
 void Blacksmith::DoInteraction_Sword()
 {
-    player.influences.Modify(collective.ShortName(), -1);
+    player.influences.Modify(GetCollective().ShortName(), -1);
     player.inventory.RemoveAll("sword");
     cout << "Without hesitation, the blacksmith meets your slash with a parry from their own sword.\n"
         "Your sword flies out of your hand and shatters against the wall, leaving you unarmed.";
@@ -91,9 +91,4 @@ void Blacksmith::DoInteraction_Potion_Explode()
 void Blacksmith::DoInteraction_Potion_Tree()
 {
     cout << "[todo]";
-}
-
-string Blacksmith::GetName() const
-{
-    return "smith";
 }

@@ -6,7 +6,7 @@
 #include "Collective.hpp"
 
 class Blacksmith :
-    public Interactable
+    public NPC
 {
 protected:
     void DoInteraction_Grab () override;
@@ -30,12 +30,16 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    Blacksmith() : collective(Collective::Random()) {}
+    Blacksmith() :
+        NPC(Collective::Random()) {}
+
+    Blacksmith(const Collective& explicitCollective) :
+        NPC(explicitCollective) {}
     
-    string GetName() const override;
-    
-private:
-    const Collective& collective;
+    constexpr const char* GetShortName() const override
+    {
+        return "smith";
+    }
 };
 
 #endif /* Blacksmith_hpp */

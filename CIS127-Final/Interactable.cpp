@@ -49,7 +49,7 @@ void Interactable::DoInteraction_Potion(const string& effect)
     else if (effect == "fire"   ) DoInteraction_Potion_Fire   ();
     else if (effect == "explode") DoInteraction_Potion_Explode();
     else if (effect == "tree"   ) DoInteraction_Potion_Tree   ();
-    else throw new NotImplementedException();
+    else throw new NotImplementedException(effect);
 }
 
 void Interactable::DoInteraction(const string& action, const string& topicOrEffect)
@@ -60,7 +60,7 @@ void Interactable::DoInteraction(const string& action, const string& topicOrEffe
     else if (action == "sword" ) DoInteraction_Sword ();
     else if (action == "gold"  ) DoInteraction_Gold  ();
     else if (action == "potion") DoInteraction_Potion(topicOrEffect);
-    else throw new NotImplementedException();
+    else throw new NotImplementedException(action);
 }
 
 #include "Door.hpp"
@@ -69,12 +69,21 @@ void Interactable::DoInteraction(const string& action, const string& topicOrEffe
 #include "Wizard.hpp"
 #include "Monster.hpp"
 
-Interactable* NewThingOfType(const string& shortName)
+Interactable* NewInteractableOfType(const string& shortName)
 {
     if      (shortName == "door"   ) return new Door      ();
     else if (shortName == "baker"  ) return new Baker     ();
     else if (shortName == "smith"  ) return new Blacksmith();
     else if (shortName == "wizard" ) return new Wizard    ();
     else if (shortName == "monster") return new Monster   ();
-    else throw new NotImplementedException();
+    else throw new NotImplementedException(shortName);
+}
+
+Interactable* NewNPCOfType(const string& shortName, const Collective& collective)
+{
+    if      (shortName == "baker"  ) return new Baker     (collective);
+    else if (shortName == "smith"  ) return new Blacksmith(collective);
+    else if (shortName == "wizard" ) return new Wizard    (collective);
+    else if (shortName == "monster") return new Monster   (); // Always "monsters"
+    else throw new NotImplementedException(shortName);
 }

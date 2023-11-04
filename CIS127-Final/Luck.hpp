@@ -31,9 +31,10 @@ public:
     
     // Should only be used for loading
     void Set(int amount);
-    
-    friend void Save();
-    friend void Load();
+
+    void Init();
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 private:
     int luck = 0;

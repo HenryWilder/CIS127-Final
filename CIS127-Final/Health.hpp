@@ -23,9 +23,10 @@ public:
     
     // Returns true if survived, returns false if dead.
     bool Damage(int points);
-    
-    friend void Save();
-    friend void Load();
+
+    void Init();
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 public:
     StatusEffects statuses;

@@ -6,7 +6,7 @@
 #include "Collective.hpp"
 
 class Wizard :
-    public Interactable
+    public NPC
 {
 protected:
     void DoInteraction_Grab () override;
@@ -30,12 +30,16 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    Wizard() : collective(Collective::Random()) {}
-    
-    string GetName() const override;
-    
-private:
-    const Collective& collective;
+    Wizard() :
+        NPC(Collective::Random()) {}
+
+    Wizard(const Collective& explicitCollective) :
+        NPC(explicitCollective) {}
+
+    constexpr const char* GetShortName() const override
+    {
+        return "wizard";
+    }
 };
 
 #endif /* Wizard_hpp */

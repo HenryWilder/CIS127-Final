@@ -284,14 +284,37 @@ void Player::DoInteraction_Potion_Tree()
     cout << "You transform into a tree.";
 }
 
-string Player::GetName() const
+const string& Player::GetName() const
 {
     return name;
 }
 
-void Player::SetName(const string& newName)
+void Player::Init()
 {
-    name = newName;
+    name = Prompt("What's your name?");
+    health.Set(5, 5);
+    luck.Set(0);
+    influences.ClearAll();
+    inventory.Init();
+}
+
+void Player::Save(ostream& ofs) const
+{
+    ofs << "name: " << name << '\n';
+    health    .Save(ofs);
+    luck      .Save(ofs);
+    inventory .Save(ofs);
+    influences.Save(ofs);
+}
+
+void Player::Load(istream& ifs)
+{
+    ifs.ignore(16, ':').ignore(1, ' '); // Need to explicitly ignore the space as well due to getline
+    getline(ifs, name);
+    health    .Load(ifs);
+    luck      .Load(ifs);
+    inventory .Load(ifs);
+    influences.Load(ifs);
 }
 
 Player player;

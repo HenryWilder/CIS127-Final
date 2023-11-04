@@ -43,9 +43,10 @@ public:
     
     // Prompts the user with a list of the item keys
     string Prompt(const string& prompt) const;
-    
-    friend void Save();
-    friend void Load();
+
+    void Init();
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 private:
     map<string, int> items;

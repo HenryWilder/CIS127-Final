@@ -5,7 +5,7 @@
 #include "Interactable.hpp"
 
 class Monster :
-    public Interactable
+    public NPC
 {
 protected:
     void DoInteraction_Grab () override;
@@ -29,9 +29,13 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    Monster() {}
-    
-    string GetName() const override;
+    Monster() :
+        NPC(Collective::Get("monsters")) {}
+
+    constexpr const char* GetShortName() const override
+    {
+        return "monster";
+    }
 };
 
 #endif /* Monster_hpp */

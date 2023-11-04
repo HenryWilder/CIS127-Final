@@ -112,8 +112,3 @@ void Wizard::DoInteraction_Potion_Tree()
 {
     cout << "[todo]";
 }
-
-string Wizard::GetName() const
-{
-    return "wizard";
-}

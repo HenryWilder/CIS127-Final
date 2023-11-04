@@ -7,6 +7,7 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <cassert>
 using namespace std;
 
 // Interface for classes that can be mutated but not reassigned
@@ -113,10 +114,8 @@ class NotImplementedException :
     public exception
 {
 public:
-    NotImplementedException(const string& caseIdentifier)
-    {
-        cout << "[[Missing implementation for case \"" << caseIdentifier << "\"]]";
-    }
+    NotImplementedException() = default;
+    NotImplementedException(const string& caseIdentifier);
     
     const char* what() const noexcept override;
 };

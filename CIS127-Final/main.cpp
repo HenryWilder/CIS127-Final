@@ -114,7 +114,7 @@ int main()
     while (!isQuitting)
     {
         // Load the game
-        Load();
+        LoadWithPrompt();
         
         cout << endl;
         

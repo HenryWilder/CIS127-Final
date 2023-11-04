@@ -49,6 +49,11 @@ bool isvowel(char ch)
     return false;
 }
 
+NotImplementedException::NotImplementedException(const string& caseIdentifier)
+{
+    cout << "[[Missing implementation for case \"" << caseIdentifier << "\"]]";
+}
+
 const char* NotImplementedException::what() const noexcept
 {
     return "feature not implemented";

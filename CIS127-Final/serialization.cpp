@@ -45,18 +45,7 @@ void LoadFromFile(ifstream& ifs)
 
 void InitNewGame()
 {
-    player.name = "";
-    while (player.name == "")
-    {
-        cout << "\n> ";
-        getline(cin, player.name);
-    }
-    player.health.Set(5, 5);
-    player.luck.Set(0);
-    player.influences.ClearAll();
-    player.inventory.RemoveAll();
-    player.inventory.Add("gold", 5);
-    player.inventory.Add("sword", 20);
+    player.Init();
     surroundings.ReRoll();
 }
 
@@ -88,13 +77,15 @@ void LoadWithPrompt()
     }
     else // new game
     {
-        cout << "What is your name?";
         InitNewGame();
     }
 }
 
 void SaveToFile(ofstream& ofs)
 {
+    player.Save(ofs);
+    surroundings.Save(ofs);
+
     ofs << player.name << '\n'
         << player.health.health << ' '
         << player.luck.luck << ' '

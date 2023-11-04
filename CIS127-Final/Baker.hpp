@@ -6,7 +6,7 @@
 #include "Collective.hpp"
 
 class Baker :
-    public Interactable
+    public NPC
 {
 protected:
     void DoInteraction_Grab () override;
@@ -30,12 +30,16 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    Baker() : collective(Collective::Random()) {}
+    Baker() :
+        NPC(Collective::Random()) {}
+
+    Baker(const Collective& explicitCollective) :
+        NPC(explicitCollective) {}
     
-    string GetName() const override;
-    
-private:
-    const Collective& collective;
+    constexpr const char* GetShortName() const override
+    {
+        return "baker";
+    }
 };
 
 #endif /* Baker_hpp */

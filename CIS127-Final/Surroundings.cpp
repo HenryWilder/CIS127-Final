@@ -1,5 +1,6 @@
 #include "Surroundings.hpp"
 #include "utilities.hpp"
+#include "Collective.hpp"
 #include "Interactable.hpp"
 
 Surroundings::~Surroundings()
@@ -60,7 +61,7 @@ bool Surroundings::IsEmpty() const
 
 void Surroundings::Clear()
 {
-    for (auto thing : things)
+    for (auto& thing : things)
     {
         delete thing.second;
     }
@@ -74,7 +75,7 @@ bool Surroundings::TryAddNew(const string& shortName)
     {
         return false;
     }
-    things.emplace(shortName, NewThingOfType(shortName));
+    things.emplace(shortName, NewInteractableOfType(shortName));
     return true;
 }
 
@@ -141,6 +142,47 @@ string Surroundings::RandomName() const
         keys.push_back(it.first);
     }
     return ChooseRandom(keys);
+}
+
+void Surroundings::Save(ostream& ofs) const
+{
+    ofs << "surroundings: " << things.size() << '\n';
+    for (const auto& [name, thing] : things)
+    {
+        ofs << "  " << name;
+        if (NPC* npc = dynamic_cast<NPC*>(thing))
+        {
+            ofs << " - " << npc->GetCollective().ShortName();
+        }
+        else
+        {
+            ofs << " ;";
+        }
+        ofs << '\n';
+    }
+}
+
+void Surroundings::Load(istream& ifs)
+{
+    Clear();
+    size_t numThings;
+    ifs.ignore(16, ':') >> numThings;
+    for (size_t i = 0; i < numThings; ++i)
+    {
+        string name;
+        char separator; // either - or ;
+        ifs >> name >> separator;
+        if (separator == '-')
+        {
+            string collective;
+            ifs >> collective;
+            things.emplace(name, NewNPCOfType(name, Collective::Get(collective)));
+        }
+        else
+        {
+            things.emplace(name, NewInteractableOfType(name));
+        }
+    }
 }
 
 Surroundings surroundings;

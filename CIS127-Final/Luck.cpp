@@ -44,3 +44,18 @@ void Luck::Set(int amount)
 {
     luck = amount;
 }
+
+void Luck::Init()
+{
+    luck = 0;
+}
+
+void Luck::Save(ostream& ofs) const
+{
+    ofs << "luck: " << luck << '\n';
+}
+
+void Luck::Load(istream& ifs)
+{
+    ifs.ignore(16, ':') >> luck;
+}

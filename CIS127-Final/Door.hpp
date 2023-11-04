@@ -29,9 +29,10 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    Door() {}
-    
-    string GetName() const override;
+    constexpr const char* GetShortName() const override
+    {
+        return "door";
+    }
 };
 
 #endif /* Door_hpp */

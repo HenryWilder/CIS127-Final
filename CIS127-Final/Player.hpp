@@ -36,17 +36,22 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    string GetName() const override;
-    void SetName(const string& newName);
+    constexpr const char* GetShortName() const override
+    {
+        return "player";
+    }
+
+    const string& GetName() const;
+
+    void Init();
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 public: // Properties
-    Health health;
-    Inventory inventory;
+    Health     health;
+    Inventory  inventory;
     Influences influences;
-    Luck luck;
-    
-    friend void Save();
-    friend void Load();
+    Luck       luck;
     
 private:
     string name = "";

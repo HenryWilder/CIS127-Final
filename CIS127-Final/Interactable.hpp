@@ -4,6 +4,7 @@
 #include "utilities.hpp"
 
 class Surroundings;
+class Collective;
 
 // Abstract base for a non-player thing in the world
 // All things have names, alliances, and reactions
@@ -51,12 +52,30 @@ public:
     virtual ~Interactable() {}
     
     // Returns the shortname for the derived class
-    virtual string GetName() const = 0;
+    virtual constexpr const char* GetShortName() const = 0;
     
     // Performs the derived class's reaction to the provided interaction type
     void DoInteraction(const string& action, const string& topicOrEffect);
 };
 
-Interactable* NewThingOfType(const string& shortName);
+Interactable* NewInteractableOfType(const string& shortName);
+
+class NPC :
+    public Interactable
+{
+public:
+    NPC(const Collective& collective) :
+        collective(collective) {}
+
+    const Collective& GetCollective() const
+    {
+        return collective;
+    }
+
+private:
+    const Collective& collective;
+};
+
+Interactable* NewNPCOfType(const string& shortName, const Collective& collective);
 
 #endif /* Interactable_hpp */

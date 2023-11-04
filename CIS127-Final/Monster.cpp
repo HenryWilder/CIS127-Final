@@ -189,8 +189,3 @@ void Monster::DoInteraction_Potion_Tree()
 {
     cout << "[todo]";
 }
-
-string Monster::GetName() const
-{
-    return "monster";
-}

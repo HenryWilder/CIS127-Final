@@ -79,8 +79,3 @@ void Baker::DoInteraction_Potion_Tree()
 {
     cout << "[todo]";
 }
-
-string Baker::GetName() const
-{
-    return "baker";
-}

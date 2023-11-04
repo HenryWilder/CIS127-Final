@@ -115,3 +115,33 @@ string Inventory::Prompt(const string& prompt) const
         }
     }
 }
+
+void Inventory::Init()
+{
+    RemoveAll();
+    Add("gold", 5);
+    Add("sword", 20);
+}
+
+void Inventory::Save(ostream& ofs) const
+{
+    ofs << "items: " << items.size();
+    for (const auto& [name, num] : items)
+    {
+        ofs << "  " << name << " - " << num << '\n';
+    }
+}
+
+void Inventory::Load(istream& ifs)
+{
+    items.clear();
+    size_t numItems;
+    ifs.ignore(16, ':') >> numItems;
+    for (size_t i = 0; i < numItems; ++i)
+    {
+        string name;
+        int num;
+        (ifs >> name).ignore(3, '-') >> num;
+        items.emplace(name, num);
+    }
+}

@@ -36,8 +36,9 @@ public:
     
     string RandomName() const;
     
-    friend void Save();
-    friend void Load();
+    void Init(ostream& ofs) { ReRoll(); }
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 private:
     map<string, Interactable*> things;

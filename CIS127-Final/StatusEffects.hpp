@@ -37,9 +37,10 @@ public:
     // Multiple statuses can be cleared at once by combining them with `|`.
     // Default: clears all statuses.
     void Clear(StatusFlags clearStatuses = (StatusFlags)~0);
-    
-    friend void Save();
-    friend void Load();
+
+    void Init();
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 private:
     char statuses;

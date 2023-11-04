@@ -30,3 +30,18 @@ void StatusEffects::Clear(StatusFlags clearStatuses)
 {
     statuses &= ~clearStatuses;
 }
+
+void StatusEffects::Init()
+{
+    statuses = 0;
+}
+
+void StatusEffects::Save(ostream& ofs) const
+{
+    ofs << "statuses:" << statuses << '\n';
+}
+
+void StatusEffects::Load(istream& ifs)
+{
+    ifs.ignore(16, ':') >> statuses;
+}

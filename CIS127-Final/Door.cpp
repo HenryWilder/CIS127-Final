@@ -88,8 +88,3 @@ void Door::DoInteraction_Potion_Tree()
 {
     cout << "[todo]";
 }
-
-string Door::GetName() const
-{
-    return "door";
-}

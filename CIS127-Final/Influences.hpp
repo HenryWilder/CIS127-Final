@@ -30,8 +30,9 @@ public:
     // +10 influence gives a 100% chance of success
     bool Check(const string& targetCollective) const;
     
-    friend void Save();
-    friend void Load();
+    void Init();
+    void Save(ostream& ofs) const;
+    void Load(istream& ifs);
     
 private:
     map<string, int> influence;
