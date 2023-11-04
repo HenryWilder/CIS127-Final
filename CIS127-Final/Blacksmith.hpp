@@ -3,6 +3,7 @@
 
 #include "utilities.hpp"
 #include "Interactable.hpp"
+#include "Collective.hpp"
 
 class Blacksmith :
     public Interactable
@@ -13,21 +14,7 @@ protected:
     void DoInteraction_Sword() override;
     void DoInteraction_Gold () override;
     
-    void DoInteraction_Talk_Generic         () override;
-    void DoInteraction_Talk_WineFish        () override;
-    void DoInteraction_Talk_SkeleStock      () override;
-    void DoInteraction_Talk_WoodpeckerSiege () override;
-    void DoInteraction_Talk_NecroFarm       () override;
-    void DoInteraction_Talk_Bloodmoon       () override;
-    void DoInteraction_Talk_MoleMountain    () override;
-    void DoInteraction_Talk_MindflayerRecipe() override;
-    void DoInteraction_Talk_GodFistfight    () override;
-    void DoInteraction_Talk_Theseus         () override;
-    void DoInteraction_Talk_SmithTeleken    () override;
-    void DoInteraction_Talk_NoGarlic        () override;
-    void DoInteraction_Talk_PenguinBattle   () override;
-    void DoInteraction_Talk_PetMentalHealth () override;
-    void DoInteraction_Talk_Woodchuck       () override;
+    void DoInteraction_Talk_Generic() override;
     
     void DoInteraction_Potion_Predict() override;
     void DoInteraction_Potion_Heal   () override;
@@ -43,9 +30,12 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    constexpr Blacksmith() {}
+    Blacksmith() : collective(Collective::Random()) {}
     
     string GetName() const override;
+    
+private:
+    const Collective& collective;
 };
 
 #endif /* Blacksmith_hpp */

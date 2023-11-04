@@ -9,23 +9,45 @@ void Wizard::DoInteraction_Grab()
     string reaction, actionDescriptor;
     if (DiceCheck(1, 2))
     {
-        reaction = ChooseRandom({ "intrigued", "embarrassed" });
-        actionDescriptor = ChooseRandom({ "surprised", "unamused", "annoyed", "" });
+        reaction = ChooseRandom({ "surprised", "intrigued", "embarrassed" });
     }
     else
     {
-        reaction = ChooseRandom({ "surprised", "unamused", "annoyed", "" });
-        actionDescriptor = ChooseRandom({ "surprised", "unamused", "annoyed", "" });
+        reaction = ChooseRandom({ "surprised", "unamused", "annoyed" });
     }
-    cout << "The wizard appears " << reaction << " by your " << actionDescriptor << " action.";
+    cout << "The wizard appears " << reaction << " by your action.";
 }
 void Wizard::DoInteraction_Bread()
 {
-    cout << "[todo]";
+    if (player.influences.Check(collective.ShortName()))
+    {
+        string returnGift = ChooseRandom({ "gold", "potion" });
+        player.inventory.Add(returnGift);
+        cout << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks";
+    }
+    else
+    {
+        // Todo: make this less random
+        cout << "The wizard distrusts your bread, weary of assassination attempts from the " << Collective::Random().FullName() << " collective.";
+    }
 }
 void Wizard::DoInteraction_Sword()
 {
-    cout << "[todo]";
+    player.influences.Modify(collective.ShortName(), -1);
+    cout << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
+    cout << "As the wizard's robe falls to the ground, a potion falls from a pocket onto the floor.\n";
+    if (player.luck.Apply(DiceCheck(1, 2)))
+    {
+        player.inventory.Add("potion");
+        cout << "It lands gently on the robe and you pick it up, adding it to your inventory. It could be useful later.";
+    }
+    else
+    {
+        cout << "It smashes into a hundred pieces on the hard floor, the potion's effect activating instantly. "
+            "You are engulfed in flames as the fire potion coats you like hot oil.\n";
+        player.DoInteraction("potion", "fire");
+    }
+    surroundings.TryRemove(GetName());
 }
 void Wizard::DoInteraction_Gold()
 {
@@ -36,62 +58,6 @@ void Wizard::DoInteraction_Gold()
 // Talk
 
 void Wizard::DoInteraction_Talk_Generic()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_WineFish()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_SkeleStock()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_WoodpeckerSiege()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_NecroFarm()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_Bloodmoon()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_MoleMountain()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_MindflayerRecipe()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_GodFistfight()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_Theseus()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_SmithTeleken()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_NoGarlic()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_PenguinBattle()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_PetMentalHealth()
-{
-    cout << "[todo]";
-}
-void Wizard::DoInteraction_Talk_Woodchuck()
 {
     cout << "[todo]";
 }

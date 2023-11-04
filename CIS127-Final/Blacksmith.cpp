@@ -10,11 +10,24 @@ void Blacksmith::DoInteraction_Grab()
 }
 void Blacksmith::DoInteraction_Bread()
 {
-    cout << "[todo]";
+    if (player.influences.Check(collective.ShortName()))
+    {
+        string returnGift = ChooseRandom({ "gold", "sword" });
+        int quantity = returnGift == "sword" ? 10 : 1;
+        player.inventory.Add(returnGift, quantity);
+        cout << "The blacksmith accepts the bread, gifting you " << quantity << " " << returnGift << " as thanks";
+    }
+    else
+    {
+        cout << "The blacksmith believes your bread is far too stale, proving their point by sharpening it into a sword and using it to slice another sword.";
+    }
 }
 void Blacksmith::DoInteraction_Sword()
 {
-    cout << "[todo]";
+    player.influences.Modify(collective.ShortName(), -1);
+    player.inventory.RemoveAll("sword");
+    cout << "Without hesitation, the blacksmith meets your slash with a parry from their own sword.\n"
+        "Your sword flies out of your hand and shatters against the wall, leaving you unarmed.";
 }
 void Blacksmith::DoInteraction_Gold()
 {
@@ -25,62 +38,6 @@ void Blacksmith::DoInteraction_Gold()
 // Talk
 
 void Blacksmith::DoInteraction_Talk_Generic()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_WineFish()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_SkeleStock()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_WoodpeckerSiege()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_NecroFarm()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_Bloodmoon()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_MoleMountain()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_MindflayerRecipe()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_GodFistfight()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_Theseus()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_SmithTeleken()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_NoGarlic()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_PenguinBattle()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_PetMentalHealth()
-{
-    cout << "[todo]";
-}
-void Blacksmith::DoInteraction_Talk_Woodchuck()
 {
     cout << "[todo]";
 }

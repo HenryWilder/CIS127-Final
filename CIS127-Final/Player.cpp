@@ -31,7 +31,7 @@ void Player::DoInteraction_Gold()
 
 string ContextualOpinion()
 {
-    array<string, 8> contextualOpinion = {
+    vector<string> contextualOpinion = {
         "may have overlooked",
         "exaggerated",
         "are overestimating",
@@ -57,7 +57,7 @@ void Player::DoInteraction_Talk_Generic()
         return;
     }
     
-    const array<string, 10> possibleResponses = {
+    const vector<string> possibleResponses = {
         "found it rather odd",
         "thinks you might need a checkup",
         "considers your points rather thought-provoking and insightful, if a little one-sided",
@@ -222,7 +222,7 @@ void Player::DoInteraction_Potion_Ants()
 }
 void Player::DoInteraction_Potion_Demon()
 {
-    array<string, 4> demonTypes = {
+    vector<string> demonTypes = {
         "imp",
         "warewolf",
         "tentacle",

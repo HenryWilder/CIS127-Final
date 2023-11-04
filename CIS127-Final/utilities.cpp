@@ -21,9 +21,16 @@ string Prompt(const string& prompt, const vector<string>& options)
     }
 }
 
-string ChooseRandom(const vector<string>& options)
+string Prompt(const string& prompt)
 {
-    return options.at(rand() % options.size());
+    cout << prompt << endl;
+    string input = "";
+    while (input == "")
+    {
+        cout << "> ";
+        getline(cin, input);
+    }
+    return input;
 }
 
 bool isvowel(char ch)
@@ -45,6 +52,11 @@ bool isvowel(char ch)
 const char* NotImplementedException::what() const noexcept
 {
     return "feature not implemented";
+}
+
+string ChooseRandom(const vector<string>& options)
+{
+    return options.at(rand() % options.size());
 }
 
 bool DiceCheck(int chance, int outOf)

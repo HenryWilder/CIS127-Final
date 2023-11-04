@@ -37,62 +37,6 @@ void Door::DoInteraction_Talk_Generic()
 {
     cout << "The door listens silently.";
 }
-void Door::DoInteraction_Talk_WineFish()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_SkeleStock()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_WoodpeckerSiege()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_NecroFarm()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_Bloodmoon()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_MoleMountain()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_MindflayerRecipe()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_GodFistfight()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_Theseus()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_SmithTeleken()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_NoGarlic()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_PenguinBattle()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_PetMentalHealth()
-{
-    cout << "[todo]";
-}
-void Door::DoInteraction_Talk_Woodchuck()
-{
-    cout << "[todo]";
-}
 
 // Potion
 

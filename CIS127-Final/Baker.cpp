@@ -28,62 +28,6 @@ void Baker::DoInteraction_Talk_Generic()
 {
     cout << "[todo]";
 }
-void Baker::DoInteraction_Talk_WineFish()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_SkeleStock()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_WoodpeckerSiege()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_NecroFarm()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_Bloodmoon()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_MoleMountain()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_MindflayerRecipe()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_GodFistfight()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_Theseus()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_SmithTeleken()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_NoGarlic()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_PenguinBattle()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_PetMentalHealth()
-{
-    cout << "[todo]";
-}
-void Baker::DoInteraction_Talk_Woodchuck()
-{
-    cout << "[todo]";
-}
 
 // Potion
 
