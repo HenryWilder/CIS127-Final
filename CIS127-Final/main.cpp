@@ -12,9 +12,6 @@
 
 int main()
 {
-    
-    return 0;
-    
     const char* TURN_SPLIT = "---------------------------------";
     
     const string TOPIC_WINEFISH      = "the effects of water-wine alchemy on the local fish population";
