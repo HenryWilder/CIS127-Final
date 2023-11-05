@@ -145,6 +145,7 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="serialization.cpp" />
+    <ClCompile Include="SerializationUtils.cpp" />
     <ClCompile Include="StatusEffects.cpp" />
     <ClCompile Include="Surroundings.cpp" />
     <ClCompile Include="utilities.cpp" />
@@ -164,6 +165,7 @@
     <ClInclude Include="Monster.hpp" />
     <ClInclude Include="Player.hpp" />
     <ClInclude Include="serialization.hpp" />
+    <ClInclude Include="SerializationUtils.h" />
     <ClInclude Include="StatusEffects.hpp" />
     <ClInclude Include="Surroundings.hpp" />
     <ClInclude Include="utilities.hpp" />

@@ -43,7 +43,7 @@ public:
     void Load(istream& ifs);
     
 private:
-    char statuses;
+    char statuses = 0;
 };
 
 #endif /* StatusEffects_hpp */

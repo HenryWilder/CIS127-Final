@@ -1,5 +1,6 @@
 #include "Interactable.hpp"
 #include "utilities.hpp"
+#include "Surroundings.hpp"
 
 void Interactable::DoInteraction_Talk_WineFish        () { DoInteraction_Talk_Generic(); }
 void Interactable::DoInteraction_Talk_SkeleStock      () { DoInteraction_Talk_Generic(); }
@@ -50,6 +51,11 @@ void Interactable::DoInteraction_Potion(const string& effect)
     else if (effect == "explode") DoInteraction_Potion_Explode();
     else if (effect == "tree"   ) DoInteraction_Potion_Tree   ();
     else throw new NotImplementedException(effect);
+}
+
+void Interactable::Destroy()
+{
+    surroundings.TryRemove(GetShortName());
 }
 
 void Interactable::DoInteraction(const string& action, const string& topicOrEffect)

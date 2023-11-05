@@ -15,12 +15,6 @@ bool Health::IsDead() const
     return health <= 0;
 }
 
-void Health::Set(int health, int maxHealth)
-{
-    this->health    = health;
-    this->maxHealth = maxHealth;
-}
-
 int Health::Heal(int points)
 {
     assert(points > 0);

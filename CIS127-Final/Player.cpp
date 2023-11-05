@@ -242,10 +242,12 @@ void Player::DoInteraction_Potion_Demon()
         {
             case +1:
                 cout << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
-            case  0:
-            case -1:
+                break;
+
+            default:
                 health.Damage(2);
                 cout << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. You are protected from most of the attack thanks to your armor, but it still takes away 2 points of your health.";
+                break;
         }
     }
     else if (demon == "tentacle")
@@ -292,10 +294,10 @@ const string& Player::GetName() const
 void Player::Init()
 {
     name = Prompt("What's your name?");
-    health.Set(5, 5);
-    luck.Set(0);
-    influences.ClearAll();
-    inventory.Init();
+    health    .Init();
+    luck      .Init();
+    influences.Init();
+    inventory .Init();
 }
 
 void Player::Save(ostream& ofs) const

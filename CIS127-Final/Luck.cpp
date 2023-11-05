@@ -40,11 +40,6 @@ void Luck::Clear()
     luck = 0;
 }
 
-void Luck::Set(int amount)
-{
-    luck = amount;
-}
-
 void Luck::Init()
 {
     luck = 0;

@@ -14,9 +14,6 @@ public:
     
     bool IsDead() const;
     
-    // Only for use when loading from file.
-    void Set(int health, int maxHealth);
-    
     // Returns quantity of health points exceeding the max health (and not added).
     // If all points were added successfully, returns 0.
     int Heal(int points);
@@ -32,7 +29,8 @@ public:
     StatusEffects statuses;
     
 private:
-    int health, maxHealth;
+    int health    = 0;
+    int maxHealth = 0;
 };
 
 #endif /* Health_hpp */

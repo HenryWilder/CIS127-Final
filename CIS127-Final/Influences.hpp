@@ -21,9 +21,6 @@ public:
     // Erases all influence, effectively setting them to 0
     void ClearAll();
     
-    // Should only be used when loading from a file.
-    void Set(const string& targetCollective, int amount);
-    
     // Roll a dice for a social check such that:
     // -10 influence gives a   0% chance of success
     //   0 influence gives a  50% chance of success

@@ -19,7 +19,7 @@ void Wizard::DoInteraction_Grab()
 }
 void Wizard::DoInteraction_Bread()
 {
-    if (player.influences.Check(collective.ShortName()))
+    if (player.influences.Check(GetCollective().ShortName()))
     {
         string returnGift = ChooseRandom({ "gold", "potion" });
         player.inventory.Add(returnGift);
@@ -33,7 +33,7 @@ void Wizard::DoInteraction_Bread()
 }
 void Wizard::DoInteraction_Sword()
 {
-    player.influences.Modify(collective.ShortName(), -1);
+    player.influences.Modify(GetCollective().ShortName(), -1);
     cout << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
     cout << "As the wizard's robe falls to the ground, a potion falls from a pocket onto the floor.\n";
     if (player.luck.Apply(DiceCheck(1, 2)))
@@ -47,7 +47,7 @@ void Wizard::DoInteraction_Sword()
             "You are engulfed in flames as the fire potion coats you like hot oil.\n";
         player.DoInteraction("potion", "fire");
     }
-    surroundings.TryRemove(GetName());
+    Destroy();
 }
 void Wizard::DoInteraction_Gold()
 {

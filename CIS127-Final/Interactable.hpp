@@ -4,7 +4,6 @@
 #include "utilities.hpp"
 
 class Surroundings;
-class Collective;
 
 // Abstract base for a non-player thing in the world
 // All things have names, alliances, and reactions
@@ -47,6 +46,8 @@ protected:
     
     void DoInteraction_Talk  (const string& topic);
     void DoInteraction_Potion(const string& effect);
+
+    void Destroy();
     
 public:
     virtual ~Interactable() {}
@@ -59,6 +60,8 @@ public:
 };
 
 Interactable* NewInteractableOfType(const string& shortName);
+
+#include "Collective.hpp"
 
 class NPC :
     public Interactable

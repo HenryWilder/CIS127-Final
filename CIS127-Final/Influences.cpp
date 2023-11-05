@@ -33,12 +33,6 @@ void Influences::ClearAll()
     influence.clear();
 }
 
-void Influences::Set(const string& targetCollective, int amount)
-{
-    assert(-10 <= amount && amount <= 10);
-    influence.insert_or_assign(targetCollective, amount);
-}
-
 bool Influences::Check(const string& targetCollective) const
 {
     return DiceCheck(10 + Get(targetCollective), 20);

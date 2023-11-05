@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <format>
 #include <vector>
 #include <map>
 #include <set>
@@ -45,7 +46,7 @@ constexpr bool IsExactlyOneBitSet(size_t flags)
 }
 
 // Prompts the user for a valid option from the provided list
-string Prompt(const string& prompt, const initializer_list<string>& options);
+string Prompt(const string& prompt, const vector<string>& options);
 
 // Prompts the user for a non-empty string
 string Prompt(const string& prompt);

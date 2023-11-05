@@ -36,7 +36,7 @@ public:
     
     string RandomName() const;
     
-    void Init(ostream& ofs) { ReRoll(); }
+    void Init() { ReRoll(); }
     void Save(ostream& ofs) const;
     void Load(istream& ifs);
     

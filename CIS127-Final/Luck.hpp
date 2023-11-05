@@ -28,9 +28,6 @@ public:
     
     // Removes all luck, both good and bad
     void Clear();
-    
-    // Should only be used for loading
-    void Set(int amount);
 
     void Init();
     void Save(ostream& ofs) const;

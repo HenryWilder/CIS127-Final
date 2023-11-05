@@ -81,6 +81,9 @@
     <ClCompile Include="Influences.cpp">
       <Filter>Source Files\Player Components</Filter>
     </ClCompile>
+    <ClCompile Include="SerializationUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collective.hpp">
@@ -133,6 +136,9 @@
     </ClInclude>
     <ClInclude Include="Influences.hpp">
       <Filter>Header Files\Player Components</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializationUtils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
