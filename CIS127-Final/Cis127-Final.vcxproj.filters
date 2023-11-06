@@ -84,6 +84,9 @@
     <ClCompile Include="SerializationUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Enums.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Collective.hpp">
@@ -138,6 +141,9 @@
       <Filter>Header Files\Player Components</Filter>
     </ClInclude>
     <ClInclude Include="SerializationUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Enums.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

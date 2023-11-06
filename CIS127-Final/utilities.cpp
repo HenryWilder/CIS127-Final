@@ -1,35 +1,34 @@
 #include "utilities.hpp"
 
-string Prompt(const string& prompt, const vector<string>& options, const vector<string>& hiddenOptions)
+string Prompt()
 {
-    cout << prompt;
-    for (const string& opt : options)
+    loop
     {
-        cout << "\n- " << opt;
-    }
-    cout << endl;
-    while (true) // repeats until return
-    {
-        string input;
         cout << "> ";
+        string input;
         getline(cin, input);
-        if (any_of(options.begin(), options.end(), input) || any_of(hiddenOptions.begin(), hiddenOptions.end(), input))
+        if (!IsEmptyOrWhitespace(input))
         {
-            return input;
+            return Trim(input);
         }
     }
 }
 
 string Prompt(const string& prompt)
 {
-    cout << prompt << endl;
-    string input = "";
-    while (input == "")
+    cout << prompt << '\n';
+    return Prompt();
+}
+
+string Prompt(const string& prompt, const vector<string>& options, const vector<string>& hiddenOptions)
+{
+    cout << prompt << '\n';
+    List(options);
+    auto _Pred = [&](const string& input)
     {
-        cout << "> ";
-        getline(cin, input);
-    }
-    return input;
+        return any_of(options.begin(), options.end(), input) || any_of(hiddenOptions.begin(), hiddenOptions.end(), input);
+    };
+    return PromptUntil(_Pred);
 }
 
 bool isvowel(char ch)
@@ -48,20 +47,32 @@ const char* NotImplementedException::what() const noexcept
     return "feature not implemented";
 }
 
-string ChooseRandom(const vector<string>& options)
-{
-    return options.at(rand() % options.size());
-}
-
-string ChooseRandom(vector<string>::const_iterator optionsBegin, vector<string>::const_iterator optionsEnd)
-{
-    return *(optionsBegin + (rand() % (optionsEnd - optionsBegin)));
-}
-
 bool DiceCheck(int chance, int outOf)
 {
     return (rand() % outOf) < chance;
-};
+}
+
+bool Chance(float chance01)
+{
+    if      (chance01 >= 0.999f) return true;
+    else if (chance01 <= 0.001f) return false;
+    return rand() <= (int)roundf(chance01 * (float)RAND_MAX);
+}
+
+bool CoinFlip()
+{
+    return rand() & 1;
+}
+
+bool AdvantagedCoinFlip()
+{
+    return rand() & 3;
+}
+
+bool DisadvantagedCoinFlip()
+{
+    return (rand() & 3) == 3;
+}
 
 void EchoAction(const string& action, const string& target, const string& topicOrEffect)
 {

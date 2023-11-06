@@ -1,62 +1,7 @@
 #pragma once
 #include <string>
-#include <tuple>
+#include <vector>
 using namespace std;
-
-template<class _Ty>
-concept enum_type = is_enum_v<_Ty>;
-
-template<enum_type _Enum>
-constexpr size_t EnumSize = 0ull;
-
-template<class _Enum>
-struct StringableEnum
-{
-    constexpr StringableEnum(_Enum identifier, const char* text) :
-        identifier(identifier), text(text) {}
-
-    _Enum identifier;
-    const char* text;
-};
-
-template<class _Enum>
-class StringableEnumCollection
-{
-public:
-    constexpr StringableEnumCollection(StringableEnum<_Enum> const (&_mapping)[EnumSize<_Enum>]) :
-        mapping(_mapping) {}
-
-    _Enum EnumFromString(const string& matchAgainst) const
-    {
-        for (const auto& [identifier, text] : mapping)
-        {
-            if (text == matchAgainst)
-            {
-                return identifier;
-            }
-        }
-        throw new exception();
-    }
-
-    string EnumToString(_Enum matchAgainst) const
-    {
-        for (const auto& [identifier, text] : mapping)
-        {
-            if (identifier == matchAgainst)
-            {
-                return text;
-            }
-        }
-        throw new exception();
-    }
-
-private:
-    static constexpr _Size = _Enum::_Count;
-    StringableEnum<_Enum> mapping[_Size];
-};
-
-template<class _Enum>
-constexpr StringableEnumCollection<_Enum> convert = {};
 
 enum class Topic
 {
@@ -76,36 +21,52 @@ enum class Topic
     Woodchuck,
 };
 
-template<>
-constexpr size_t EnumSize<Topic> = (int)Topic::Woodchuck + 1;
-
-template<>
-constexpr StringableEnumCollection<Topic> convert({ StringableEnum
-    { Topic::WineFish,          "the effects of water-wine alchemy on the local fish population"                                                          },
-    { Topic::SkeleStock,        "the volatile stock price of enchanted skeleton armor"                                                                    },
-    { Topic::WoodpeckerSiege,   "how many woodpeckers it would take to breach the castle wall"                                                            },
-    { Topic::NecroFarm,         "the ethicacy of using necromancy in farming-related fields"                                                              },
-    { Topic::Bloodmoon,         "when the next blood moon may occur"                                                                                      },
-    { Topic::MoleMountain,      "whether enough moles could in fact make a mountain out of their hill"                                                    },
-    { Topic::MindflayerRecipe,  "what recipes to use for preparing mind flayer"                                                                           },
-    { Topic::GodFistfight,      "which gods could win in a fistfight against each other"                                                                  },
-    { Topic::Theseus,           "why Theseus has been getting so fussy about their ship lately"                                                           },
-    { Topic::BlacksmithTeleken, "what form of telekenesis would be the most effective for a blacksmith to use"                                            },
-    { Topic::NoGarlic,          "how the elder wizards should handle the recent garlic & holy water defecits"                                             },
-    { Topic::PenguinBattle,     "whether the Old Realm needs more supplies or troops to survive their war of attrition against the Penguin Guild"         },
-    { Topic::PetMentalHealth,   "the effects of mind-altering spells on the mental health of familiars"                                                   },
-    { Topic::Woodchuck,         "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature" },
-});
+ostream& operator<<(ostream&, Topic);
+istream& operator>>(istream&, Topic&);
+bool operator==(const string&, Topic);
+bool operator==(Topic, const string&);
 
 enum class Item
 {
-    Bread,
-    Sword,
-    Potion,
-    Gold,
+    Bread,  // Heals
+    Sword,  // Damages; quantity represents durability
+    Potion, // Effects are random
+    Gold,   // 100% chance of getting items from NPCs willing to trade (higher chance than bread/talking)
 };
 
-template<>
-constexpr size_t EnumSize<Item> = (int)Item::Gold + 1;
+ostream& operator<<(ostream&, Item);
+istream& operator>>(istream&, Item&);
+bool operator==(const string&, Item);
+bool operator==(Item, const string&);
 
-extern const StringableEnumCollection<Item> items;
+Item Prompt(const string& prompt, const vector<Item>& options);
+
+// Sorted from most to least positive effects.
+// First half are considered lucky when targeting a friend,
+// second half are considered lucky when targeting an enemy
+enum class Potion
+{
+    Predict, // Gives luck, providing an upper hand in anything the player is doing
+    Heal,    // Heals the target
+    Water,   // Douces the target in water - useless because fire is not DOT and there are no fire elementals
+    Wish,    // Gives the target a wish; wish is random unless the target is the player
+    Ducks,   // Summons ducks - useless
+    Force,   // Pushes the target away - rerolls surroundings if player, removes target from surroundings otherwise
+    Salt,    // Random chance to kill a monster
+    Ants,    // Summons ants - useless
+    Demon,   // Summons a random demon to attack the target
+    Fire,    // Deals some damage
+    Explode, // Deals high damage; can 1-hit most things including doors
+    Tree,    // Turns the target into a tree, soft-locking the game if the target was the player.
+    
+    // Problem: Softlocking the game is a major enough risk that none of the effects are worth using potions on yourself.
+    // Perhaps there could be a chance that NPCs can un-tree the player after one turn? Throwing away a turn is less destructive than a full-on soft-lock.
+};
+
+ostream& operator<<(ostream&, Potion);
+istream& operator>>(istream&, Potion&);
+bool operator==(const string&, Potion);
+bool operator==(Potion, const string&);
+
+// Not currently planned for implementation, but not unreasonable.
+Potion Prompt(const string& prompt, const vector<Potion>& options);

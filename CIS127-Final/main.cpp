@@ -13,52 +13,7 @@
 int main()
 {
     const char* TURN_SPLIT = "---------------------------------";
-
-    const string ITEM_BREAD  = "bread";  // Heals
-    const string ITEM_SWORD  = "sword";  // Damages; quantity represents durability
-    const string ITEM_POTION = "potion"; // Effects are random
-    const string ITEM_GOLD   = "gold";   // 100% chance of getting items from NPCs willing to trade (higher chance than bread/talking)
     
-    const vector<string> itemNames = {
-        ITEM_BREAD,
-        ITEM_SWORD,
-        ITEM_POTION,
-        ITEM_GOLD,
-    };
-    
-    const string POTION_EFFECT_PREDICT = "predict"; // Gives luck, providing an upper hand in anything the player is doing
-    const string POTION_EFFECT_HEAL    = "heal";    // Heals the target
-    const string POTION_EFFECT_WATER   = "water";   // Douces the target in water - useless because fire is not DOT and there are no fire elementals
-    const string POTION_EFFECT_WISH    = "wish";    // Gives the target a wish; wish is random unless the target is the player
-    const string POTION_EFFECT_DUCKS   = "ducks";   // Summons ducks - useless
-    const string POTION_EFFECT_FORCE   = "force";   // Pushes the target away - rerolls surroundings if player, removes target from surroundings otherwise
-    const string POTION_EFFECT_SALT    = "salt";    // Random chance to kill a monster
-    const string POTION_EFFECT_ANTS    = "ants";    // Summons ants - useless
-    const string POTION_EFFECT_DEMON   = "demon";   // Summons a random demon to attack the target
-    const string POTION_EFFECT_FIRE    = "fire";    // Deals some damage
-    const string POTION_EFFECT_EXPLODE = "explode"; // Deals high damage; can 1-hit most things including doors
-    const string POTION_EFFECT_TREE    = "tree";    // Turns the target into a tree, soft-locking the game if the target was the player.
-    
-    // Problem: Softlocking the game is a major enough risk that none of the effects are worth using potions on yourself.
-    // Perhaps there could be a chance that NPCs can un-tree the player after one turn? Throwing away a turn is less destructive than a full-on soft-lock.
-
-    // Sorted from most to least positive effects.
-    // First half are considered lucky when targeting a friend,
-    // second half are considered lucky when targeting an enemy
-    const vector<string> potionEffects = {
-        POTION_EFFECT_PREDICT,
-        POTION_EFFECT_HEAL,
-        POTION_EFFECT_WATER,
-        POTION_EFFECT_WISH,
-        POTION_EFFECT_DUCKS,
-        POTION_EFFECT_FORCE,
-        POTION_EFFECT_SALT,
-        POTION_EFFECT_ANTS,
-        POTION_EFFECT_DEMON,
-        POTION_EFFECT_FIRE,
-        POTION_EFFECT_EXPLODE,
-        POTION_EFFECT_TREE,
-    };
     
     // Any given NPC has a random chance of being in a particular collective.
     Collective::Create("western_expance",           "citizens of the Western Expanse");

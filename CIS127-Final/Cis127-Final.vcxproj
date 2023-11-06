@@ -136,6 +136,7 @@
     <ClCompile Include="Collective.cpp" />
     <ClCompile Include="Components.cpp" />
     <ClCompile Include="Door.cpp" />
+    <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="Influences.cpp" />
     <ClCompile Include="Interactable.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="Collective.hpp" />
     <ClInclude Include="Components.hpp" />
     <ClInclude Include="Door.hpp" />
+    <ClInclude Include="Enums.h" />
     <ClInclude Include="Health.hpp" />
     <ClInclude Include="Influences.hpp" />
     <ClInclude Include="Interactable.hpp" />
