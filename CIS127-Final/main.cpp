@@ -13,38 +13,6 @@
 int main()
 {
     const char* TURN_SPLIT = "---------------------------------";
-    
-    const string TOPIC_WINEFISH      = "the effects of water-wine alchemy on the local fish population";
-    const string TOPIC_SKELESTOCK    = "the volatile stock price of enchanted skeleton armor";
-    const string TOPIC_WP_SIEGE      = "how many woodpeckers it would take to breach the castle wall";
-    const string TOPIC_NECROFARM     = "the ethicacy of using necromancy in farming-related fields";
-    const string TOPIC_BLOODMOON     = "when the next blood moon may occur";
-    const string TOPIC_MOLE_MNT      = "whether enough moles could in fact make a mountain out of their hill";
-    const string TOPIC_MF_RECIPE     = "what recipes to use for preparing mind flayer";
-    const string TOPIC_GOD_FISTFIGHT = "which gods could win in a fistfight against each other";
-    const string TOPIC_THESEUS       = "why Theseus has been getting so fussy about their ship lately";
-    const string TOPIC_BS_TELEKEN    = "what form of telekenesis would be the most effective for a blacksmith to use";
-    const string TOPIC_NO_GARLIC     = "how the elder wizards should handle the recent garlic & holy water defecits";
-    const string TOPIC_PENGUIN_BTL   = "whether the Old Realm needs more supplies or troops to survive their war of attrition against the Penguin Guild";
-    const string TOPIC_PET_MNTL_HP   = "the effects of mind-altering spells on the mental health of familiars";
-    const string TOPIC_WOODCHUCK     = "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature";
-    
-    const vector<string> topics = {
-        TOPIC_WINEFISH,
-        TOPIC_SKELESTOCK,
-        TOPIC_WP_SIEGE,
-        TOPIC_NECROFARM,
-        TOPIC_BLOODMOON,
-        TOPIC_MOLE_MNT,
-        TOPIC_MF_RECIPE,
-        TOPIC_GOD_FISTFIGHT,
-        TOPIC_THESEUS,
-        TOPIC_BS_TELEKEN,
-        TOPIC_NO_GARLIC,
-        TOPIC_PENGUIN_BTL,
-        TOPIC_PET_MNTL_HP,
-        TOPIC_WOODCHUCK,
-    };
 
     const string ITEM_BREAD  = "bread";  // Heals
     const string ITEM_SWORD  = "sword";  // Damages; quantity represents durability
@@ -131,10 +99,10 @@ int main()
             }
             else
             {
-                commandOptions = { "move", "use", "quit", "restart" };
+                commandOptions = { "move", "use" };
             }
             
-            string cmd = Prompt("What would you like to do?", commandOptions);
+            string cmd = Prompt("What would you like to do?", commandOptions, { "quit", "restart" });
             
             // Top-level commands
             if (cmd == "move")

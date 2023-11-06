@@ -1,6 +1,6 @@
 #include "utilities.hpp"
 
-string Prompt(const string& prompt, const vector<string>& options)
+string Prompt(const string& prompt, const vector<string>& options, const vector<string>& hiddenOptions)
 {
     cout << prompt;
     for (const string& opt : options)
@@ -13,10 +13,9 @@ string Prompt(const string& prompt, const vector<string>& options)
         string input;
         cout << "> ";
         getline(cin, input);
-        auto it = find(options.begin(), options.end(), input);
-        if (it != options.end())
+        if (any_of(options.begin(), options.end(), input) || any_of(hiddenOptions.begin(), hiddenOptions.end(), input))
         {
-            return *it;
+            return input;
         }
     }
 }
@@ -35,18 +34,8 @@ string Prompt(const string& prompt)
 
 bool isvowel(char ch)
 {
-    if (isalpha(ch))
-    {
-        if (islower(ch))
-        {
-            return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
-        }
-        else
-        {
-            return ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
-        }
-    }
-    return false;
+    constexpr const char vowels[] = { 'a', 'e', 'i', 'o', 'u' };
+    return isalpha(ch) && any_of(begin(vowels), end(vowels), tolower(ch));
 }
 
 NotImplementedException::NotImplementedException(const string& caseIdentifier)
@@ -62,6 +51,11 @@ const char* NotImplementedException::what() const noexcept
 string ChooseRandom(const vector<string>& options)
 {
     return options.at(rand() % options.size());
+}
+
+string ChooseRandom(vector<string>::const_iterator optionsBegin, vector<string>::const_iterator optionsEnd)
+{
+    return *(optionsBegin + (rand() % (optionsEnd - optionsBegin)));
 }
 
 bool DiceCheck(int chance, int outOf)
