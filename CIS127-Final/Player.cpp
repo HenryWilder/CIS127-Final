@@ -2,6 +2,8 @@
 #include "utilities.hpp"
 #include "Surroundings.hpp"
 #include "Components.hpp"
+#include "randomness.hpp"
+#include "Prompt.hpp"
 #include <iostream>
 using namespace std;
 
@@ -159,7 +161,7 @@ void Player::DoInteraction_Potion_Wish()
     }
     else if (wish == "health")
     {
-        if (!surroundings.IsEmpty() && DiceCheck(1, 2))
+        if (!surroundings.IsEmpty() && CoinFlip())
         {
             // Other characters don't actually heal
             cout << "\"You wished for health, you didn't specify for whom\"\nYou notice the "
@@ -173,7 +175,7 @@ void Player::DoInteraction_Potion_Wish()
     }
     else if (wish == "power")
     {
-        if (DiceCheck(1, 2)) // Interpret power as political influence
+        if (CoinFlip()) // Interpret power as political influence
         {
             const Collective& collective = Collective::Random();
             influences.Modify(collective.ShortName(), 1);

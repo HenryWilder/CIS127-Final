@@ -3,7 +3,7 @@
 
 #include "utilities.hpp"
 #include "Interactable.hpp"
-#include "Collective.hpp"
+#include "Enums.hpp"
 
 class Baker :
     public NPC
@@ -31,9 +31,9 @@ protected:
     
 public:
     Baker() :
-        NPC(Collective::Random()) {}
+        NPC(collectives.RandomEnum()) {}
 
-    Baker(const Collective& explicitCollective) :
+    Baker(Collective explicitCollective) :
         NPC(explicitCollective) {}
     
     constexpr const char* GetShortName() const override

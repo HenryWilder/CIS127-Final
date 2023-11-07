@@ -6,7 +6,6 @@
 #include "StatusEffects.hpp"
 #include "Health.hpp"
 #include "Inventory.hpp"
-#include "Collective.hpp"
 #include "Influences.hpp"
 #include "Luck.hpp"
 

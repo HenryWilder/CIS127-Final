@@ -77,6 +77,10 @@ void Interactable::DoInteraction(const string& action, const string& topicOrEffe
 
 Interactable* NewInteractableOfType(const string& shortName)
 {
+    switch ()
+    {
+
+    }
     if      (shortName == "door"   ) return new Door      ();
     else if (shortName == "baker"  ) return new Baker     ();
     else if (shortName == "smith"  ) return new Blacksmith();
@@ -85,8 +89,12 @@ Interactable* NewInteractableOfType(const string& shortName)
     else throw new NotImplementedException(shortName);
 }
 
-Interactable* NewNPCOfType(const string& shortName, const Collective& collective)
+Interactable* NewNPCOfType(const string& shortName, Collective collective)
 {
+    switch (collective)
+    {
+
+    }
     if      (shortName == "baker"  ) return new Baker     (collective);
     else if (shortName == "smith"  ) return new Blacksmith(collective);
     else if (shortName == "wizard" ) return new Wizard    (collective);

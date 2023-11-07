@@ -3,7 +3,6 @@
 
 #include "utilities.hpp"
 #include "Interactable.hpp"
-#include "Collective.hpp"
 
 class Blacksmith :
     public NPC
@@ -31,9 +30,9 @@ protected:
     
 public:
     Blacksmith() :
-        NPC(Collective::Random()) {}
+        NPC(collectives.RandomEnum()) {}
 
-    Blacksmith(const Collective& explicitCollective) :
+    Blacksmith(Collective explicitCollective) :
         NPC(explicitCollective) {}
     
     constexpr const char* GetShortName() const override

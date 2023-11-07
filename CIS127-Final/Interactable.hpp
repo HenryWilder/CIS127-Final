@@ -2,8 +2,29 @@
 #define Interactable_hpp
 
 #include "utilities.hpp"
+#include "Enums.hpp"
 
-class Surroundings;
+// Interactable
+
+enum class InteractableType
+{
+    Player,
+    Door,
+    Baker,
+    Blacksmith,
+    Wizard,
+    Monster,
+};
+
+constexpr StrEnumCollection interactableTypes
+{
+    StrEnum{ InteractableType::Player,     "player"  },
+    StrEnum{ InteractableType::Door,       "door"    },
+    StrEnum{ InteractableType::Baker,      "baker"   },
+    StrEnum{ InteractableType::Blacksmith, "smith"   },
+    StrEnum{ InteractableType::Wizard,     "wizard"  },
+    StrEnum{ InteractableType::Monster,    "monster" },
+};
 
 // Abstract base for a non-player thing in the world
 // All things have names, alliances, and reactions
@@ -61,24 +82,40 @@ public:
 
 Interactable* NewInteractableOfType(const string& shortName);
 
-#include "Collective.hpp"
+// NPC
+
+enum class NPCType
+{
+    Baker,
+    Blacksmith,
+    Wizard,
+    Monster,
+};
+
+constexpr StrEnumCollection interactableTypes
+{
+    StrEnum{ InteractableType::Baker,      "baker"   },
+    StrEnum{ InteractableType::Blacksmith, "smith"   },
+    StrEnum{ InteractableType::Wizard,     "wizard"  },
+    StrEnum{ InteractableType::Monster,    "monster" },
+};
 
 class NPC :
     public Interactable
 {
 public:
-    NPC(const Collective& collective) :
+    NPC(Collective collective) :
         collective(collective) {}
 
-    const Collective& GetCollective() const
+    Collective GetCollective() const
     {
         return collective;
     }
 
 private:
-    const Collective& collective;
+    Collective collective;
 };
 
-Interactable* NewNPCOfType(const string& shortName, const Collective& collective);
+Interactable* NewNPCOfType(const string& shortName, Collective collective);
 
 #endif /* Interactable_hpp */

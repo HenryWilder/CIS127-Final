@@ -1,6 +1,7 @@
 #include "Blacksmith.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
+#include "randomness.hpp"
 #include <iostream>
 using namespace std;
 

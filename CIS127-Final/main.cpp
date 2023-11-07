@@ -1,4 +1,7 @@
 #include "utilities.hpp"
+#include "randomness.hpp"
+#include "Prompt.hpp"
+#include "Enums.hpp"
 #include "Interactable.hpp"
 #include "Baker.hpp"
 #include "Blacksmith.hpp"
@@ -13,20 +16,7 @@
 int main()
 {
     const char* TURN_SPLIT = "---------------------------------";
-    
-    
-    // Any given NPC has a random chance of being in a particular collective.
-    Collective::Create("western_expance",           "citizens of the Western Expanse");
-    Collective::Create("twisting_vacancy",          "Valley of the Twisting Vacancy");
-    Collective::Create("infinite_pathways",         "Children of the Pond of Infinite Pathways");
-    Collective::Create("northern_seed",             "Followers of the Northern Seed");
-    Collective::Create("eastern_swampfire",         "Earthen Swampfire district of the Northeastern Bishop's Domain");
-    Collective::Create("critical_malstrom",         "Beholders of the Critical Malstrom");
-    Collective::Create("elder_kings",               "Nursing Home of the Elder Kings");
-    Collective::Create("dead_king_citadel",         "Holdout Clan of the Dead King's Fallen Citadel");
-    Collective::Create("babypunching_puppykickers", "League of Babypunching Puppykickers.");
-    Collective::Create("monsters",                  "monsters");
-    
+        
     const string COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE = "You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name";
     
     bool isQuitting = false;
@@ -95,32 +85,15 @@ int main()
                 auto target = surroundings.Prompt("On what?");
                 
                 string topicOrEffect;
+
                 // Pick topic/effect
                 if (action == "talk")
                 {
-                    topicOrEffect = ChooseRandom(topics);
+                    topicOrEffect = topics.RandomKey();
                 }
                 else if (action == "potion")
                 {
-                    switch (player.luck.Check())
-                    {
-                        case +1:
-                            if (target == "self")
-                            {
-                                vector lowerHalf = vector(potionEffects.begin(), potionEffects.begin() + potionEffects.size() / 2);
-                                topicOrEffect = ChooseRandom(lowerHalf);
-                            }
-                            else
-                            {
-                                vector upperHalf = vector(potionEffects.begin() + potionEffects.size() / 2, potionEffects.end());
-                                topicOrEffect = ChooseRandom(upperHalf);
-                            }
-                            break;
-                            
-                        default:
-                            topicOrEffect = ChooseRandom(potionEffects);
-                            break;
-                    }
+                    topicOrEffect = potions.RandomKey();
                 }
                 
                 cout << "\n" << TURN_SPLIT << "\n\n";

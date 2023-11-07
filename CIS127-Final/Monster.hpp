@@ -30,7 +30,7 @@ protected:
     
 public:
     Monster() :
-        NPC(Collective::Get("monsters")) {}
+        NPC(Collective::Monsters) {}
 
     constexpr const char* GetShortName() const override
     {

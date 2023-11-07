@@ -3,7 +3,6 @@
 
 #include "utilities.hpp"
 #include "Interactable.hpp"
-#include "Collective.hpp"
 
 class Wizard :
     public NPC
@@ -31,9 +30,9 @@ protected:
     
 public:
     Wizard() :
-        NPC(Collective::Random()) {}
+        NPC(collectives.RandomEnum()) {}
 
-    Wizard(const Collective& explicitCollective) :
+    Wizard(Collective explicitCollective) :
         NPC(explicitCollective) {}
 
     constexpr const char* GetShortName() const override

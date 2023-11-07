@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include "utilities.hpp"
+#include "randomness.hpp"
+#include "Prompt.hpp"
 using namespace std;
 
 template<class _Enum>
@@ -88,14 +90,41 @@ public:
         return (element == end(data)) && (element->key == str);
     }
 
-    _Enum Prompt(const string& prompt, const vector<_Enum>& options) const
+    _Enum Prompt(const string& prompt) const
+    {
+        cout << prompt << '\n';
+        for (const Element_t& element : data)
+        {
+            cout << "- " << element.key << '\n';
+        }
+        while (true)
+        {
+            auto it = Find(::Prompt());
+            if (it != end(data)) return it->enumeration;
+        }
+    }
+
+    template<integral_indexable_container_of<_Enum> _Container>
+    _Enum Prompt(const string& prompt, const _Container& options) const
     {
         cout << prompt << '\n';
         List(options);
-        loop
+        while (true)
         {
             auto it = Find(::Prompt());
-        if (it != end(data)) return it->enumeration;
+            if (it != end(data)) return it->enumeration;
+        }
+    }
+
+    template<integral_indexable_container_of<_Enum> _Container>
+    _Enum Prompt(const string& prompt, const _Container& options, const _Container& hiddenOptions) const
+    {
+        cout << prompt << '\n';
+        List(options);
+        while (true)
+        {
+            auto it = Find(::Prompt());
+            if (it != end(data)) return it->enumeration;
         }
     }
 
@@ -136,6 +165,17 @@ private: // Members
 template<class _Enum, same_as<StrEnum<_Enum>>... _Args>
 StrEnumCollection(StrEnum<_Enum>, _Args...) -> StrEnumCollection<_Enum, (sizeof...(_Args) + 1)>;
 
+// Defines the operators for the StrEnum type.
+// This can be done by a macro because the operators are just aliases for members of the collection.
+// It's simpler to do this by macro because it is a large amount of highly repetitive code that can't be done easily though a template.
+#define STR_ENUM_OPERATORS(ENUM_CLASSNAME, COLLECTION) \
+    inline ostream& operator<<(ostream& stream, ENUM_CLASSNAME enumeration) { return COLLECTION.WriteKey(stream, enumeration); } \
+    inline istream& operator>>(istream& stream, ENUM_CLASSNAME &enumeration) { return COLLECTION.ReadKey(stream, enumeration); } \
+    constexpr bool operator==(const string& str, ENUM_CLASSNAME enumeration) { return COLLECTION.Compare(str, enumeration); } \
+    constexpr bool operator!=(const string& str, ENUM_CLASSNAME enumeration) { return !COLLECTION.Compare(str, enumeration); } \
+    constexpr bool operator==(ENUM_CLASSNAME enumeration, const string& str) { return COLLECTION.Compare(str, enumeration); } \
+    constexpr bool operator!=(ENUM_CLASSNAME enumeration, const string& str) { return !COLLECTION.Compare(str, enumeration); }
+
 // Topic
 
 enum class Topic
@@ -174,28 +214,7 @@ constexpr StrEnumCollection topics
     StrEnum{ Topic::Woodchuck,         "woodchuck",          "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature" },
 };
 
-inline ostream& operator<<(ostream& stream, Topic identifier)
-{
-    return topics.WriteKey(stream, identifier);
-}
-inline istream& operator>>(istream& stream, Topic& identifier)
-{
-    return topics.ReadKey(stream, identifier);
-}
-constexpr bool operator==(const string& str, Topic identifier)
-{
-    return topics.Compare(str, identifier);
-}
-constexpr bool operator==(Topic identifier, const string& str)
-{
-    return topics.Compare(str, identifier);
-}
-
-// Not currently planned for implementation, but not unreasonable.
-inline Topic Prompt(const string& prompt, const vector<Topic>& options)
-{
-    return topics.Prompt(prompt, options);
-}
+STR_ENUM_OPERATORS(Topic, topics)
 
 // Item
 
@@ -215,27 +234,7 @@ constexpr StrEnumCollection items
     StrEnum{ Item::Gold,   "gold"   },
 };
 
-inline ostream& operator<<(ostream& stream, Item identifier)
-{
-    return items.WriteKey(stream, identifier);
-}
-inline istream& operator>>(istream& stream, Item& identifier)
-{
-    return items.ReadKey(stream, identifier);
-}
-constexpr bool operator==(const string& str, Item identifier)
-{
-    return items.Compare(str, identifier);
-}
-constexpr bool operator==(Item identifier, const string& str)
-{
-    return items.Compare(str, identifier);
-}
-
-inline Item Prompt(const string& prompt, const vector<Item>& options)
-{
-    return items.Prompt(prompt, options);
-}
+STR_ENUM_OPERATORS(Item, items)
 
 // Potion
 
@@ -277,25 +276,79 @@ constexpr StrEnumCollection potions
     StrEnum{ Potion::Tree,    "tree"    },
 };
 
-inline ostream& operator<<(ostream& stream, Potion identifier)
-{
-    return potions.WriteKey(stream, identifier);
-}
-inline istream& operator>>(istream& stream, Potion& identifier)
-{
-    return potions.ReadKey(stream, identifier);
-}
-constexpr bool operator==(const string& str, Potion identifier)
-{
-    return potions.Compare(str, identifier);
-}
-constexpr bool operator==(Potion identifier, const string& str)
-{
-    return potions.Compare(str, identifier);
-}
+STR_ENUM_OPERATORS(Potion, potions)
 
-// Not currently planned for implementation, but not unreasonable.
-inline Potion Prompt(const string& prompt, const vector<Potion>& options)
+// Action
+
+enum class Action
 {
-    return potions.Prompt(prompt, options);
-}
+    Move,
+    Talk,
+    Grab,
+    Use,
+    Quit,
+    Restart,
+};
+
+constexpr StrEnumCollection actions
+{
+    StrEnum{ Action::Move,    "move"    },
+    StrEnum{ Action::Talk,    "talk"    },
+    StrEnum{ Action::Grab,    "grab"    },
+    StrEnum{ Action::Use,     "use"     },
+    StrEnum{ Action::Quit,    "quit"    },
+    StrEnum{ Action::Restart, "restart" },
+};
+
+STR_ENUM_OPERATORS(Action, actions)
+
+// Direction
+
+enum class Direction
+{
+    Left,
+    Right,
+    Forward,
+};
+
+constexpr StrEnumCollection directions
+{
+    StrEnum{ Direction::Left,    "left"    },
+    StrEnum{ Direction::Right,   "right"   },
+    StrEnum{ Direction::Forward, "forward" },
+};
+
+STR_ENUM_OPERATORS(Direction, directions)
+
+// Collective
+
+// Each NPC belongs to a random collective, giving the player a social stat among them
+enum class Collective
+{
+    WesternExpanse,
+    TwistingVacancy,
+    InfinitePathways,
+    NorthernSeed,
+    EasternSwampfire,
+    CriticalMalstrom,
+    ElderKings,
+    DeadKingCitadel,
+    BabypunchingPuppykickers,
+    Monsters,
+};
+
+constexpr StrEnumCollection collectives
+{
+    StrEnum{ Collective::WesternExpanse,           "western_expanse",           "citizens of the Western Expanse"                                },
+    StrEnum{ Collective::TwistingVacancy,          "twisting_vacancy",          "Valley of the Twisting Vacancy"                                 },
+    StrEnum{ Collective::InfinitePathways,         "infinite_pathways",         "Children of the Pond of Infinite Pathways"                      },
+    StrEnum{ Collective::NorthernSeed,             "northern_seed",             "Followers of the Northern Seed"                                 },
+    StrEnum{ Collective::EasternSwampfire,         "eastern_swampfire",         "Earthen Swampfire district of the Northeastern Bishop's Domain" },
+    StrEnum{ Collective::CriticalMalstrom,         "critical_malstrom",         "Beholders of the Critical Malstrom"                             },
+    StrEnum{ Collective::ElderKings,               "elder_kings",               "Nursing Home of the Elder Kings"                                },
+    StrEnum{ Collective::DeadKingCitadel,          "dead_king_citadel",         "Holdout Clan of the Dead King's Fallen Citadel"                 },
+    StrEnum{ Collective::BabypunchingPuppykickers, "babypunching_puppykickers", "League of Babypunching Puppykickers."                           },
+    StrEnum{ Collective::Monsters,                 "monsters",                  "monsters"                                                       },
+};
+
+STR_ENUM_OPERATORS(Collective, collectives)
