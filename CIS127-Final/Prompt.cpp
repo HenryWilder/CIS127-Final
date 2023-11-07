@@ -1,4 +1,11 @@
-#include "utilities.hpp"
+#include "Prompt.hpp"
+
+namespace stream_list
+{
+    const char* _Stream_List_Item_Prefix   ::value = "- ";
+    const char* _Stream_List_Item_Separator::value = "\n";
+    const char* _Stream_List_Pair_Separator::value = ": ";
+}
 
 string Prompt()
 {
