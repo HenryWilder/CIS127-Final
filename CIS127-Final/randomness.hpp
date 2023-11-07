@@ -5,19 +5,31 @@ using namespace std;
 template<random_access_iterator _It>
 auto ChooseRandom(_It optionsBegin, _It optionsEnd)
 {
+    assert(optionsBegin != optionsEnd);
     return *(optionsBegin + (rand() % (optionsEnd - optionsBegin)));
 }
 
 template<integral_indexable_container _Container>
 const typename _Container::value_type& ChooseRandom(const _Container& options)
 {
+    assert(options.size() != 0);
     return options[rand() % options.size()];
 }
 
 template<class _Ty>
 _Ty ChooseRandom(const initializer_list<_Ty>&& options)
 {
+    assert(!options.empty());
     return *(options.begin() + (rand() % options.size()));
+}
+
+template<class _Key, class _Val>
+_Key ChooseRandomKey(const map<_Key, _Val>& options)
+{
+    assert(!options.empty());
+    size_t index = rand() % options.size();
+    for (const auto& it : options)
+        if (index-- == 0) return it.first;
 }
 
 // Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.

@@ -18,13 +18,15 @@ enum class InteractableType
 
 constexpr StrEnumCollection interactableTypes
 {
-    StrEnum{ InteractableType::Player,     "player"  },
+    StrEnum{ InteractableType::Player,     "self"    },
     StrEnum{ InteractableType::Door,       "door"    },
     StrEnum{ InteractableType::Baker,      "baker"   },
     StrEnum{ InteractableType::Blacksmith, "smith"   },
     StrEnum{ InteractableType::Wizard,     "wizard"  },
     StrEnum{ InteractableType::Monster,    "monster" },
 };
+
+STR_ENUM_OPERATORS(InteractableType, interactableTypes);
 
 // Abstract base for a non-player thing in the world
 // All things have names, alliances, and reactions
@@ -80,7 +82,7 @@ public:
     void DoInteraction(const string& action, const string& topicOrEffect);
 };
 
-Interactable* NewInteractableOfType(const string& shortName);
+Interactable* NewInteractableOfType(InteractableType type);
 
 // NPC
 
@@ -92,13 +94,15 @@ enum class NPCType
     Monster,
 };
 
-constexpr StrEnumCollection interactableTypes
+constexpr StrEnumCollection npcTypes
 {
-    StrEnum{ InteractableType::Baker,      "baker"   },
-    StrEnum{ InteractableType::Blacksmith, "smith"   },
-    StrEnum{ InteractableType::Wizard,     "wizard"  },
-    StrEnum{ InteractableType::Monster,    "monster" },
+    StrEnum{ NPCType::Baker,      "baker"   },
+    StrEnum{ NPCType::Blacksmith, "smith"   },
+    StrEnum{ NPCType::Wizard,     "wizard"  },
+    StrEnum{ NPCType::Monster,    "monster" },
 };
+
+STR_ENUM_OPERATORS(NPCType, npcTypes);
 
 class NPC :
     public Interactable
@@ -116,6 +120,6 @@ private:
     Collective collective;
 };
 
-Interactable* NewNPCOfType(const string& shortName, Collective collective);
+NPC* NewNPCOfType(NPCType type, Collective collective);
 
 #endif /* Interactable_hpp */

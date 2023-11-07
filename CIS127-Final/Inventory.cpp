@@ -1,13 +1,14 @@
 #include "Inventory.hpp"
+#include "Prompt.hpp"
 
-bool Inventory::Has(const string& key) const
+bool Inventory::Has(Item item) const
 {
-    return items.contains(key);
+    return items.contains(item);
 }
 
-int Inventory::Count(const string& key) const
+int Inventory::Count(Item item) const
 {
-    auto it = items.find(key);
+    auto it = items.find(item);
     if (it != items.end())
     {
         return it->second;
@@ -15,7 +16,7 @@ int Inventory::Count(const string& key) const
     return 0;
 }
 
-const map<string, int>& Inventory::GetAll() const
+const map<Item, int>& Inventory::GetAll() const
 {
     return items;
 }
@@ -25,23 +26,23 @@ bool Inventory::IsEmpty() const
     return items.empty();
 }
 
-void Inventory::Add(const string& key, int count)
+void Inventory::Add(Item item, int count)
 {
     assert(count > 0);
-    if (items.contains(key))
+    if (items.contains(item))
     {
-        items.at(key) += count;
+        items.at(item) += count;
     }
     else
     {
-        items.emplace(key, count);
+        items.emplace(item, count);
     }
 }
 
-int Inventory::TryRemove(const string& key, int count)
+int Inventory::TryRemove(Item item, int count)
 {
     assert(count > 0);
-    auto it = items.find(key);
+    auto it = items.find(item);
     if (it != items.end())
     {
         if (it->second == count)
@@ -57,10 +58,10 @@ int Inventory::TryRemove(const string& key, int count)
     return -1;
 }
 
-bool Inventory::ForceRemove(const string& key, int count)
+bool Inventory::ForceRemove(Item item, int count)
 {
     assert(count > 0);
-    auto it = items.find(key);
+    auto it = items.find(item);
     if (it != items.end())
     {
         if (it->second <= count)
@@ -77,9 +78,9 @@ bool Inventory::ForceRemove(const string& key, int count)
     return false;
 }
 
-void Inventory::RemoveAll(const string& key)
+void Inventory::RemoveAll(Item item)
 {
-    items.erase(key);
+    items.erase(item);
 }
 
 void Inventory::RemoveAll()
@@ -90,45 +91,27 @@ void Inventory::RemoveAll()
 void Inventory::Print() const
 {
     cout << "Your current inventory:\n";
-    for (const auto& item : items)
-    {
-        cout << "- " << item.second << " " << item.first << "\n";
-    }
+    List(items);
 }
 
-string Inventory::Prompt(const string& prompt) const
+Item Inventory::Prompt(const string& prompt) const
 {
-    cout << prompt;
-    for (const auto& it : items)
-    {
-        cout << "\n- " << it.first;
-    }
-    cout << endl;
-    while (true) // repeats until return
-    {
-        string input;
-        cout << "> ";
-        getline(cin, input);
-        if (items.contains(input))
-        {
-            return input;
-        }
-    }
+    return ::PromptKey<Item>(prompt, items);
 }
 
 void Inventory::Init()
 {
     RemoveAll();
-    Add("gold", 5);
-    Add("sword", 20);
+    Add(Item::Gold, 5);
+    Add(Item::Sword, 20);
 }
 
 void Inventory::Save(ostream& ofs) const
 {
     ofs << "items: " << items.size();
-    for (const auto& [name, num] : items)
+    for (const auto& [item, qty] : items)
     {
-        ofs << "  " << name << " - " << num << '\n';
+        ofs << "  " << item << " - " << qty << '\n';
     }
 }
 
@@ -139,9 +122,9 @@ void Inventory::Load(istream& ifs)
     ifs.ignore(16, ':') >> numItems;
     for (size_t i = 0; i < numItems; ++i)
     {
-        string name;
-        int num;
-        (ifs >> name).ignore(3, '-') >> num;
-        items.emplace(name, num);
+        Item item;
+        int qty;
+        (ifs >> item).ignore(3, '-') >> qty;
+        items.emplace(item, qty);
     }
 }

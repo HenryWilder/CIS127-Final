@@ -1,7 +1,4 @@
 #include "Surroundings.hpp"
-#include "utilities.hpp"
-#include "Collective.hpp"
-#include "Interactable.hpp"
 
 Surroundings::~Surroundings()
 {
@@ -17,7 +14,7 @@ void Surroundings::Print() const
     }
 }
 
-string Surroundings::Prompt(const string& prompt) const
+InteractableType Surroundings::Prompt(const string& prompt) const
 {
     cout << prompt;
     for (const auto& it : things)
@@ -37,21 +34,21 @@ string Surroundings::Prompt(const string& prompt) const
     }
 }
 
-bool Surroundings::Has(const string& shortName) const
+bool Surroundings::Has(InteractableType what) const
 {
-    return things.contains(shortName);
+    return things.contains(what);
 }
 
-const Interactable& Surroundings::Get(const string& shortName) const
+const Interactable& Surroundings::Get(InteractableType what) const
 {
-    assert(things.contains(shortName));
-    return *things.at(shortName);
+    assert(things.contains(what));
+    return *things.at(what);
 }
 
-Interactable& Surroundings::Get(const string& shortName)
+Interactable& Surroundings::Get(InteractableType what)
 {
-    assert(things.contains(shortName));
-    return *things.at(shortName);
+    assert(things.contains(what));
+    return *things.at(what);
 }
 
 bool Surroundings::IsEmpty() const
@@ -69,23 +66,23 @@ void Surroundings::Clear()
 }
 
 // Returns true if added successfully, otherwise false.
-bool Surroundings::TryAddNew(const string& shortName)
+bool Surroundings::TryAddNew(InteractableType what)
 {
-    if (things.contains(shortName))
+    if (things.contains(what))
     {
         return false;
     }
-    things.emplace(shortName, NewInteractableOfType(shortName));
+    things.emplace(what, NewInteractableOfType(what));
     return true;
 }
 
 // Returns true if removed successfully, otherwise false.
-bool Surroundings::TryRemove(const string& shortName)
+bool Surroundings::TryRemove(InteractableType what)
 {
-    if (things.contains(shortName))
+    if (things.contains(what))
     {
-        delete things.at(shortName);
-        things.erase(shortName);
+        delete things.at(what);
+        things.erase(what);
         return true;
     }
     return false;
@@ -106,34 +103,34 @@ void Surroundings::ReRoll()
     // 50% of rooms have a monster
     if (DiceCheck(1, 2))
     {
-        TryAddNew("monster");
+        TryAddNew(InteractableType::Monster);
         
         // 50% chance of having 2 monsters instead of 1 (25% total)
         if (DiceCheck(1, 2))
         {
-            TryAddNew("monster");
+            TryAddNew(InteractableType::Monster);
             
             // 50% chance of having 3 monsters instead of 2 (12.5% total)
             if (DiceCheck(1, 2))
             {
-                TryAddNew("monster");
+                TryAddNew(InteractableType::Monster);
             }
         }
     }
     // 66% of rooms without monsters have an NPC
     else if (DiceCheck(2, 3))
     {
-        TryAddNew(ChooseRandom({ "baker", "smith", "wizard" }));
+        TryAddNew(ChooseRandom({ InteractableType::Baker, InteractableType::Blacksmith, InteractableType::Wizard }));
     }
     
     // 75% of all rooms have a door
     if (DiceCheck(3, 4))
     {
-        TryAddNew("door");
+        TryAddNew(InteractableType::Door);
     }
 }
 
-string Surroundings::RandomName() const
+InteractableType Surroundings::Random() const
 {
     vector<string> keys;
     keys.reserve(things.size());
@@ -141,7 +138,7 @@ string Surroundings::RandomName() const
     {
         keys.push_back(it.first);
     }
-    return ChooseRandom(keys);
+    return ChooseRandom();
 }
 
 void Surroundings::Save(ostream& ofs) const

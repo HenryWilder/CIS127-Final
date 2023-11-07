@@ -75,29 +75,27 @@ void Interactable::DoInteraction(const string& action, const string& topicOrEffe
 #include "Wizard.hpp"
 #include "Monster.hpp"
 
-Interactable* NewInteractableOfType(const string& shortName)
+Interactable* NewInteractableOfType(InteractableType type)
 {
-    switch ()
+    switch (type)
     {
-
+    case InteractableType::Door:       return new Door      ();
+    case InteractableType::Baker:      return new Baker     ();
+    case InteractableType::Blacksmith: return new Blacksmith();
+    case InteractableType::Wizard:     return new Wizard    ();
+    case InteractableType::Monster:    return new Monster   ();
+    default: throw new NotImplementedException(interactableTypes.KeyAt(type));
     }
-    if      (shortName == "door"   ) return new Door      ();
-    else if (shortName == "baker"  ) return new Baker     ();
-    else if (shortName == "smith"  ) return new Blacksmith();
-    else if (shortName == "wizard" ) return new Wizard    ();
-    else if (shortName == "monster") return new Monster   ();
-    else throw new NotImplementedException(shortName);
 }
 
-Interactable* NewNPCOfType(const string& shortName, Collective collective)
+NPC* NewNPCOfType(NPCType type, Collective collective)
 {
-    switch (collective)
+    switch (type)
     {
-
+    case NPCType::Baker:      return new Baker     (collective);
+    case NPCType::Blacksmith: return new Blacksmith(collective);
+    case NPCType::Wizard:     return new Wizard    (collective);
+    case NPCType::Monster:    return new Monster   (); // Always "monsters"
+    default: throw new NotImplementedException(npcTypes.KeyAt(type));
     }
-    if      (shortName == "baker"  ) return new Baker     (collective);
-    else if (shortName == "smith"  ) return new Blacksmith(collective);
-    else if (shortName == "wizard" ) return new Wizard    (collective);
-    else if (shortName == "monster") return new Monster   (); // Always "monsters"
-    else throw new NotImplementedException(shortName);
 }

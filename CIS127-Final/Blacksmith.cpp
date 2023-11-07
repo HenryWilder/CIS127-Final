@@ -11,9 +11,9 @@ void Blacksmith::DoInteraction_Grab()
 }
 void Blacksmith::DoInteraction_Bread()
 {
-    if (player.influences.Check(GetCollective().ShortName()))
+    if (player.influences.Check(GetCollective()))
     {
-        string returnGift = ChooseRandom({ "gold", "sword" });
+        Item returnGift = ChooseRandom({ Item::Gold, Item::Sword });
         int quantity = returnGift == "sword" ? 10 : 1;
         player.inventory.Add(returnGift, quantity);
         cout << "The blacksmith accepts the bread, gifting you " << quantity << " " << returnGift << " as thanks";
@@ -25,14 +25,14 @@ void Blacksmith::DoInteraction_Bread()
 }
 void Blacksmith::DoInteraction_Sword()
 {
-    player.influences.Modify(GetCollective().ShortName(), -1);
-    player.inventory.RemoveAll("sword");
+    player.influences.Modify(GetCollective(), -1);
+    player.inventory.RemoveAll(Item::Sword);
     cout << "Without hesitation, the blacksmith meets your slash with a parry from their own sword.\n"
         "Your sword flies out of your hand and shatters against the wall, leaving you unarmed.";
 }
 void Blacksmith::DoInteraction_Gold()
 {
-    player.inventory.Add("sword", 10);
+    player.inventory.Add(Item::Sword, 10);
     cout << "The blacksmith thanks you for the gold and adds some durability to your sword.";
 }
 

@@ -4,7 +4,6 @@
 #include "Components.hpp"
 #include "randomness.hpp"
 #include "Prompt.hpp"
-#include <iostream>
 using namespace std;
 
 // IMPORTANT:
@@ -25,7 +24,7 @@ void Player::DoInteraction_Sword()
 }
 void Player::DoInteraction_Gold()
 {
-    inventory.Add("gold");
+    inventory.Add(Item::Gold);
     cout << "You make a show of thanking yourself kindly for the gold before returning it to your money pouch.";
 }
 
@@ -148,63 +147,67 @@ void Player::DoInteraction_Potion_Water()
 void Player::DoInteraction_Potion_Wish()
 {
     cout << "A genie appears from the the potion bottle.";
-    
-    string wish = Prompt("\"What would you like for your wish, " + GetName() + "?\"", {
-        "wealth", "health", "power", "status", "luck", "faith"
-    });
+
+    Wish wish = wishes.Prompt("\"What would you like for your wish, " + GetName() + "?\"");
     cout << "The genie pauses for a moment before replying, \"Granted.\"\n";
-    
-    if (wish == "wealth")
+
+    StrEnum<Collective> randCollective = collectives.Random();
+
+    switch (wish)
     {
-        inventory.Add("gold", 3);
+    case Wish::Wealth:
+        inventory.Add(Item::Gold, 3);
         cout << "You feel your money pouch get a little heavier.";
-    }
-    else if (wish == "health")
-    {
+        break;
+
+    case Wish::Health:
+        // There is someone else to grant health to, *and* the genie is feeling silly
         if (!surroundings.IsEmpty() && CoinFlip())
         {
-            // Other characters don't actually heal
+            // Other characters don't actually heal. NPC health is weird in this game.
             cout << "\"You wished for health, you didn't specify for whom\"\nYou notice the "
-                << surroundings.RandomName() << " appears to have regained some health...";
+                 << surroundings.RandomName() << " appears to have regained some health...";
         }
+        // Heal the player
         else
         {
             health.Heal(2);
             cout << "You feel your wounds heal, replenishing 2 health points.";
         }
-    }
-    else if (wish == "power")
-    {
-        if (CoinFlip()) // Interpret power as political influence
+        break;
+
+    case Wish::Power:
+        // Interpret power as political influence
+        if (CoinFlip())
         {
-            const Collective& collective = Collective::Random();
-            influences.Modify(collective.ShortName(), 1);
-            cout << "You feel an inexplicable sensation of political influence over the " << collective.FullName() << ".";
+            influences.Modify(randCollective.enumeration, 1);
+            cout << "You feel an inexplicable sensation of political influence over the " << randCollective.value << ".";
         }
-        else // Interpret power as physical strength
+        // Interpret power as physical strength
+        else
         {
-            inventory.Add("sword", 10);
+            inventory.Add(Item::Sword, 10);
             cout << "Your blade seems to magically sharpen itself, regaining 10 durability.";
         }
-    }
-    else if (wish == "status")
-    {
-        const Collective& collective = Collective::Random();
-        influences.Modify(collective.ShortName(), 1);
-        cout << "You feel an inexplicable sensation of high status among the " << collective.FullName() << ".";
-    }
-    else if (wish == "luck")
-    {
+        break;
+
+    case Wish::Status:
+        influences.Modify(randCollective.enumeration, 1);
+        cout << "You feel an inexplicable sensation of high status among the " << randCollective.value << ".";
+        break;
+
+    case Wish::Luck:
         luck.Give(5);
         cout << "Nothing seems to have changed. You aren't even sure if the wish did anything.";
+        break;
+
+    case Wish::Faith:
+        influences.Modify(randCollective.enumeration, 1);
+        cout << "You feel an inexplicable sensation of religious influence over the " << randCollective.value << ".";
+        break;
     }
-    else if (wish == "faith")
-    {
-        const Collective& collective = Collective::Random();
-        influences.Modify(collective.ShortName(), 1);
-        cout << "You feel an inexplicable sensation of religious influence over the " << collective.FullName() << ".";
-    }
-    cout << " The genie disappears.";
+
+    cout << "\nThe genie disappears.";
 }
 void Player::DoInteraction_Potion_Ducks()
 {
@@ -212,6 +215,7 @@ void Player::DoInteraction_Potion_Ducks()
 }
 void Player::DoInteraction_Potion_Force()
 {
+    surroundings.ReRoll();
     cout << "[todo]";
 }
 void Player::DoInteraction_Potion_Salt()
@@ -261,7 +265,7 @@ void Player::DoInteraction_Potion_Demon()
     {
         switch (luck.Check()) {
             case +1:
-                inventory.Add("bread", 3);
+                inventory.Add(Item::Bread, 3);
                 cout << "The vampire seemed confused as to why they were summoned, but decides now is as decent a time as any to dispose of the garlic bread people keep throwing at them. They " << ChooseRandom({ "plop", "stuff", "drop", "place" }) << " it down into your hand and promptly transform into a small black bat, flying away into the darkness.";
                 break;
             case  0:

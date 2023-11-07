@@ -18,7 +18,7 @@ void Baker::DoInteraction_Sword()
 }
 void Baker::DoInteraction_Gold()
 {
-    player.inventory.Add("bread");
+    player.inventory.Add(Item::Bread);
     cout << "The baker thanks you for the gold and hands you a piece of bread.";
 }
 

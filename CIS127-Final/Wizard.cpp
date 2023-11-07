@@ -19,26 +19,26 @@ void Wizard::DoInteraction_Grab()
 }
 void Wizard::DoInteraction_Bread()
 {
-    if (player.influences.Check(GetCollective().ShortName()))
+    if (player.influences.Check(GetCollective()))
     {
-        string returnGift = ChooseRandom({ "gold", "potion" });
+        Item returnGift = ChooseRandom({ Item::Gold, Item::Potion });
         player.inventory.Add(returnGift);
         cout << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks";
     }
     else
     {
-        // Todo: make this less random
-        cout << "The wizard distrusts your bread, weary of assassination attempts from the " << Collective::Random().FullName() << " collective.";
+        // Todo: make this less random?
+        cout << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue() << " collective.";
     }
 }
 void Wizard::DoInteraction_Sword()
 {
-    player.influences.Modify(GetCollective().ShortName(), -1);
+    player.influences.Modify(GetCollective(), -1);
     cout << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
     cout << "As the wizard's robe falls to the ground, a potion falls from a pocket onto the floor.\n";
     if (player.luck.Apply(DiceCheck(1, 2)))
     {
-        player.inventory.Add("potion");
+        player.inventory.Add(Item::Potion);
         cout << "It lands gently on the robe and you pick it up, adding it to your inventory. It could be useful later.";
     }
     else
@@ -51,7 +51,7 @@ void Wizard::DoInteraction_Sword()
 }
 void Wizard::DoInteraction_Gold()
 {
-    player.inventory.Add("potion");
+    player.inventory.Add(Item::Potion);
     cout << "The wizard thanks you for the gold and gives you a potion.";
 }
 

@@ -24,6 +24,9 @@ struct StrEnum
 };
 
 template<class _Enum, size_t _Size>
+struct StrEnumCollection;
+
+template<class _Enum, size_t _Size>
 struct StrEnumCollection
 {
 public:
@@ -104,30 +107,6 @@ public:
         }
     }
 
-    template<integral_indexable_container_of<_Enum> _Container>
-    _Enum Prompt(const string& prompt, const _Container& options) const
-    {
-        cout << prompt << '\n';
-        List(options);
-        while (true)
-        {
-            auto it = Find(::Prompt());
-            if (it != end(data)) return it->enumeration;
-        }
-    }
-
-    template<integral_indexable_container_of<_Enum> _Container>
-    _Enum Prompt(const string& prompt, const _Container& options, const _Container& hiddenOptions) const
-    {
-        cout << prompt << '\n';
-        List(options);
-        while (true)
-        {
-            auto it = Find(::Prompt());
-            if (it != end(data)) return it->enumeration;
-        }
-    }
-
     Element_t Random() const
     {
         return ChooseRandom(begin(data), end(data));
@@ -167,14 +146,15 @@ StrEnumCollection(StrEnum<_Enum>, _Args...) -> StrEnumCollection<_Enum, (sizeof.
 
 // Defines the operators for the StrEnum type.
 // This can be done by a macro because the operators are just aliases for members of the collection.
-// It's simpler to do this by macro because it is a large amount of highly repetitive code that can't be done easily though a template.
+// It's simpler to do this by macro because it is a large amount of highly repetitive code that can't be done though a template.
 #define STR_ENUM_OPERATORS(ENUM_CLASSNAME, COLLECTION) \
     inline ostream& operator<<(ostream& stream, ENUM_CLASSNAME enumeration) { return COLLECTION.WriteKey(stream, enumeration); } \
     inline istream& operator>>(istream& stream, ENUM_CLASSNAME &enumeration) { return COLLECTION.ReadKey(stream, enumeration); } \
     constexpr bool operator==(const string& str, ENUM_CLASSNAME enumeration) { return COLLECTION.Compare(str, enumeration); } \
     constexpr bool operator!=(const string& str, ENUM_CLASSNAME enumeration) { return !COLLECTION.Compare(str, enumeration); } \
     constexpr bool operator==(ENUM_CLASSNAME enumeration, const string& str) { return COLLECTION.Compare(str, enumeration); } \
-    constexpr bool operator!=(ENUM_CLASSNAME enumeration, const string& str) { return !COLLECTION.Compare(str, enumeration); }
+    constexpr bool operator!=(ENUM_CLASSNAME enumeration, const string& str) { return !COLLECTION.Compare(str, enumeration); } \
+    using ENUM_CLASSNAME ## Info_t = StrEnum<ENUM_CLASSNAME>
 
 // Topic
 
@@ -214,7 +194,7 @@ constexpr StrEnumCollection topics
     StrEnum{ Topic::Woodchuck,         "woodchuck",          "the quantity of wood throwable by a woodchuck in a hypothetical scenario that such a feat was possible for the creature" },
 };
 
-STR_ENUM_OPERATORS(Topic, topics)
+STR_ENUM_OPERATORS(Topic, topics);
 
 // Item
 
@@ -234,7 +214,7 @@ constexpr StrEnumCollection items
     StrEnum{ Item::Gold,   "gold"   },
 };
 
-STR_ENUM_OPERATORS(Item, items)
+STR_ENUM_OPERATORS(Item, items);
 
 // Potion
 
@@ -276,7 +256,7 @@ constexpr StrEnumCollection potions
     StrEnum{ Potion::Tree,    "tree"    },
 };
 
-STR_ENUM_OPERATORS(Potion, potions)
+STR_ENUM_OPERATORS(Potion, potions);
 
 // Action
 
@@ -300,7 +280,7 @@ constexpr StrEnumCollection actions
     StrEnum{ Action::Restart, "restart" },
 };
 
-STR_ENUM_OPERATORS(Action, actions)
+STR_ENUM_OPERATORS(Action, actions);
 
 // Direction
 
@@ -318,7 +298,7 @@ constexpr StrEnumCollection directions
     StrEnum{ Direction::Forward, "forward" },
 };
 
-STR_ENUM_OPERATORS(Direction, directions)
+STR_ENUM_OPERATORS(Direction, directions);
 
 // Collective
 
@@ -351,4 +331,48 @@ constexpr StrEnumCollection collectives
     StrEnum{ Collective::Monsters,                 "monsters",                  "monsters"                                                       },
 };
 
-STR_ENUM_OPERATORS(Collective, collectives)
+STR_ENUM_OPERATORS(Collective, collectives);
+
+// Wish
+
+enum class Wish
+{
+    Wealth,
+    Health,
+    Power,
+    Status,
+    Luck,
+    Faith,
+};
+
+constexpr StrEnumCollection wishes
+{
+    StrEnum{ Wish::Wealth, "wealth" },
+    StrEnum{ Wish::Health, "health" },
+    StrEnum{ Wish::Power,  "power"  },
+    StrEnum{ Wish::Status, "status" },
+    StrEnum{ Wish::Luck,   "luck"   },
+    StrEnum{ Wish::Faith,  "faith"  },
+};
+
+STR_ENUM_OPERATORS(Wish, wishes);
+
+// Demon
+
+enum class Demon
+{
+    Imp,
+    Warewolf,
+    Tentacle,
+    Vampire,
+};
+
+constexpr StrEnumCollection demons
+{
+    StrEnum{ Demon::Imp,      "imp"      },
+    StrEnum{ Demon::Warewolf, "warewolf" },
+    StrEnum{ Demon::Tentacle, "tentacle" },
+    StrEnum{ Demon::Vampire,  "vampire"  },
+};
+
+STR_ENUM_OPERATORS(Demon, demons);

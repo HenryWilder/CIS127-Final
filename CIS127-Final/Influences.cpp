@@ -1,6 +1,6 @@
 #include "Influences.hpp"
 
-int Influences::Get(const string& targetCollective) const
+int Influences::Get(Collective targetCollective) const
 {
     auto it = influence.find(targetCollective);
     if (it != influence.end())
@@ -10,12 +10,12 @@ int Influences::Get(const string& targetCollective) const
     return 0;
 }
 
-const map<string, int>& Influences::GetAll() const
+const map<Collective, int>& Influences::GetAll() const
 {
     return influence;
 }
 
-void Influences::Modify(const string& targetCollective, int change)
+void Influences::Modify(Collective targetCollective, int change)
 {
     auto it = influence.find(targetCollective);
     if (it != influence.end())
@@ -33,7 +33,7 @@ void Influences::ClearAll()
     influence.clear();
 }
 
-bool Influences::Check(const string& targetCollective) const
+bool Influences::Check(Collective targetCollective) const
 {
     return DiceCheck(10 + Get(targetCollective), 20);
 }

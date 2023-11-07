@@ -133,7 +133,6 @@
   <ItemGroup>
     <ClCompile Include="Baker.cpp" />
     <ClCompile Include="Blacksmith.cpp" />
-    <ClCompile Include="Collective.cpp" />
     <ClCompile Include="Components.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enums.cpp" />
@@ -145,6 +144,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Prompt.cpp" />
+    <ClCompile Include="randomness.cpp" />
     <ClCompile Include="serialization.cpp" />
     <ClCompile Include="SerializationUtils.cpp" />
     <ClCompile Include="StatusEffects.cpp" />
@@ -155,10 +156,9 @@
   <ItemGroup>
     <ClInclude Include="Baker.hpp" />
     <ClInclude Include="Blacksmith.hpp" />
-    <ClInclude Include="Collective.hpp" />
     <ClInclude Include="Components.hpp" />
     <ClInclude Include="Door.hpp" />
-    <ClInclude Include="Enums.h" />
+    <ClInclude Include="Enums.hpp" />
     <ClInclude Include="Health.hpp" />
     <ClInclude Include="Influences.hpp" />
     <ClInclude Include="Interactable.hpp" />
@@ -166,8 +166,10 @@
     <ClInclude Include="Luck.hpp" />
     <ClInclude Include="Monster.hpp" />
     <ClInclude Include="Player.hpp" />
+    <ClInclude Include="Prompt.hpp" />
+    <ClInclude Include="randomness.hpp" />
     <ClInclude Include="serialization.hpp" />
-    <ClInclude Include="SerializationUtils.h" />
+    <ClInclude Include="SerializationUtils.hpp" />
     <ClInclude Include="StatusEffects.hpp" />
     <ClInclude Include="Surroundings.hpp" />
     <ClInclude Include="utilities.hpp" />

@@ -37,51 +37,67 @@ int main()
             player.inventory.Print();
             cout << endl;
             
-            vector<string> commandOptions;
+            vector<Action> commandOptions;
             if (player.health.statuses.Has(StatusEffects::Tree))
             {
-                commandOptions = { "quit", "restart" };
+                commandOptions = { Action::Quit, Action::Restart };
             }
             else
             {
-                commandOptions = { "move", "use" };
-            }
-            
-            string cmd = Prompt("What would you like to do?", commandOptions, { "quit", "restart" });
-            
-            // Top-level commands
-            if (cmd == "move")
-            {
-                (void)Prompt("Where would you like to move?", { "left", "right", "forward" });
-                surroundings.ReRoll(); // choice is an illusion :P
-            }
-            else if (cmd == "use")
-            {
-                vector<string> actionOptions = { "talk", "grab" };
+                commandOptions = { Action::Move, Action::Talk, Action::Grab };
                 if (!player.inventory.IsEmpty())
                 {
-                    actionOptions.push_back("item");
+                    commandOptions.push_back(Action::Use);
                 }
-                
-                // Request
-                string action = Prompt("What would you like to use?", actionOptions);
-                
-                if (action == "item")
+            }
+            
+            Action action = Prompt<Action>("What would you like to do?", commandOptions, initializer_list{ Action::Quit, Action::Restart });
+
+            switch (action)
+            {
+            case Action::Move:
+                (void)directions.Prompt("Where would you like to move?");
+                surroundings.ReRoll(); // choice is an illusion :P
+                break;
+
+            case Action::Talk:
+            {
+                auto target = surroundings.Prompt("To who?");
+            }
+                break;
+
+            case Action::Grab:
+                break;
+
+            case Action::Use:
+            {
+                Item item;
+                item = player.inventory.Prompt("Which item?");
+
+                if (action == "phonenumber")
                 {
-                    do
-                    {
-                        action = player.inventory.Prompt("Which item?");
-                        
-                        if (action == "phonenumber")
-                        {
-                            cout << "If only you had a phone...\n";
-                        }
-                    }
-                    while (action == "phonenumber");
-                    
-                    player.inventory.TryRemove(action, 1);
+                    cout << "If only you had a phone...\n";
+                    break;
                 }
-                
+
+                player.inventory.TryRemove(item, 1);
+            }
+                break;
+
+            case Action::Quit:
+                isQuitting = true;
+                // Todo: break out of loop
+                break;
+
+            case Action::Restart:
+                // Todo: break out of loop
+                break;
+
+            default: throw new NotImplementedException(actions.KeyAt(action));
+            }
+            
+            else if ()
+            {                
                 auto target = surroundings.Prompt("On what?");
                 
                 string topicOrEffect;
@@ -110,15 +126,6 @@ int main()
                 }
                 
                 cout << endl;
-            }
-            else if (cmd == "quit")
-            {
-                isQuitting = true;
-                break;
-            }
-            else if (cmd == "restart")
-            {
-                break;
             }
             
             cout << endl;
