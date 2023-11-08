@@ -266,7 +266,9 @@ auto PromptOption(const string& prompt, const _Container& options)
         string input = Prompt();
 
         for (const auto& opt : options)
+        {
             if (input == opt) return opt;
+        }
     }
 }
 
@@ -289,10 +291,14 @@ auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& optio
         string input = Prompt();
 
         for (const auto& opt : options)
+        {
             if (input == opt) return opt;
+        }
 
         for (const auto& opt : hiddenOptions)
+        {
             if (input == opt) return opt;
+        }
     }
 }
 
@@ -307,6 +313,8 @@ auto PromptKey(const string& prompt, const _Container& options)
     {
         string input = Prompt();
         for (const auto& [key, _] : options)
+        {
             if (input == key) return key;
+        }
     }
 }

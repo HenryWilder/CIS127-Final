@@ -103,7 +103,7 @@ public:
     constexpr bool Compare(const string& str, _Enum enumeration) const
     {
         const Element_t* element = Find(enumeration);
-        return (element == end(data)) && (element->key == str);
+        return (element != end(data)) && (element->key == str);
     }
 
     _Enum Prompt(const string& prompt) const
