@@ -98,7 +98,7 @@ int main()
                 Entity& targetObject = surroundings.Get(target);
 
                 cout << TURN_SPLIT;
-                cout << format("You grabbed {}\n", target.full);
+                cout << format("You grabbed {}.\n", target.full);
 
                 targetObject.DoInteraction_Grab();
             }
@@ -126,10 +126,10 @@ int main()
                 cout << "\n" << TURN_SPLIT;
                 switch (item)
                 {
-                case Item::Bread:  cout << format("You gave a piece of bread to {}\n",            target.full); targetObject.DoInteraction_Bread ();       break;
-                case Item::Sword:  cout << format("You swung your sword at {}\n",                 target.full); targetObject.DoInteraction_Sword ();       break;
-                case Item::Gold:   cout << format("You gave some gold to {}\n",                   target.full); targetObject.DoInteraction_Gold  ();       break;
-                case Item::Potion: cout << format("You used a potion of {} on {}\n", potion.full, target.full); targetObject.DoInteraction_Potion(potion); break;
+                case Item::Bread:  cout << format("You gave a piece of bread to {}.\n",            target.full); targetObject.DoInteraction_Bread ();       break;
+                case Item::Sword:  cout << format("You swung your sword at {}.\n",                 target.full); targetObject.DoInteraction_Sword ();       break;
+                case Item::Gold:   cout << format("You gave some gold to {}.\n",                   target.full); targetObject.DoInteraction_Gold  ();       break;
+                case Item::Potion: cout << format("You used a potion of {} on {}.\n", potion.full, target.full); targetObject.DoInteraction_Potion(potion); break;
                 default: throw new NotImplementedException(items.KeyAt(item));
                 }
             }
