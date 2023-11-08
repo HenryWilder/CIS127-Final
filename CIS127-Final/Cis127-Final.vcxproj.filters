@@ -90,6 +90,12 @@
     <ClCompile Include="Prompt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="standard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="HelperConcepts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interactable.hpp">
