@@ -137,6 +137,7 @@
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="Health.cpp" />
+    <ClCompile Include="HelperConcepts.cpp" />
     <ClCompile Include="Influences.cpp" />
     <ClCompile Include="Interactable.cpp" />
     <ClCompile Include="Inventory.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="randomness.cpp" />
     <ClCompile Include="serialization.cpp" />
     <ClCompile Include="SerializationUtils.cpp" />
+    <ClCompile Include="standard.cpp" />
     <ClCompile Include="StatusEffects.cpp" />
     <ClCompile Include="Surroundings.cpp" />
     <ClCompile Include="utilities.cpp" />
