@@ -249,16 +249,37 @@ void ListKeys(ostream& stream, const _Container& options)
     stream << StreamList::End();
 }
 
-// Awaits a non-empty (and not-exclusively-whitespace) string from the user, prefixing each attempt with "> ".
+// Awaits a string from the user, prefixing each attempt with "> ".
+// Able to take multiple inputs "at once" if the user inserts spaces between prompts.
 string Prompt();
+
+// Awaits a non-empty (and not-exclusively-whitespace) string from the user, prefixing each attempt with "> ".
+string PromptLine();
 
 // Prompts the user for a non-empty (and not-exclusively-whitespace) string, prefixing each attempt with "> ".
 string Prompt(const string& prompt);
+
+// Prompts the user for a non-empty (and not-exclusively-whitespace) string, prefixing each attempt with "> ".
+string PromptLine(const string& prompt);
 
 // Prompts the user for a valid option from the provided list.
 template<iterable _Container = initializer_list<const char*>>
 auto PromptOption(const string& prompt, const _Container& options)
 {
+    while (cin.peek() != EOF && cin.peek() == ' ')
+    {
+        string input;
+        cin >> input;
+
+        for (const auto& opt : options)
+        {
+            if (input == opt)
+            {
+                return opt;
+            }
+        }
+    }
+
     cout << prompt << '\n';
     List(cout, options);
     while (true)
@@ -267,7 +288,10 @@ auto PromptOption(const string& prompt, const _Container& options)
 
         for (const auto& opt : options)
         {
-            if (input == opt) return opt;
+            if (input == opt)
+            {
+                return opt;
+            }
         }
     }
 }
@@ -284,6 +308,28 @@ template<iterable _VisibleContainer = initializer_list<const char*>, iterable _H
 auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& options, const _HiddenContainer& hiddenOptions)
     requires(interchangeable_value_type<_VisibleContainer, _HiddenContainer>)
 {
+    while (cin.peek() != EOF && cin.peek() == ' ')
+    {
+        string input;
+        cin >> input;
+
+        for (const auto& opt : options)
+        {
+            if (input == opt)
+            {
+                return opt;
+            }
+        }
+
+        for (const auto& opt : hiddenOptions)
+        {
+            if (input == opt)
+            {
+                return opt;
+            }
+        }
+    }
+
     cout << prompt << '\n';
     List(cout, options);
     while (true)
@@ -292,12 +338,18 @@ auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& optio
 
         for (const auto& opt : options)
         {
-            if (input == opt) return opt;
+            if (input == opt)
+            {
+                return opt;
+            }
         }
 
         for (const auto& opt : hiddenOptions)
         {
-            if (input == opt) return opt;
+            if (input == opt)
+            {
+                return opt;
+            }
         }
     }
 }
@@ -307,14 +359,32 @@ auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& optio
 template<iterable _Container>
 auto PromptKey(const string& prompt, const _Container& options)
 {
+    while (cin.peek() != EOF && cin.peek() == ' ')
+    {
+        string input;
+        cin >> input;
+
+        for (const auto& [key, _] : options)
+        {
+            if (input == key)
+            {
+                return key;
+            }
+        }
+    }
+
     cout << prompt << '\n';
     ListKeys(cout, options);
     while (true)
     {
         string input = Prompt();
+
         for (const auto& [key, _] : options)
         {
-            if (input == key) return key;
+            if (input == key)
+            {
+                return key;
+            }
         }
     }
 }

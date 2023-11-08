@@ -108,16 +108,12 @@ public:
 
     _Enum Prompt(const string& prompt) const
     {
-        cout << prompt << '\n';
-        for (const Element_t& element : data)
+        array<_Enum, _Size> options{};
+        for (size_t i = 0; i < _Size; ++i)
         {
-            cout << "- " << element.key << '\n';
+            options[i] = data[i];
         }
-        while (true)
-        {
-            auto it = Find(::Prompt());
-            if (it != end(data)) return it->enumeration;
-        }
+        return PromptOption(prompt, options);
     }
 
     const Element_t& Random() const

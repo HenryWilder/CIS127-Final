@@ -339,7 +339,7 @@ const string& Player::GetName() const
 
 void Player::Init()
 {
-    name = Prompt("What's your name?");
+    name = PromptLine("What's your name?");
     health    .Init();
     luck      .Init();
     influences.Init();

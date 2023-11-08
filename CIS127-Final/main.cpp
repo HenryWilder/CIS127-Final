@@ -30,14 +30,14 @@ int main()
         // Game loop
         while (!isQuitting && !isRestarting)
         {
+            cout << TURN_SPLIT;
+
             if (player.health.IsDead())
             {
                 cout << "Your health has dropped to zero and you have died.\n";
                 isQuitting = !(isRestarting = boolean.Prompt("Would you like to start again?"));
                 break;
             }
-
-            cout << TURN_SPLIT;
 
             StreamList::Push(" [\n", "\n]\n\n", "  { ", " }", ",\n", Argument::Default, true);
             surroundings    .Print();
@@ -80,7 +80,7 @@ int main()
 
             case Action::Talk:
             {
-                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("To who/what?"));
+                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("Who/what would you like to talk to?"));
                 Entity& targetObject = surroundings.Get(target);
 
                 TopicInfo_t topic = topics.Random();
@@ -94,7 +94,7 @@ int main()
 
             case Action::Grab:
             {
-                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("Who/what?"));
+                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("Who/what would you like to grab?"));
                 Entity& targetObject = surroundings.Get(target);
 
                 cout << TURN_SPLIT;
@@ -107,7 +107,7 @@ int main()
             case Action::Use:
             {
                 Item item;
-                item = player.inventory.Prompt("Which item?");
+                item = player.inventory.Prompt("Which item would you like to use?");
 
                 if (item == Item::Phonenumber)
                 {
@@ -117,7 +117,7 @@ int main()
 
                 player.inventory.TryRemove(item, 1);
 
-                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("On who/what?"));
+                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt(format("Who/what would you like to use your {} on?", items.ValueAt(item))));
                 Entity& targetObject = surroundings.Get(target);
 
                 PotionInfo_t potion = potions.Random(); // May go unused

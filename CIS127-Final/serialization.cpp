@@ -32,13 +32,14 @@ void LoadWithPrompt()
     if (file.is_open() && PromptOption("Start", { "load", "new" }) == "new")
     {
         LoadFromFile(file);
-        cout << "Welcome back, " << player.GetName() << "\n\n";
+        cout << "Welcome back, " << player.GetName() << "\n";
     }
     // new game
     else
     {
         cout << "Starting a new game.\n\n";
         InitNewGame();
+        cout << "Hello, " << player.GetName() << "\n";
     }
 
     if (file.is_open())
