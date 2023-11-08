@@ -1,4 +1,5 @@
 #include "Surroundings.hpp"
+#include "Player.hpp"
 
 Surroundings::~Surroundings()
 {
@@ -14,41 +15,30 @@ void Surroundings::Print() const
     }
 }
 
-InteractableType Surroundings::Prompt(const string& prompt) const
+EntityType Surroundings::Prompt(const string& prompt) const
 {
-    cout << prompt;
-    for (const auto& it : things)
-    {
-        cout << "\n- " << it.first;
-    }
-    cout << "\n- self" << endl;
-    while (true) // repeats until return
-    {
-        string input;
-        cout << "> ";
-        getline(cin, input);
-        if (things.contains(input) || input == "self")
-        {
-            return input;
-        }
-    }
+    map options = things;
+    options.emplace(EntityType::Player, nullptr);
+    return PromptKey(prompt, options);
 }
 
-bool Surroundings::Has(InteractableType what) const
+bool Surroundings::Has(EntityType what) const
 {
     return things.contains(what);
 }
 
-const Interactable& Surroundings::Get(InteractableType what) const
+const Entity& Surroundings::Get(EntityType what) const
 {
-    assert(things.contains(what));
-    return *things.at(what);
+    bool isPlayer = what == EntityType::Player;
+    assert(things.contains(what) || isPlayer);
+    return isPlayer ? player : *things.at(what);
 }
 
-Interactable& Surroundings::Get(InteractableType what)
+Entity& Surroundings::Get(EntityType what)
 {
-    assert(things.contains(what));
-    return *things.at(what);
+    bool isPlayer = what == EntityType::Player;
+    assert(things.contains(what) || isPlayer);
+    return isPlayer ? player : *things.at(what);
 }
 
 bool Surroundings::IsEmpty() const
@@ -66,7 +56,7 @@ void Surroundings::Clear()
 }
 
 // Returns true if added successfully, otherwise false.
-bool Surroundings::TryAddNew(InteractableType what)
+bool Surroundings::TryAddNew(EntityType what)
 {
     if (things.contains(what))
     {
@@ -77,7 +67,7 @@ bool Surroundings::TryAddNew(InteractableType what)
 }
 
 // Returns true if removed successfully, otherwise false.
-bool Surroundings::TryRemove(InteractableType what)
+bool Surroundings::TryRemove(EntityType what)
 {
     if (things.contains(what))
     {
@@ -103,42 +93,36 @@ void Surroundings::ReRoll()
     // 50% of rooms have a monster
     if (DiceCheck(1, 2))
     {
-        TryAddNew(InteractableType::Monster);
+        TryAddNew(EntityType::Monster);
         
         // 50% chance of having 2 monsters instead of 1 (25% total)
         if (DiceCheck(1, 2))
         {
-            TryAddNew(InteractableType::Monster);
+            TryAddNew(EntityType::Monster);
             
             // 50% chance of having 3 monsters instead of 2 (12.5% total)
             if (DiceCheck(1, 2))
             {
-                TryAddNew(InteractableType::Monster);
+                TryAddNew(EntityType::Monster);
             }
         }
     }
     // 66% of rooms without monsters have an NPC
     else if (DiceCheck(2, 3))
     {
-        TryAddNew(ChooseRandom({ InteractableType::Baker, InteractableType::Blacksmith, InteractableType::Wizard }));
+        TryAddNew(ChooseRandom({ EntityType::Baker, EntityType::Blacksmith, EntityType::Wizard }));
     }
     
     // 75% of all rooms have a door
     if (DiceCheck(3, 4))
     {
-        TryAddNew(InteractableType::Door);
+        TryAddNew(EntityType::Door);
     }
 }
 
-InteractableType Surroundings::Random() const
+EntityType Surroundings::Random() const
 {
-    vector<string> keys;
-    keys.reserve(things.size());
-    for (const auto& it : things)
-    {
-        keys.push_back(it.first);
-    }
-    return ChooseRandom();
+    return ChooseRandomKey(things);
 }
 
 void Surroundings::Save(ostream& ofs) const
@@ -149,11 +133,7 @@ void Surroundings::Save(ostream& ofs) const
         ofs << "  " << name;
         if (NPC* npc = dynamic_cast<NPC*>(thing))
         {
-            ofs << " - " << npc->GetCollective().ShortName();
-        }
-        else
-        {
-            ofs << " ;";
+            ofs << " - " << npc->GetCollective();
         }
         ofs << '\n';
     }
@@ -166,18 +146,17 @@ void Surroundings::Load(istream& ifs)
     ifs.ignore(16, ':') >> numThings;
     for (size_t i = 0; i < numThings; ++i)
     {
-        string name;
-        char separator; // either - or ;
-        ifs >> name >> separator;
-        if (separator == '-')
+        EntityType type;
+        ifs >> type;
+        if (IsNPCType(type))
         {
-            string collective;
-            ifs >> collective;
-            things.emplace(name, NewNPCOfType(name, Collective::Get(collective)));
+            Collective collective;
+            ifs.ignore(3, '-') >> collective;
+            things.emplace(type, NewNPCOfType((NPCType)type, collective));
         }
         else
         {
-            things.emplace(name, NewInteractableOfType(name));
+            things.emplace(type, NewInteractableOfType(type));
         }
     }
 }

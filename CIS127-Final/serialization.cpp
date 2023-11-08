@@ -29,7 +29,7 @@ void LoadWithPrompt()
     ifstream file(filename);
     
     // load game
-    if (file.is_open() && Prompt("Start", { "load", "new" }) == "new")
+    if (file.is_open() && PromptOption("Start", { "load", "new" }) == "new")
     {
         LoadFromFile(file);
         cout << "Welcome back, " << player.GetName() << "\n\n";

@@ -15,11 +15,10 @@
 
 int main()
 {
-    const char* TURN_SPLIT = "---------------------------------";
-        
-    const string COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE = "You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name";
+    constexpr const char TURN_SPLIT[] = "\n---------------------------------\n\n";
     
     bool isQuitting = false;
+    bool isRestarting = false;
     
     while (!isQuitting)
     {
@@ -29,44 +28,77 @@ int main()
         cout << endl;
         
         // Game loop
-        while (true)
+        while (!isQuitting && !isRestarting)
         {
-            cout << TURN_SPLIT << "\n\n";
-            surroundings.Print();
-            cout << endl;
-            player.inventory.Print();
-            cout << endl;
-            
-            vector<Action> commandOptions;
-            if (player.health.statuses.Has(StatusEffects::Tree))
+            if (player.health.IsDead())
             {
-                commandOptions = { Action::Quit, Action::Restart };
+                cout << "Your health has dropped to zero and you have died.\n";
+                isQuitting = !(isRestarting = PromptOption("Would you like to start again?", { "yes", "no" }) == string("yes"));
+                break;
             }
-            else
+
+            cout << TURN_SPLIT;
+            surroundings    .Print(); cout << '\n';
+            player.inventory.Print(); cout << '\n';
+            
+            Action action;
             {
-                commandOptions = { Action::Move, Action::Talk, Action::Grab };
-                if (!player.inventory.IsEmpty())
+                const array<Action, 2> alwaysAvailable = { Action::Quit, Action::Restart };
+
+                if (!player.health.statuses.Has(StatusEffects::Tree))
                 {
-                    commandOptions.push_back(Action::Use);
+                    vector<Action> options =
+                    {
+                        Action::Move,
+                        Action::Talk,
+                        Action::Grab,
+                        Action::Use
+                    };
+                    if (player.inventory.IsEmpty())
+                    {
+                        options.pop_back(); // Remove "Use"
+                    }
+                    action = PromptOptionWithHidden("What would you like to do?", options, alwaysAvailable);
+                }
+                else // Soft locked
+                {
+                    action = PromptOption("You are a tree.", alwaysAvailable);
                 }
             }
-            
-            Action action = Prompt<Action>("What would you like to do?", commandOptions, initializer_list{ Action::Quit, Action::Restart });
 
             switch (action)
             {
             case Action::Move:
-                (void)directions.Prompt("Where would you like to move?");
+            {
+                Direction direction = directions.Prompt("Where would you like to move?");
                 surroundings.ReRoll(); // choice is an illusion :P
+            }
                 break;
 
             case Action::Talk:
             {
-                auto target = surroundings.Prompt("To who?");
+                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("To who/what?"));
+                Entity& targetObject = surroundings.Get(target);
+
+                TopicInfo_t topic = topics.Random();
+
+                cout << TURN_SPLIT;
+                cout << format("You had an interesting discussion regarding {} with {}.\n", topic.full, target.full);
+
+                targetObject.DoInteraction_Talk(topic);
             }
                 break;
 
             case Action::Grab:
+            {
+                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("Who/what?"));
+                Entity& targetObject = surroundings.Get(target);
+
+                cout << TURN_SPLIT;
+                cout << format("You grabbed {}\n", target.full);
+
+                targetObject.DoInteraction_Grab();
+            }
                 break;
 
             case Action::Use:
@@ -74,67 +106,50 @@ int main()
                 Item item;
                 item = player.inventory.Prompt("Which item?");
 
-                if (action == "phonenumber")
+                if (item == Item::Phonenumber)
                 {
                     cout << "If only you had a phone...\n";
                     break;
                 }
 
                 player.inventory.TryRemove(item, 1);
+
+                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("On who/what?"));
+                Entity& targetObject = surroundings.Get(target);
+
+                PotionInfo_t potion = potions.Random(); // May go unused
+
+
+                cout << "\n" << TURN_SPLIT;
+                switch (item)
+                {
+                case Item::Bread:  cout << format("You gave a piece of bread to {}\n",            target.full); targetObject.DoInteraction_Bread ();       break;
+                case Item::Sword:  cout << format("You swung your sword at {}\n",                 target.full); targetObject.DoInteraction_Sword ();       break;
+                case Item::Gold:   cout << format("You gave some gold to {}\n",                   target.full); targetObject.DoInteraction_Gold  ();       break;
+                case Item::Potion: cout << format("You used a potion of {} on {}\n", potion.full, target.full); targetObject.DoInteraction_Potion(potion); break;
+                default: throw new NotImplementedException(items.KeyAt(item));
+                }
             }
                 break;
 
             case Action::Quit:
                 isQuitting = true;
-                // Todo: break out of loop
                 break;
 
             case Action::Restart:
-                // Todo: break out of loop
+                isRestarting = true;
                 break;
 
-            default: throw new NotImplementedException(actions.KeyAt(action));
+            default:
+                throw new NotImplementedException(actions.KeyAt(action));
             }
-            
-            else if ()
-            {                
-                auto target = surroundings.Prompt("On what?");
-                
-                string topicOrEffect;
 
-                // Pick topic/effect
-                if (action == "talk")
-                {
-                    topicOrEffect = topics.RandomKey();
-                }
-                else if (action == "potion")
-                {
-                    topicOrEffect = potions.RandomKey();
-                }
-                
-                cout << "\n" << TURN_SPLIT << "\n\n";
-                EchoAction(action, target, topicOrEffect);
-                cout << endl;
-                
-                if (target == "self")
-                {
-                    player.DoInteraction(action, topicOrEffect);
-                }
-                else
-                {
-                    surroundings.Get(target).DoInteraction(action, topicOrEffect);
-                }
-                
-                cout << endl;
-            }
-            
-            cout << endl;
-            
-            if (player.health.IsDead() &&
-                Prompt("Your health has dropped to zero and you have died.\nWould you like to start again?", { "yes", "no" }) == "yes")
+            if (isQuitting || isRestarting)
             {
                 break;
             }
+            
+            cout << endl;
         }
     }
     

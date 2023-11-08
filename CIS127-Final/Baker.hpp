@@ -9,11 +9,6 @@ class Baker :
     public NPC
 {
 protected:
-    void DoInteraction_Grab () override;
-    void DoInteraction_Bread() override;
-    void DoInteraction_Sword() override;
-    void DoInteraction_Gold () override;
-    
     void DoInteraction_Talk_Generic() override;
     
     void DoInteraction_Potion_Predict() override;
@@ -30,15 +25,20 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
+    void DoInteraction_Grab () override;
+    void DoInteraction_Bread() override;
+    void DoInteraction_Sword() override;
+    void DoInteraction_Gold () override;
+
     Baker() :
         NPC(collectives.RandomEnum()) {}
 
     Baker(Collective explicitCollective) :
         NPC(explicitCollective) {}
     
-    constexpr const char* GetShortName() const override
+    constexpr EntityType GetType() const override
     {
-        return "baker";
+        return EntityType::Baker;
     }
 };
 

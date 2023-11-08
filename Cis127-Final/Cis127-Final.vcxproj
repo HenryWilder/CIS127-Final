@@ -160,6 +160,7 @@
     <ClInclude Include="Door.hpp" />
     <ClInclude Include="Enums.hpp" />
     <ClInclude Include="Health.hpp" />
+    <ClInclude Include="HelperConcepts.hpp" />
     <ClInclude Include="Influences.hpp" />
     <ClInclude Include="Interactable.hpp" />
     <ClInclude Include="Inventory.hpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="randomness.hpp" />
     <ClInclude Include="serialization.hpp" />
     <ClInclude Include="SerializationUtils.hpp" />
+    <ClInclude Include="standard.hpp" />
     <ClInclude Include="StatusEffects.hpp" />
     <ClInclude Include="Surroundings.hpp" />
     <ClInclude Include="utilities.hpp" />

@@ -59,7 +59,7 @@ void Influences::Load(istream& ifs)
     ifs.ignore(16, ':') >> numInfluences;
     for (size_t i = 0; i < numInfluences; ++i)
     {
-        string collective;
+        Collective collective;
         int amount;
         (ifs >> collective).ignore(3, '-') >> amount;
         influence.emplace(collective, amount);

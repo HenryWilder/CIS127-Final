@@ -4,9 +4,9 @@
 #include "utilities.hpp"
 #include "Enums.hpp"
 
-// Interactable
+// Entity
 
-enum class InteractableType
+enum class EntityType
 {
     Player,
     Door,
@@ -16,28 +16,23 @@ enum class InteractableType
     Monster,
 };
 
-constexpr StrEnumCollection interactableTypes
+constexpr StrEnumCollection entityTypes
 {
-    StrEnum{ InteractableType::Player,     "self"    },
-    StrEnum{ InteractableType::Door,       "door"    },
-    StrEnum{ InteractableType::Baker,      "baker"   },
-    StrEnum{ InteractableType::Blacksmith, "smith"   },
-    StrEnum{ InteractableType::Wizard,     "wizard"  },
-    StrEnum{ InteractableType::Monster,    "monster" },
+    StrEnum{ EntityType::Player,     "self",    "yourself"    },
+    StrEnum{ EntityType::Door,       "door",    "the door"    },
+    StrEnum{ EntityType::Baker,      "baker",   "the baker"   },
+    StrEnum{ EntityType::Blacksmith, "smith",   "the smith"   },
+    StrEnum{ EntityType::Wizard,     "wizard",  "the wizard"  },
+    StrEnum{ EntityType::Monster,    "monster", "the monster" },
 };
 
-STR_ENUM_OPERATORS(InteractableType, interactableTypes);
+STR_ENUM_OPERATORS(EntityType, entityTypes);
 
 // Abstract base for a non-player thing in the world
 // All things have names, alliances, and reactions
-class Interactable
+class Entity
 {
 protected:
-    virtual void DoInteraction_Grab () = 0;
-    virtual void DoInteraction_Bread() = 0;
-    virtual void DoInteraction_Sword() = 0;
-    virtual void DoInteraction_Gold () = 0;
-    
     virtual void DoInteraction_Talk_Generic         () = 0;
     virtual void DoInteraction_Talk_WineFish        ();
     virtual void DoInteraction_Talk_SkeleStock      ();
@@ -53,7 +48,7 @@ protected:
     virtual void DoInteraction_Talk_PenguinBattle   ();
     virtual void DoInteraction_Talk_PetMentalHealth ();
     virtual void DoInteraction_Talk_Woodchuck       ();
-    
+
     virtual void DoInteraction_Potion_Predict() = 0;
     virtual void DoInteraction_Potion_Heal   () = 0;
     virtual void DoInteraction_Potion_Water  () = 0;
@@ -66,33 +61,40 @@ protected:
     virtual void DoInteraction_Potion_Fire   () = 0;
     virtual void DoInteraction_Potion_Explode() = 0;
     virtual void DoInteraction_Potion_Tree   () = 0;
-    
-    void DoInteraction_Talk  (const string& topic);
-    void DoInteraction_Potion(const string& effect);
 
-    void Destroy();
-    
 public:
-    virtual ~Interactable() {}
+    virtual void DoInteraction_Grab () = 0;
+    virtual void DoInteraction_Bread() = 0;
+    virtual void DoInteraction_Sword() = 0;
+    virtual void DoInteraction_Gold () = 0;
     
-    // Returns the shortname for the derived class
-    virtual constexpr const char* GetShortName() const = 0;
-    
-    // Performs the derived class's reaction to the provided interaction type
-    void DoInteraction(const string& action, const string& topicOrEffect);
+    void DoInteraction_Talk  (Topic topic);
+    void DoInteraction_Potion(Potion effect);
+
+    void RemoveFromSurroundings();
+
+    constexpr virtual EntityType GetType() const = 0;
 };
 
-Interactable* NewInteractableOfType(InteractableType type);
+Entity* NewInteractableOfType(EntityType type);
 
 // NPC
 
 enum class NPCType
 {
-    Baker,
-    Blacksmith,
-    Wizard,
-    Monster,
+    Baker      = (int)EntityType::Baker,
+    Blacksmith = (int)EntityType::Blacksmith,
+    Wizard     = (int)EntityType::Wizard,
+    Monster    = (int)EntityType::Monster,
 };
+
+constexpr bool IsNPCType(EntityType type)
+{
+    return type == EntityType::Baker
+        || type == EntityType::Blacksmith
+        || type == EntityType::Wizard
+        || type == EntityType::Monster;
+}
 
 constexpr StrEnumCollection npcTypes
 {
@@ -105,11 +107,16 @@ constexpr StrEnumCollection npcTypes
 STR_ENUM_OPERATORS(NPCType, npcTypes);
 
 class NPC :
-    public Interactable
+    public Entity
 {
 public:
     NPC(Collective collective) :
         collective(collective) {}
+
+    constexpr NPCType GetNPCType() const
+    {
+        return (NPCType)GetType();
+    }
 
     Collective GetCollective() const
     {

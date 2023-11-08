@@ -152,5 +152,11 @@
     <ClInclude Include="Prompt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="standard.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="HelperConcepts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,36 +1,49 @@
 #pragma once
 #include "utilities.hpp"
-using namespace std;
 
-template<random_access_iterator _It>
-auto ChooseRandom(_It optionsBegin, _It optionsEnd)
+template<input_iterator _It>
+const auto& ChooseRandom(_It optionsBegin, _It optionsEnd)
 {
     assert(optionsBegin != optionsEnd);
-    return *(optionsBegin + (rand() % (optionsEnd - optionsBegin)));
+    _It optionsRand = optionsBegin;
+    advance(optionsRand, rand() % distance(optionsBegin, optionsEnd));
+    return *optionsRand;
 }
 
-template<integral_indexable_container _Container>
-const typename _Container::value_type& ChooseRandom(const _Container& options)
+template<class _Container>
+const auto& ChooseRandom(const _Container& options)
 {
-    assert(options.size() != 0);
-    return options[rand() % options.size()];
+    return ChooseRandom(begin(options), end(options));
 }
 
 template<class _Ty>
-_Ty ChooseRandom(const initializer_list<_Ty>&& options)
+const _Ty& ChooseRandom(const initializer_list<_Ty>&& options)
 {
-    assert(!options.empty());
-    return *(options.begin() + (rand() % options.size()));
+    return ChooseRandom(options);
 }
 
-template<class _Key, class _Val>
-_Key ChooseRandomKey(const map<_Key, _Val>& options)
+template<class _Container>
+const auto& ChooseRandomKey(const _Container& associativeOptions)
 {
-    assert(!options.empty());
-    size_t index = rand() % options.size();
-    for (const auto& it : options)
-        if (index-- == 0) return it.first;
+    return ChooseRandom(associativeOptions).first;
 }
+
+template<class _Container>
+const auto& ChooseRandomValue(const _Container& associativeOptions)
+{
+    return ChooseRandom(associativeOptions).second;
+}
+
+#if 0 // Not sure why this isn't working...
+template<class... _Args>
+auto ChooseRandom(_Args&&... options)
+    requires(sizeof...(_Args) > 1 && all_same<_Args...>)
+{
+    using _Ty = common_type_t<_Args...>;
+    constexpr size_t numArgs = sizeof...(_Args);
+    return ChooseRandom(array<_Ty, numArgs>{ options... });
+}
+#endif
 
 // Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.
 bool DiceCheck(int chance, int outOf);

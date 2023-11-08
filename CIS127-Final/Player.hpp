@@ -6,14 +6,9 @@
 #include "Interactable.hpp"
 
 class Player :
-    public Interactable
+    public Entity
 {
 protected:
-    void DoInteraction_Grab () override;
-    void DoInteraction_Bread() override;
-    void DoInteraction_Sword() override;
-    void DoInteraction_Gold () override;
-    
     void DoInteraction_Talk_Generic        () override;
     void DoInteraction_Talk_WineFish       () override;
     void DoInteraction_Talk_SkeleStock     () override;
@@ -36,9 +31,14 @@ protected:
     void DoInteraction_Potion_Tree   () override;
     
 public:
-    constexpr const char* GetShortName() const override
+    void DoInteraction_Grab () override;
+    void DoInteraction_Bread() override;
+    void DoInteraction_Sword() override;
+    void DoInteraction_Gold () override;
+
+    constexpr EntityType GetType() const override
     {
-        return "player";
+        return EntityType::Player;
     }
 
     const string& GetName() const;

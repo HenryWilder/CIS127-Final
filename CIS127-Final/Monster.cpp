@@ -6,7 +6,7 @@ using namespace std;
 
 void Monster::DoInteraction_Grab()
 {
-    bool isPositive = player.influences.Check("monsters");
+    bool isPositive = player.influences.Check(Collective::Monsters);
     
     
     string reaction, reactingTo;
@@ -25,7 +25,7 @@ void Monster::DoInteraction_Grab()
     
     if (reaction == "flustered" || ((reaction == "impressed" || reaction == "surprised") && reactingTo == "forwardness"))
     {
-        player.inventory.Add("phonenumber");
+        player.inventory.Add(Item::Phonenumber); // todo
         cout << "Upon being released, it discretely slips something into your pocket.";
     }
     else if (isPositive)
@@ -89,13 +89,13 @@ void Monster::DoInteraction_Sword()
     {
         string bodyCovering = ChooseRandom({ "gooey", "vaporous", "slimey", "meaty", "fuzzy", "fur-covered" });
         cout << "Your sword slashes through the monster, splitting it into two " << bodyCovering << " chunks on the floor. ";
-        player.inventory.Add("gold");
+        player.inventory.Add(Item::Gold);
         cout << "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.";
     }
     else
     {
-        player.inventory.TryRemove("sword");
-        bool isSwordSurviving = player.inventory.Has("sword");
+        player.inventory.TryRemove(Item::Sword);
+        bool isSwordSurviving = player.inventory.Has(Item::Sword);
         
         string reaction = ChooseRandom({
             "grabs your sword mid-swing, gripping it tightly in its claws",
@@ -107,20 +107,17 @@ void Monster::DoInteraction_Sword()
         string impact;
         if (isSwordSurviving)
         {
-            // adverb
-            impact = ChooseRandom({ "slightly", "somewhat", "lightly", "partly", "gently", });
-            // verb
-            impact = " " + ChooseRandom({ "bending", "dulling", "denting", "melting", "cracking", "chipping", });
+            
+            impact = ChooseRandom({ "slightly", "somewhat", "lightly", "partly", "gently", }); // adverb
+            impact += " ";
+            impact += ChooseRandom({ "bending", "dulling", "denting", "melting", "cracking", "chipping", }); // verb
             impact += " it";
         }
         else
         {
-            // adverb
-            impact = ChooseRandom({ "completely", "totally", "fully", "absolutely", "utterly", "instantly", });
-            // verb
-            impact += " " + ChooseRandom({ "shattering", "obliterating", "liquifying", "anihilating", "evaporating", "disintegrating",
-                "digesting", // Yes, even for non-mouth reactions
-            });
+            impact = ChooseRandom({ "completely", "totally", "fully", "absolutely", "utterly", "instantly", }); // adverb
+            impact += " ";
+            impact += ChooseRandom({ "shattering", "obliterating", "liquifying", "anihilating", "evaporating", "disintegrating", "digesting", }); // verb
             impact += " everything above the hilt";
         }
         

@@ -45,9 +45,9 @@ void Wizard::DoInteraction_Sword()
     {
         cout << "It smashes into a hundred pieces on the hard floor, the potion's effect activating instantly. "
             "You are engulfed in flames as the fire potion coats you like hot oil.\n";
-        player.DoInteraction("potion", "fire");
+        player.DoInteraction_Potion(Potion::Fire);
     }
-    Destroy();
+    RemoveFromSurroundings();
 }
 void Wizard::DoInteraction_Gold()
 {

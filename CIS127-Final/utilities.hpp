@@ -72,8 +72,11 @@ public:
     }
 };
 
-bool isvowel(char ch);
+constexpr bool isvowel(char ch)
+{
+    constexpr const char vowels[] = { 'A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u' };
 
-void EchoAction(const string& action, const string& target, const string& topicOrEffect);
+    return find(begin(vowels), end(vowels), ch) != end(vowels);
+}
 
 #endif /* utilities_hpp */

@@ -4,7 +4,6 @@
 #include "Components.hpp"
 #include "randomness.hpp"
 #include "Prompt.hpp"
-using namespace std;
 
 // IMPORTANT:
 // All interactions defined in this file are made with the assertion that player is targeting "self".
@@ -47,7 +46,7 @@ string ContextualOpinion()
 
 void NearbyThinksYou(const Surroundings& surroundings, vector<string> contextualResponses)
 {
-    cout << "The " << surroundings.RandomName() << " thinks you " << ContextualOpinion() << " " << ChooseRandom(contextualResponses) << ".";
+    cout << "The " << surroundings.Random() << " thinks you " << ContextualOpinion() << " " << ChooseRandom(contextualResponses) << ".";
 }
 
 void Player::DoInteraction_Talk_Generic()
@@ -70,7 +69,7 @@ void Player::DoInteraction_Talk_Generic()
     };
     
     // It is by design that the responder might be inanimate. I thought it would be funny.
-    cout << "The " << surroundings.RandomName() << " " << ChooseRandom(possibleResponses) << ".";
+    cout << "The " << surroundings.Random() << " " << ChooseRandom(possibleResponses) << ".";
 }
 void Player::DoInteraction_Talk_WineFish()
 {
@@ -151,7 +150,17 @@ void Player::DoInteraction_Potion_Wish()
     Wish wish = wishes.Prompt("\"What would you like for your wish, " + GetName() + "?\"");
     cout << "The genie pauses for a moment before replying, \"Granted.\"\n";
 
-    StrEnum<Collective> randCollective = collectives.Random();
+    CollectiveInfo_t randCollective = collectives.Random();
+
+    auto MaybeAddBabykickerNote = [&]()
+    {
+        bool isBabykickerCollective = randCollective == Collective::BabypunchingPuppykickers;
+        bool isFirstTime = influences.Get(Collective::BabypunchingPuppykickers) == 1; // Don't get repetitious.
+        if (isBabykickerCollective && isFirstTime)
+        {
+            cout << '\n' << COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE;
+        }
+    };
 
     switch (wish)
     {
@@ -166,7 +175,7 @@ void Player::DoInteraction_Potion_Wish()
         {
             // Other characters don't actually heal. NPC health is weird in this game.
             cout << "\"You wished for health, you didn't specify for whom\"\nYou notice the "
-                 << surroundings.RandomName() << " appears to have regained some health...";
+                 << surroundings.Random() << " appears to have regained some health...";
         }
         // Heal the player
         else
@@ -180,8 +189,9 @@ void Player::DoInteraction_Potion_Wish()
         // Interpret power as political influence
         if (CoinFlip())
         {
-            influences.Modify(randCollective.enumeration, 1);
-            cout << "You feel an inexplicable sensation of political influence over the " << randCollective.value << ".";
+            influences.Modify(randCollective, 1);
+            cout << "You feel an inexplicable sensation of political influence over the " << randCollective.full << ".";
+            MaybeAddBabykickerNote();
         }
         // Interpret power as physical strength
         else
@@ -192,8 +202,9 @@ void Player::DoInteraction_Potion_Wish()
         break;
 
     case Wish::Status:
-        influences.Modify(randCollective.enumeration, 1);
-        cout << "You feel an inexplicable sensation of high status among the " << randCollective.value << ".";
+        influences.Modify(randCollective, 1);
+        cout << "You feel an inexplicable sensation of high status among the " << randCollective.full << ".";
+        MaybeAddBabykickerNote();
         break;
 
     case Wish::Luck:
@@ -202,8 +213,9 @@ void Player::DoInteraction_Potion_Wish()
         break;
 
     case Wish::Faith:
-        influences.Modify(randCollective.enumeration, 1);
-        cout << "You feel an inexplicable sensation of religious influence over the " << randCollective.value << ".";
+        influences.Modify(randCollective, 1);
+        cout << "You feel an inexplicable sensation of religious influence over the " << randCollective.full << ".";
+        MaybeAddBabykickerNote();
         break;
     }
 

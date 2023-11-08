@@ -30,4 +30,8 @@
 #include <iterator>
 #include <functional>
 
+#include <tuple>
+#include <variant>
+#include <any>
+
 using namespace std;

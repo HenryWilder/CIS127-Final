@@ -13,34 +13,34 @@ public:
     void Print() const;
     
     // Prompts the user with a list of the surroundings, including "self".
-    InteractableType Prompt(const string prompt) const;
+    EntityType Prompt(const string& prompt) const;
     
-    bool Has(InteractableType what) const;
+    bool Has(EntityType what) const;
     
-    const Interactable& Get(InteractableType what) const;
+    const Entity& Get(EntityType what) const;
     
-    Interactable& Get(InteractableType what);
+    Entity& Get(EntityType what);
     
     bool IsEmpty() const;
     
     void Clear();
     
     // Returns true if added successfully, otherwise false.
-    bool TryAddNew(InteractableType what);
+    bool TryAddNew(EntityType what);
     
     // Returns true if removed successfully, otherwise false.
-    bool TryRemove(InteractableType what);
+    bool TryRemove(EntityType what);
     
     void ReRoll();
     
-    InteractableType Random() const;
+    EntityType Random() const;
     
     void Init() { ReRoll(); }
     void Save(ostream& ofs) const;
     void Load(istream& ifs);
     
 private:
-    map<InteractableType, Interactable*> things;
+    map<EntityType, Entity*> things;
 };
 
 extern Surroundings surroundings;

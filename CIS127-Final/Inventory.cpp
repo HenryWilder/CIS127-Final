@@ -91,12 +91,12 @@ void Inventory::RemoveAll()
 void Inventory::Print() const
 {
     cout << "Your current inventory:\n";
-    List(items);
+    List(cout, items);
 }
 
 Item Inventory::Prompt(const string& prompt) const
 {
-    return ::PromptKey<Item>(prompt, items);
+    return PromptKey(prompt, items);
 }
 
 void Inventory::Init()

@@ -10,17 +10,30 @@ template<class _Enum>
 struct StrEnum
 {
     constexpr StrEnum(_Enum _enumeration, const char* _keyval) :
-        enumeration(_enumeration), key(_keyval), value(_keyval) {}
+        enumeration(_enumeration), key(_keyval), full(_keyval) {}
 
     constexpr StrEnum(_Enum _enumeration, const char* _key, const char* _value) :
-        enumeration(_enumeration), key(_key), value(_value) {}
+        enumeration(_enumeration), key(_key), full(_value) {}
 
     _Enum enumeration;
     const char* key;
-    const char* value;
+    const char* full;
 
-    bool operator==(      _Enum   test) const { return test == enumeration; }
-    bool operator==(const string& test) const { return test == key;         }
+    bool operator==(_Enum test) const
+    {
+        return test == enumeration;
+    }
+
+    bool operator==(const string& test) const
+    {
+        return test == key;
+    }
+
+    // ".enumeration" is long.
+    operator _Enum() const
+    {
+        return enumeration;
+    }
 };
 
 template<class _Enum, size_t _Size>
@@ -40,13 +53,13 @@ public:
     {
         auto it = Find(key);
         if (it != end(data)) return *it;
-        throw new exception();
+        throw new out_of_range(format("\"{}\" is not a key of this enum", key));
     }
     const Element_t& At(_Enum enumeration) const
     {
         auto it = Find(enumeration);
         if (it != end(data)) return *it;
-        throw new exception();
+        throw new out_of_range(format("{} is not an explicit enumeration of this enum", (int)enumeration));
     }
 
     const Element_t& operator[](const string& key) const
@@ -68,11 +81,11 @@ public:
     }
     const char* ValueAt(const string& key) const
     {
-        return At(key).value;
+        return At(key).full;
     }
     const char* ValueAt(_Enum enumeration) const
     {
-        return At(enumeration).value;
+        return At(enumeration).full;
     }
 
     ostream& WriteKey(ostream& stream, _Enum enumeration) const
@@ -107,7 +120,7 @@ public:
         }
     }
 
-    Element_t Random() const
+    const Element_t& Random() const
     {
         return ChooseRandom(begin(data), end(data));
     }
@@ -121,7 +134,7 @@ public:
     }
     const char* RandomValue() const
     {
-        return Random().value;
+        return Random().full;
     }
 
 private: // Helpers
@@ -154,7 +167,7 @@ StrEnumCollection(StrEnum<_Enum>, _Args...) -> StrEnumCollection<_Enum, (sizeof.
     constexpr bool operator!=(const string& str, ENUM_CLASSNAME enumeration) { return !COLLECTION.Compare(str, enumeration); } \
     constexpr bool operator==(ENUM_CLASSNAME enumeration, const string& str) { return COLLECTION.Compare(str, enumeration); } \
     constexpr bool operator!=(ENUM_CLASSNAME enumeration, const string& str) { return !COLLECTION.Compare(str, enumeration); } \
-    using ENUM_CLASSNAME ## Info_t = StrEnum<ENUM_CLASSNAME>
+    using ENUM_CLASSNAME ## Info_t = const StrEnum<ENUM_CLASSNAME>&
 
 // Topic
 
@@ -204,14 +217,17 @@ enum class Item
     Sword,  // Damages; quantity represents durability
     Potion, // Effects are random
     Gold,   // 100% chance of getting items from NPCs willing to trade (higher chance than bread/talking)
+
+    Phonenumber, // joke
 };
 
 constexpr StrEnumCollection items
 {
-    StrEnum{ Item::Bread,  "bread"  },
-    StrEnum{ Item::Sword,  "sword"  },
-    StrEnum{ Item::Potion, "potion" },
-    StrEnum{ Item::Gold,   "gold"   },
+    StrEnum{ Item::Bread,       "bread"       },
+    StrEnum{ Item::Sword,       "sword"       },
+    StrEnum{ Item::Potion,      "potion"      },
+    StrEnum{ Item::Gold,        "gold"        },
+    StrEnum{ Item::Phonenumber, "phonenumber" },
 };
 
 STR_ENUM_OPERATORS(Item, items);
@@ -332,6 +348,8 @@ constexpr StrEnumCollection collectives
 };
 
 STR_ENUM_OPERATORS(Collective, collectives);
+
+constexpr const char COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE[] = "You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name.";
 
 // Wish
 
