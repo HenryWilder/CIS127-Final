@@ -262,8 +262,14 @@ string Prompt(const string& prompt);
 // Prompts the user for a non-empty (and not-exclusively-whitespace) string, prefixing each attempt with "> ".
 string PromptLine(const string& prompt);
 
+template<class _Container>
+concept iterable_of_string_comparable = iterable<_Container> && requires(_Container _Cont, string str)
+{
+    { str == (*begin(_Cont)) } -> same_as<bool>;
+};
+
 // Prompts the user for a valid option from the provided list.
-template<iterable _Container = initializer_list<const char*>>
+template<iterable_of_string_comparable _Container = initializer_list<const char*>>
 auto PromptOption(const string& prompt, const _Container& options)
 {
     while (cin.peek() != EOF && cin.peek() == ' ')
@@ -304,7 +310,7 @@ concept interchangeable_value_type = iterable<_Container1> && iterable<_Containe
 
 // Prompts the user for a valid option from the provided list.
 // Hidden options allow for options that are valid but aren't listed as part of the prompt (saving clutter).
-template<iterable _VisibleContainer = initializer_list<const char*>, iterable _HiddenContainer = initializer_list<const char*>>
+template<iterable_of_string_comparable _VisibleContainer = initializer_list<const char*>, iterable_of_string_comparable _HiddenContainer = initializer_list<const char*>>
 auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& options, const _HiddenContainer& hiddenOptions)
     requires(interchangeable_value_type<_VisibleContainer, _HiddenContainer>)
 {
@@ -354,9 +360,15 @@ auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& optio
     }
 }
 
+template<class _Container>
+concept iterable_of_string_comparable_keys = iterable<_Container> && requires(_Container _Cont, string str)
+{
+    { str == (begin(_Cont)->first) } -> same_as<bool>;
+};
+
 // Prompts the user for a valid option from the provided list.
 // Hidden options allow for options that are valid but aren't listed as part of the prompt (saving clutter).
-template<iterable _Container>
+template<iterable_of_string_comparable_keys _Container>
 auto PromptKey(const string& prompt, const _Container& options)
 {
     while (cin.peek() != EOF && cin.peek() == ' ')

@@ -102,7 +102,7 @@ public:
 
     constexpr bool Compare(const string& str, _Enum enumeration) const
     {
-        const Element_t* element = Find(enumeration);
+        const Element_t* element = Find(enumeration); // Searching for an integer is less work than searching for a string
         return (element != end(data)) && (element->key == str);
     }
 
@@ -167,13 +167,19 @@ StrEnumCollection(StrEnum<_Enum>, _Args...) -> StrEnumCollection<_Enum, (sizeof.
 
 // Boolean
 
-constexpr StrEnumCollection boolean
+enum class Boolean : bool
 {
-    StrEnum{ true,  "yes" },
-    StrEnum{ false, "no"  },
+    False,
+    True,
 };
 
-STR_ENUM_OPERATORS(bool, boolean);
+constexpr StrEnumCollection boolean
+{
+    StrEnum{ Boolean::True,  "yes" },
+    StrEnum{ Boolean::False, "no"  },
+};
+
+STR_ENUM_OPERATORS(Boolean, boolean);
 
 // Topic
 
