@@ -25,8 +25,32 @@ int main()
         // Load the game
         LoadWithPrompt();
         
-        cout << endl;
-        
+        cout << R"(
+Methods of input include:
+ # Single recognized word.
+ | ---[Examples]----------
+ | > use
+ | > bread
+ | > myself
+ | ---
+ | > grab
+ | > door
+ | ---
+ | > move
+ | > left
+ | -----------------------
+ | 
+ # Simple sentence containing recognized words.
+ | Unrecognized words are ignored.
+ | ---[Examples]-------------------------------
+ | > use some of the tasty bread on myself
+ | ---
+ | > quickly grab the sturdy door and open it
+ | ---
+ | > move to the left
+ | --------------------------------------------
+)";
+
         // Game loop
         while (!isQuitting && !isRestarting)
         {

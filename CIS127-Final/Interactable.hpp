@@ -18,7 +18,7 @@ enum class EntityType
 
 constexpr StrEnumCollection entityTypes
 {
-    StrEnum{ EntityType::Player,     "self",    "yourself"    },
+    StrEnum{ EntityType::Player,     "myself",  "yourself"    },
     StrEnum{ EntityType::Door,       "door",    "the door"    },
     StrEnum{ EntityType::Baker,      "baker",   "the baker"   },
     StrEnum{ EntityType::Blacksmith, "smith",   "the smith"   },
