@@ -33,7 +33,7 @@ int main()
             if (player.health.IsDead())
             {
                 cout << "Your health has dropped to zero and you have died.\n";
-                isQuitting = !(isRestarting = PromptOption("Would you like to start again?", { "yes", "no" }) == string("yes"));
+                isQuitting = !(isRestarting = boolean.Prompt("Would you like to start again?"));
                 break;
             }
 

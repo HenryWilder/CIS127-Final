@@ -150,9 +150,11 @@ private:
 template<ostreamable _Ty>
 size_t MeasureStreamable(_Ty item)
 {
-    ostringstream streamSimulator;
+    stringstream streamSimulator;
     streamSimulator << item;
-    return streamSimulator.width();
+    streamSimulator.seekg(0, ios::end);
+    size_t size = streamSimulator.tellg();
+    return size;
 }
 
 template<ostreamable _Ty>

@@ -169,6 +169,16 @@ StrEnumCollection(StrEnum<_Enum>, _Args...) -> StrEnumCollection<_Enum, (sizeof.
     constexpr bool operator!=(ENUM_CLASSNAME enumeration, const string& str) { return !COLLECTION.Compare(str, enumeration); } \
     using ENUM_CLASSNAME ## Info_t = const StrEnum<ENUM_CLASSNAME>&
 
+// Boolean
+
+constexpr StrEnumCollection boolean
+{
+    StrEnum{ true,  "yes" },
+    StrEnum{ false, "no"  },
+};
+
+STR_ENUM_OPERATORS(bool, boolean);
+
 // Topic
 
 enum class Topic
