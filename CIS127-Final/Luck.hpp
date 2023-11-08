@@ -7,6 +7,20 @@ class Luck :
     private NotCopyable
 {
 public:
+    enum LuckType
+    {
+        Good    = +1,
+        Neutral =  0,
+        Bad     = -1,
+    };
+
+private:
+    static constexpr LuckType CategorizeLuck(int amount)
+    {
+        return amount > 0 ? Good : amount < 0 ? Bad : Neutral;
+    }
+
+public:
     // If and only if the provided check would have failed naturally, one unit of good luck is consumed
     // to override the failure and replace it with a guaranteed success.
     //
@@ -16,15 +30,19 @@ public:
     // If the player has no luck--good nor bad--the success will not influenced and no luck be consumed.
     bool Apply(bool success);
     
-    // Returns -1, 0, or +1.
-    // If the player has good luck, returns +1 and consumes one unit of good luck.
-    // If the player has  bad luck, returns -1 and consumes one unit of bad luck.
-    // If the player has   no luck, returns  0 and consumes no luck.
-    int Check();
+    // Returns the current type of luck (good/bad/neutral).
+    // Consumes 1 unit of good luck if good.
+    // Consumes 1 unit of bad luck if bad.
+    // Consumes nothing if luck is neutral.
+    LuckType Check();
+
+    // "Testing your luck"
+    // Returns the current type of luck (good/bad/neutral).
+    // Consumes 1 unit of good luck no matter what.
+    // If luck is already bad, it gets worse.
+    LuckType Test();
     
-    // Positive = good luck
-    // Negative =  bad luck
-    void Give(int amount);
+    void Give(_In_range_(!=, Neutral) LuckType kind, int amount = 1);
     
     // Removes all luck, both good and bad
     void Clear();

@@ -11,19 +11,19 @@ void Door::DoInteraction_Grab()
 }
 void Door::DoInteraction_Bread()
 {
-    player.luck.Give(1);
+    player.luck.Give(Luck::Good);
     cout << "The door says nothing, but you get the odd sensation that it appriciates the gift.";
 }
 void Door::DoInteraction_Sword()
 {
-    if (DiceCheck(3, 4))
-    {
-        cout << "The door does not yield.";
-    }
-    else
+    if (DisadvantagedCoinFlip())
     {
         surroundings.ReRoll();
         cout << "The door crumbles to bits and you walk through it.";
+    }
+    else
+    {
+        cout << "The door does not yield.";
     }
 }
 void Door::DoInteraction_Gold()

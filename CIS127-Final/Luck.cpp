@@ -2,12 +2,12 @@
 
 bool Luck::Apply(bool success)
 {
-    if (!success && luck > 0)
+    if (!success || luck > 0)
     {
         --luck;
         return true;
     }
-    if (success && luck < 0)
+    else if (success && luck < 0)
     {
         ++luck;
         return false;
@@ -15,24 +15,29 @@ bool Luck::Apply(bool success)
     return success;
 }
 
-int Luck::Check()
+Luck::LuckType Luck::Check()
 {
-    if (luck > 0)
+    LuckType type = CategorizeLuck(luck);
+    switch (type)
     {
-        --luck;
-        return 1;
+    case Good: --luck; break;
+    case Bad:  ++luck; break;
     }
-    if (luck < 0)
-    {
-        ++luck;
-        return -1;
-    }
-    return 0;
+    return type;
 }
 
-void Luck::Give(int amount)
+Luck::LuckType Luck::Test()
 {
-    luck += amount;
+    return CategorizeLuck(luck--);
+}
+
+void Luck::Give(_In_range_(!=, Neutral) LuckType kind, int amount)
+{
+    switch (kind)
+    {
+    case Luck::Good: luck += amount; break;
+    case Luck::Bad:  luck -= amount; break;
+    }
 }
 
 void Luck::Clear()

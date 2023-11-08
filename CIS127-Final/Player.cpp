@@ -19,7 +19,22 @@ void Player::DoInteraction_Bread()
 }
 void Player::DoInteraction_Sword()
 {
-    cout << "[todo]";
+    switch (luck.Test())
+    {
+    case Luck::Good:
+        cout << "Fortunately, your armor is strong enough and your sword so cumbersome at such an angle that you barely scuffed yourself.";
+        break;
+
+    case Luck::Neutral:
+        health.Damage(1);
+        cout << "You took 1 point of damage, dummy.";
+        break;
+
+    case Luck::Bad:
+        health.Damage(999);
+        cout << "What did you expect was going to happen?";
+        break;
+    }
 }
 void Player::DoInteraction_Gold()
 {
@@ -130,7 +145,7 @@ void Player::DoInteraction_Talk_Woodchuck()
 
 void Player::DoInteraction_Potion_Predict()
 {
-    luck.Give(5);
+    luck.Give(Luck::Good, 5);
     cout << "You recieve foresight of everything that will happen in the near future, and plan accordingly.";
 }
 void Player::DoInteraction_Potion_Heal()
@@ -208,7 +223,7 @@ void Player::DoInteraction_Potion_Wish()
         break;
 
     case Wish::Luck:
-        luck.Give(5);
+        luck.Give(Luck::Good, 5);
         cout << "Nothing seems to have changed. You aren't even sure if the wish did anything.";
         break;
 
@@ -258,32 +273,45 @@ void Player::DoInteraction_Potion_Demon()
     {
         switch (luck.Check())
         {
-            case +1:
-                cout << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
-                break;
+        case Luck::Good:
+            cout << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
+            break;
 
-            default:
-                health.Damage(2);
-                cout << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. You are protected from most of the attack thanks to your armor, but it still takes away 2 points of your health.";
-                break;
+        default:
+            health.Damage(2);
+            cout << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. "
+                    "You are protected from most of the attack thanks to your armor, but it still takes away 2 points of your health.";
+            break;
         }
     }
     else if (demon == "tentacle")
     {
         health.Damage(1);
-        cout << "The tentacle slaps you violently, causing you to spin around in place before it slithers back down into its hole, disappearing from view. You lost 1 point of health.";
+        cout << "The tentacle slaps you violently, causing you to spin around in place before it slithers back down into its hole, disappearing from view. "
+                "You lost 1 point of health.";
     }
     else if (demon == "vampire")
     {
-        switch (luck.Check()) {
-            case +1:
-                inventory.Add(Item::Bread, 3);
-                cout << "The vampire seemed confused as to why they were summoned, but decides now is as decent a time as any to dispose of the garlic bread people keep throwing at them. They " << ChooseRandom({ "plop", "stuff", "drop", "place" }) << " it down into your hand and promptly transform into a small black bat, flying away into the darkness.";
-                break;
-            case  0:
-            case -1:
-                cout << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. You take no damage, but it still stings.";
-                break;
+        switch (luck.Check())
+        {
+        case Luck::Good:
+            inventory.Add(Item::Bread, 3);
+            cout << "The vampire seemed confused as to why they were summoned, "
+                    "but decides now is as decent a time as any to dispose of the garlic bread people keep throwing at them. "
+                    "They " << ChooseRandom({ "plop", "stuff", "drop", "place" }) << " the bread into your hand and promptly transform into a small black bat, "
+                    "flying away into the darkness.";
+            break;
+
+        case Luck::Neutral:
+            cout << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. "
+                    "You take no damage, but it still stings.";
+            break;
+
+        case Luck::Bad:
+            health.Damage(1);
+            cout << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. "
+                    "The kick was surprisingly hard, taking 1 point of your health.";
+            break;
         }
     }
 }
