@@ -1,16 +1,82 @@
 #pragma once
 #include "utilities.hpp"
 
-extern const char* streamListItemPrefix;
-extern const char* streamListItemSeparator;
-extern const char* streamListItemMemberSeparator;
+class StreamList
+{
+private:
+    StreamList() :
+        itemPrefix({ "- " }), itemSeparator({ "\n" }), itemMemberSeparator({ ": " }) {}
+
+    static StreamList& Get()
+    {
+        static StreamList singleton;
+        return singleton;
+    }
+
+public:
+    static const char* GetItemPrefix()
+    {
+        return Get().itemPrefix.top();
+    }
+    static void SetItemPrefix(const char* value)
+    {
+        Get().itemPrefix.top() = value;
+    }
+    static void PushItemPrefix(const char* value)
+    {
+        Get().itemPrefix.push(value);
+    }
+    static void PopItemPrefix()
+    {
+        Get().itemPrefix.pop();
+    }
+
+    static const char* GetItemSeparator()
+    {
+        return Get().itemSeparator.top();
+    }
+    static void SetItemSeparator(const char* value)
+    {
+        Get().itemSeparator.top() = value;
+    }
+    static void PushItemSeparator(const char* value)
+    {
+        Get().itemSeparator.push(value);
+    }
+    static void PopItemSeparator()
+    {
+        Get().itemSeparator.pop();
+    }
+
+    static const char* GetItemMemberSeparator()
+    {
+        return Get().itemMemberSeparator.top();
+    }
+    static void SetItemMemberSeparator(const char* value)
+    {
+        Get().itemMemberSeparator.top() = value;
+    }
+    static void PushItemMemberSeparator(const char* value)
+    {
+        Get().itemMemberSeparator.push(value);
+    }
+    static void PopItemMemberSeparator()
+    {
+        Get().itemMemberSeparator.pop();
+    }
+
+private:
+    stack<const char*> itemPrefix;
+    stack<const char*> itemSeparator;
+    stack<const char*> itemMemberSeparator;
+};
 
 template<class _Ty1, class... _TyN>
 void ListItem(ostream& stream, const _Ty1& member1, const _TyN&... memberN)
 {
-      stream << streamListItemPrefix          << member1;
-    ((stream << streamListItemMemberSeparator << memberN), ...);
-      stream << streamListItemSeparator;
+      stream << StreamList::GetItemPrefix()          << member1;
+    ((stream << StreamList::GetItemMemberSeparator() << memberN), ...);
+      stream << StreamList::GetItemSeparator();
 }
 
 template<input_iterator _InIt>

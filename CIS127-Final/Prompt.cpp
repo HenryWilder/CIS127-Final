@@ -1,9 +1,5 @@
 #include "Prompt.hpp"
 
-const char* streamListItemPrefix = "- ";
-const char* streamListItemSeparator = "\n";
-const char* streamListItemMemberSeparator = ": ";
-
 string Prompt()
 {
     while (true)

@@ -8,11 +8,7 @@ Surroundings::~Surroundings()
 
 void Surroundings::Print() const
 {
-    cout << "Your current surroundings:\n";
-    for (const auto& it : things)
-    {
-        cout << "- " << it.first << '\n';
-    }
+    ListKeys(cout << "Your current surroundings:\n", things);
 }
 
 EntityType Surroundings::Prompt(const string& prompt) const
