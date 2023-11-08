@@ -12,7 +12,7 @@ class StreamList
 private:
     StreamList() :
         start(""),
-        end(""),
+        end("\n"),
         prefix("- "),
         suffix(""),
         separator("\n"),
