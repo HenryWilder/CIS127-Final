@@ -38,10 +38,11 @@ int main()
             }
 
             cout << TURN_SPLIT;
-            StreamList::PushItemPrefix("  - ");
-            surroundings    .Print(); cout << '\n';
-            player.inventory.Print(); cout << '\n';
-            StreamList::PopItemPrefix();
+
+            StreamList::Push(" [\n", "\n]\n\n", "  { ", " }", ",\n", Argument::Default, true);
+            surroundings    .Print();
+            player.inventory.Print();
+            StreamList::Pop();
             
             Action action;
             {

@@ -1,11 +1,13 @@
-#pragma once
-
-#include <iostream>
-#include <fstream>
-#include <cassert>
+#ifndef standard_hpp
+#define standard_hpp
 
 #include <string>
 #include <format>
+
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
 
 #include <array>
 #include <vector>
@@ -23,6 +25,7 @@
 
 #include <span>
 
+#include <cassert>
 #include <algorithm>
 #include <concepts>
 #include <utility>
@@ -35,3 +38,5 @@
 #include <any>
 
 using namespace std;
+
+#endif // standard_hpp
