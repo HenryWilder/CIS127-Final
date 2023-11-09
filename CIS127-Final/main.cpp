@@ -152,7 +152,7 @@ int main()
 
                 HorizontalRule();
                 cout << '\n';
-                cout << format("You walked {} to into another room.\n", directions.ValueAt(direction));
+                cout << format("You walked {} into another room.\n", directions.ValueAt(direction));
 
                 if (!surroundings.IsEmpty())
                 {
