@@ -27,11 +27,23 @@ void SaveToFile(ofstream& ofs)
 void LoadWithPrompt()
 {
     ifstream file(filename);
-    
+
+    if (file.is_open())
+    {
+        cout << "Save file found" << endl;
+        cin.ignore(0);
+        const string startOption = PromptOption("Load or start a new game?", { "load", "new" });
+        if (startOption == string("new"))
+        {
+            file.close(); // Prevents file.is_open() from succeeding
+        }
+    }
+
     // load game
-    if (file.is_open() && PromptOption("Start", { "load", "new" }) == "new")
+    if (file.is_open())
     {
         LoadFromFile(file);
+        file.close();
         cout << "Welcome back, " << player.GetName() << "\n";
     }
     // new game
@@ -40,11 +52,6 @@ void LoadWithPrompt()
         cout << "Starting a new game.\n\n";
         InitNewGame();
         cout << "Hello, " << player.GetName() << "\n";
-    }
-
-    if (file.is_open())
-    {
-        file.close();
     }
 }
 

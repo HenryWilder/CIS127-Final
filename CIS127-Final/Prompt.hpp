@@ -286,11 +286,14 @@ concept iterable_of_string_comparable = iterable<_Container> && requires(_Contai
     { str == (*begin(_Cont)) } -> same_as<bool>;
 };
 
+// Has the user already provided a response to cin that we can use?
+bool IsInputExisting();
+
 // Prompts the user for a valid option from the provided list.
 template<iterable_of_string_comparable _Container = initializer_list<const char*>>
 auto PromptOption(const string& prompt, const _Container& options)
 {
-    while (cin.peek() == ' ')
+    while (IsInputExisting())
     {
         string input;
         cin >> input;
@@ -332,7 +335,7 @@ template<iterable_of_string_comparable _VisibleContainer = initializer_list<cons
 auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& options, const _HiddenContainer& hiddenOptions)
     requires(interchangeable_value_type<_VisibleContainer, _HiddenContainer>)
 {
-    while (cin.peek() == ' ')
+    while (IsInputExisting())
     {
         string input;
         cin >> input;
@@ -389,7 +392,7 @@ concept iterable_of_string_comparable_keys = iterable<_Container> && requires(_C
 template<iterable_of_string_comparable_keys _Container>
 auto PromptKey(const string& prompt, const _Container& options)
 {
-    while (cin.peek() == ' ')
+    while (IsInputExisting())
     {
         string input;
         cin >> input;
