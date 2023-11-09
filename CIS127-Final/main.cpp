@@ -110,13 +110,6 @@ int main()
                 isQuitting = !(isRestarting = (bool)boolean.Prompt("Would you like to start again?"));
                 break;
             }
-
-            StreamList::Push("\n[\n", "  { ", ": ", " }", ",\n", nullptr, "\n]\n\n", true);
-            cout << "Your current surroundings:";
-            surroundings.Print();
-            cout << "Your current inventory:";
-            player.inventory.Print();
-            StreamList::Pop();
             
             Action action;
             {
@@ -129,11 +122,12 @@ int main()
                         Action::Move,
                         Action::Talk,
                         Action::Grab,
-                        Action::Use
+                        Action::Items,
+                        Action::Near,
                     };
-                    if (player.inventory.IsEmpty())
+                    if (!player.inventory.IsEmpty())
                     {
-                        options.pop_back(); // Remove "Use"
+                        options.insert(options.begin() + 3, Action::Use);
                     }
                     action = PromptOptionWithHidden("What would you like to do?", options, alwaysAvailable);
                 }
@@ -232,6 +226,32 @@ int main()
                 cout << '\n';
                 HorizontalRule();
             }
+                break;
+
+            case Action::Items:
+                StreamList::Push("[\n", "  { ", ": ", " }", ",\n", nullptr, "\n]", true);
+
+                HorizontalRule();
+                cout << '\n';
+                cout << "Your current inventory:\n";
+                player.inventory.Print();
+                cout << '\n';
+                HorizontalRule();
+
+                StreamList::Pop();
+                break;
+
+            case Action::Near:
+                StreamList::Push("[\n", "  ", nullptr, "", ",\n", nullptr, "\n]", true);
+
+                HorizontalRule();
+                cout << '\n';
+                cout << "Your current surroundings:\n";
+                surroundings.Print();
+                cout << '\n';
+                HorizontalRule();
+
+                StreamList::Pop();
                 break;
 
             case Action::Quit:

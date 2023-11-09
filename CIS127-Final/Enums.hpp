@@ -294,6 +294,8 @@ enum class Action
     Talk,
     Grab,
     Use,
+    Items,
+    Near,
     Quit,
     Restart,
 };
@@ -304,6 +306,8 @@ constexpr StrEnumCollection actions
     StrEnum{ Action::Talk,    "talk"    },
     StrEnum{ Action::Grab,    "grab"    },
     StrEnum{ Action::Use,     "use"     },
+    StrEnum{ Action::Items,   "items"   },
+    StrEnum{ Action::Near,    "near"    },
     StrEnum{ Action::Quit,    "quit"    },
     StrEnum{ Action::Restart, "restart" },
 };
