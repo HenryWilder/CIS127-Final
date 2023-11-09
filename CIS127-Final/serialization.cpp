@@ -31,7 +31,6 @@ void LoadWithPrompt()
     if (file.is_open())
     {
         cout << "Save file found" << endl;
-        cin.ignore(0);
         const string startOption = PromptOption("Load or start a new game?", { "load", "new" });
         if (startOption == string("new"))
         {
