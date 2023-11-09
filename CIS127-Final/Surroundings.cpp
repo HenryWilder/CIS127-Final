@@ -8,7 +8,7 @@ Surroundings::~Surroundings()
 
 void Surroundings::Print() const
 {
-    ListKeys(cout << "Your current surroundings:", things);
+    ListKeys(cout, things);
 }
 
 EntityType Surroundings::Prompt(const string& prompt) const

@@ -90,7 +90,7 @@ void Inventory::RemoveAll()
 
 void Inventory::Print() const
 {
-    List(cout << "Your current inventory:", items);
+    List(cout, items);
 }
 
 Item Inventory::Prompt(const string& prompt) const

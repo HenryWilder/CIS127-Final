@@ -7,7 +7,10 @@ string Prompt()
 {
     while (true)
     {
-        cout << "> ";
+        if (cin.peek() != ' ')
+        {
+            cout << "> ";
+        }
         string input;
         cin >> input;
         if (!IsEmptyOrWhitespace(input))

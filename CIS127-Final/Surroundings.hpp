@@ -24,6 +24,11 @@ public:
     bool IsEmpty() const;
     
     void Clear();
+
+    size_t Count() const
+    {
+        return things.size();
+    }
     
     // Returns true if added successfully, otherwise false.
     bool TryAddNew(EntityType what);

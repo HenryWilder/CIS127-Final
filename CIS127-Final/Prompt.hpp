@@ -16,6 +16,7 @@ private:
         prefix("- "),
         suffix(""),
         separator("\n"),
+        finalSeparator(0),
         memberSeparator(": "),
         spaceMembersEvenly(false)
     {}
@@ -79,11 +80,12 @@ private:
 public:
     static void Push(
         const variant<const char*, Argument>& start,
-        const variant<const char*, Argument>& end,
         const variant<const char*, Argument>& prefix,
+        const variant<const char*, Argument>& memberSeparator,
         const variant<const char*, Argument>& suffix,
         const variant<const char*, Argument>& separator,
-        const variant<const char*, Argument>& memberSeparator,
+        const variant<const char*, Argument>& finalSeparator,
+        const variant<const char*, Argument>& end,
         const variant<bool,        Argument>& spaceMembersEvenly)
     {
         StreamList& sl = Get();
@@ -92,6 +94,7 @@ public:
         sl.prefix            .Push(prefix);
         sl.suffix            .Push(suffix);
         sl.separator         .Push(separator);
+        sl.finalSeparator    .Push(finalSeparator);
         sl.memberSeparator   .Push(memberSeparator);
         sl.spaceMembersEvenly.Push(spaceMembersEvenly);
     }
@@ -104,6 +107,7 @@ public:
         sl.prefix            .Pop();
         sl.suffix            .Pop();
         sl.separator         .Pop();
+        sl.finalSeparator    .Pop();
         sl.memberSeparator   .Pop();
         sl.spaceMembersEvenly.Pop();
     }
@@ -128,6 +132,10 @@ public:
     {
         return Get().separator;
     }
+    static Member<const char*>& FinalSeparator()
+    {
+        return Get().finalSeparator;
+    }
     static Member<const char*>& MemberSeparator()
     {
         return Get().memberSeparator;
@@ -143,6 +151,7 @@ private:
     Member<const char*> prefix;
     Member<const char*> suffix;
     Member<const char*> separator;
+    Member<const char*> finalSeparator; // For things like "and"
     Member<const char*> memberSeparator;
     Member<bool> spaceMembersEvenly;
 };
@@ -180,12 +189,15 @@ void List(ostream& stream, _InIt begin, _InIt end)
             width = max(width, MeasureStreamable(*it));
         }
     }
+    bool isUsingFinalSeparator = StreamList::FinalSeparator() != 0;
 
     stream << StreamList::Start();
     _ListItem(stream, width, *begin);
     for (++begin; begin != end; ++begin)
     {
-        _ListItem(stream << StreamList::Separator(), width, *begin);
+        _InIt next = begin; ++next;
+        bool isLast = isUsingFinalSeparator && next == end;
+        _ListItem(stream << (isLast ? StreamList::FinalSeparator() : StreamList::Separator()), width, *begin);
     }
     stream << StreamList::End();
 }
@@ -203,12 +215,15 @@ void List(ostream& stream, _InIt begin, _InIt end)
             width2 = max<size_t>(width2, MeasureStreamable(it->second));
         }
     }
+    bool isUsingFinalSeparator = StreamList::FinalSeparator() != 0;
 
     stream << StreamList::Start();
     _ListItem(stream, width1, width2, begin->first, begin->second);
     for (++begin; begin != end; ++begin)
     {
-        _ListItem(stream << StreamList::Separator(), width1, width2, begin->first, begin->second);
+        _InIt next = begin; ++next;
+        bool isLast = isUsingFinalSeparator && next == end;
+        _ListItem(stream << (isLast ? StreamList::FinalSeparator() : StreamList::Separator()), width1, width2, begin->first, begin->second);
     }
     stream << StreamList::End();
 }
@@ -237,6 +252,7 @@ void ListKeys(ostream& stream, const _Container& options)
             width = max(width, MeasureStreamable(it->first));
         }
     }
+    bool isUsingFinalSeparator = StreamList::FinalSeparator() != 0;
 
     auto it = begin(options);
 
@@ -244,7 +260,9 @@ void ListKeys(ostream& stream, const _Container& options)
     _ListItem(stream, width, it->first);
     for (++it; it != end(options); ++it)
     {
-        _ListItem(stream << StreamList::Separator(), width, it->first);
+        decltype(it) next = it; ++next;
+        bool isLast = isUsingFinalSeparator && next == end(options);
+        _ListItem(stream << (isLast ? StreamList::FinalSeparator() : StreamList::Separator()), width, it->first);
     }
     stream << StreamList::End();
 }
@@ -272,7 +290,7 @@ concept iterable_of_string_comparable = iterable<_Container> && requires(_Contai
 template<iterable_of_string_comparable _Container = initializer_list<const char*>>
 auto PromptOption(const string& prompt, const _Container& options)
 {
-    while (cin.peek() != EOF && cin.peek() == ' ')
+    while (cin.peek() == ' ')
     {
         string input;
         cin >> input;
@@ -314,7 +332,7 @@ template<iterable_of_string_comparable _VisibleContainer = initializer_list<cons
 auto PromptOptionWithHidden(const string& prompt, const _VisibleContainer& options, const _HiddenContainer& hiddenOptions)
     requires(interchangeable_value_type<_VisibleContainer, _HiddenContainer>)
 {
-    while (cin.peek() != EOF && cin.peek() == ' ')
+    while (cin.peek() == ' ')
     {
         string input;
         cin >> input;
@@ -371,7 +389,7 @@ concept iterable_of_string_comparable_keys = iterable<_Container> && requires(_C
 template<iterable_of_string_comparable_keys _Container>
 auto PromptKey(const string& prompt, const _Container& options)
 {
-    while (cin.peek() != EOF && cin.peek() == ' ')
+    while (cin.peek() == ' ')
     {
         string input;
         cin >> input;
