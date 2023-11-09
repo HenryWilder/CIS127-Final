@@ -24,28 +24,31 @@ public:
     bool IsEmpty() const;
     
     void Clear();
-
-    size_t Count() const
-    {
-        return things.size();
-    }
     
     // Returns true if added successfully, otherwise false.
     bool TryAddNew(EntityType what);
     
     // Returns true if removed successfully, otherwise false.
     bool TryRemove(EntityType what);
+
+    // Delegates removal to the next call of "RemoveQueued()".
+    // This safely releases the entity without interrupting its function.
+    void QueueForRemoval(EntityType what) const;
+
+    // Releases all entities queued for removal. Call when entities are not in use.
+    void ReleaseQueued();
     
     void ReRoll();
     
     EntityType Random() const;
     
-    void Init() { ReRoll(); }
+    void Init();
     void Save(ostream& ofs) const;
     void Load(istream& ifs);
     
 private:
     map<EntityType, Entity*> things;
+    mutable vector<EntityType> toRemove; // Does not actually modify surroundings, just modifies the list of things that will be modified later
 };
 
 extern Surroundings surroundings;

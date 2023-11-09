@@ -8,6 +8,10 @@
 
 enum class EntityType
 {
+    Bread  = (int)Item::Bread,
+    Gold   = (int)Item::Gold,
+    Potion = (int)Item::Potion,
+
     Player,
     Door,
     Baker,
@@ -18,6 +22,10 @@ enum class EntityType
 
 constexpr StrEnumCollection entityTypes
 {
+    StrEnum{ EntityType::Bread,      "bread",   "the bread"   },
+    StrEnum{ EntityType::Gold,       "gold",    "the gold"    },
+    StrEnum{ EntityType::Potion,     "potion",  "the potion"  },
+
     StrEnum{ EntityType::Player,     "myself",  "yourself"    },
     StrEnum{ EntityType::Door,       "door",    "the door"    },
     StrEnum{ EntityType::Baker,      "baker",   "the baker"   },
@@ -71,7 +79,7 @@ public:
     void DoInteraction_Talk  (Topic topic);
     void DoInteraction_Potion(Potion effect);
 
-    void RemoveFromSurroundings();
+    void RemoveFromWorld();
 
     constexpr virtual EntityType GetType() const = 0;
 };
@@ -128,5 +136,19 @@ private:
 };
 
 NPC* NewNPCOfType(NPCType type, Collective collective);
+
+// An entity which corrosponds with an Item. Can be added to the player's inventory when grabbed.
+class ItemEntity :
+    public Entity
+{
+protected:
+    // Transfer to player inventory
+    void Collect();
+
+    constexpr Item GetItemEnum() const
+    {
+        return (Item)GetType();
+    }
+};
 
 #endif /* Interactable_hpp */

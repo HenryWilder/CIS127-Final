@@ -2,6 +2,13 @@
 #include "utilities.hpp"
 #include "Surroundings.hpp"
 
+#include "Door.hpp"
+#include "Baker.hpp"
+#include "Blacksmith.hpp"
+#include "Wizard.hpp"
+#include "Monster.hpp"
+#include "Player.hpp"
+
 void Entity::DoInteraction_Talk_WineFish        () { DoInteraction_Talk_Generic(); }
 void Entity::DoInteraction_Talk_SkeleStock      () { DoInteraction_Talk_Generic(); }
 void Entity::DoInteraction_Talk_WoodpeckerSiege () { DoInteraction_Talk_Generic(); }
@@ -55,20 +62,14 @@ void Entity::DoInteraction_Potion(Potion effect)
     case Potion::Fire:    DoInteraction_Potion_Fire   (); break;
     case Potion::Explode: DoInteraction_Potion_Explode(); break;
     case Potion::Tree:    DoInteraction_Potion_Tree   (); break;
-    default: throw new NotImplementedException(potions.KeyAt(effect));
     }
+    throw new NotImplementedException(potions.KeyAt(effect));
 }
 
-void Entity::RemoveFromSurroundings()
+void Entity::RemoveFromWorld()
 {
-    surroundings.TryRemove(GetType());
+    surroundings.QueueForRemoval(GetType());
 }
-
-#include "Door.hpp"
-#include "Baker.hpp"
-#include "Blacksmith.hpp"
-#include "Wizard.hpp"
-#include "Monster.hpp"
 
 Entity* NewInteractableOfType(EntityType type)
 {
@@ -79,8 +80,8 @@ Entity* NewInteractableOfType(EntityType type)
     case EntityType::Blacksmith: return new Blacksmith();
     case EntityType::Wizard:     return new Wizard    ();
     case EntityType::Monster:    return new Monster   ();
-    default: throw new NotImplementedException(entityTypes.KeyAt(type));
     }
+    throw new NotImplementedException(entityTypes.KeyAt(type));
 }
 
 NPC* NewNPCOfType(NPCType type, Collective collective)
@@ -91,6 +92,12 @@ NPC* NewNPCOfType(NPCType type, Collective collective)
     case NPCType::Blacksmith: return new Blacksmith(collective);
     case NPCType::Wizard:     return new Wizard    (collective);
     case NPCType::Monster:    return new Monster   (); // Always "monsters"
-    default: throw new NotImplementedException(npcTypes.KeyAt(type));
     }
+    throw new NotImplementedException(npcTypes.KeyAt(type));
+}
+
+void ItemEntity::Collect()
+{
+    player.inventory.Add(GetItemEnum());
+    RemoveFromWorld();
 }

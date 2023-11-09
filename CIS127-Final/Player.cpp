@@ -318,13 +318,16 @@ void Player::DoInteraction_Potion_Demon()
 void Player::DoInteraction_Potion_Fire()
 {
     health.Damage(1);
-    // todo: status effects
+    health.statuses.Apply(StatusEffects::Fire);
     cout << "It hurt quite a bit, taking away 1 point of health.";
 }
 void Player::DoInteraction_Potion_Explode()
 {
     health.Damage(3);
-    // todo: status effects
+    if (CoinFlip())
+    {
+        health.statuses.Apply(StatusEffects::Fire);
+    }
     cout << "You feel your armor heat up tremendously, practically baking you within it. You feel 3 health points drain from your soul.";
 }
 void Player::DoInteraction_Potion_Tree()

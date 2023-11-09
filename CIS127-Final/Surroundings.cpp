@@ -54,24 +54,42 @@ void Surroundings::Clear()
 // Returns true if added successfully, otherwise false.
 bool Surroundings::TryAddNew(EntityType what)
 {
-    if (things.contains(what))
+    if (!things.contains(what))
     {
-        return false;
+        things.emplace(what, NewInteractableOfType(what));
+        return true;
     }
-    things.emplace(what, NewInteractableOfType(what));
-    return true;
+    return false;
 }
 
 // Returns true if removed successfully, otherwise false.
 bool Surroundings::TryRemove(EntityType what)
 {
-    if (things.contains(what))
+    auto it = things.find(what);
+    if (it != things.end())
     {
-        delete things.at(what);
-        things.erase(what);
+        delete it->second;
+        things.erase(it);
         return true;
     }
     return false;
+}
+
+void Surroundings::QueueForRemoval(EntityType what) const
+{
+    toRemove.push_back(what);
+}
+
+
+// Releases all entities queued for removal. Call when entities are not in use.
+
+void Surroundings::ReleaseQueued()
+{
+    for (EntityType key : toRemove)
+    {
+        (void)TryRemove(key);
+    }
+    toRemove.clear();
 }
 
 void Surroundings::ReRoll()
@@ -119,6 +137,11 @@ void Surroundings::ReRoll()
 EntityType Surroundings::Random() const
 {
     return ChooseRandomKey(things);
+}
+
+void Surroundings::Init()
+{
+    ReRoll();
 }
 
 void Surroundings::Save(ostream& ofs) const

@@ -37,9 +37,6 @@ struct StrEnum
 };
 
 template<class _Enum, size_t _Size>
-struct StrEnumCollection;
-
-template<class _Enum, size_t _Size>
 struct StrEnumCollection
 {
 public:

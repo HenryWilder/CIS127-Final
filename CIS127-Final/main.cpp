@@ -89,12 +89,257 @@ void HorizontalRule()
     cout << "\n";
 }
 
+enum class TurnEndType
+{
+    Continue,
+    Quit,
+    Restart,
+};
+
+class TurnHandler
+{
+private:
+    static bool IsPlayerSoftLocked()
+    {
+        return player.health.statuses.Has(StatusEffects::Tree);
+    }
+
+    static bool IsPlayerWithoutItems()
+    {
+        return player.health.statuses.Has(StatusEffects::Tree);
+    }
+
+public:
+    TurnEndType GetTurnEndType() const
+    {
+        return turnEndType;
+    }
+
+    static Action PromptForAction()
+    {
+        const array<Action, 2> alwaysAvailable = { Action::Quit, Action::Restart };
+
+        if (!IsPlayerSoftLocked())
+        {
+            vector<Action> options =
+            {
+                Action::Move,
+                Action::Talk,
+                Action::Grab,
+                Action::Items,
+                Action::Near,
+            };
+            if (!player.inventory.IsEmpty())
+            {
+                options.insert(options.begin() + 3, Action::Use);
+            }
+            return PromptOptionWithHidden("What would you like to do?", options, alwaysAvailable);
+        }
+        else // Soft locked
+        {
+            return PromptOption("You are a tree.", alwaysAvailable);
+        }
+    }
+
+    static pair<EntityTypeInfo_t, Entity&> PromptForTartget(const string& prompt)
+    {
+        EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt(prompt));
+        Entity& targetObject = surroundings.Get(target);
+        return { target, targetObject };
+    }
+
+    static void BeginTurnEcho()
+    {
+        HorizontalRule();
+        cout << '\n';
+    }
+    static void EndTurnEcho()
+    {
+        cout << '\n';
+        HorizontalRule();
+    }
+
+    void DoMove()
+    {
+        Direction direction = directions.Prompt("Where would you like to move?");
+        surroundings.ReRoll(); // choice is an illusion :P
+
+        BeginTurnEcho();
+
+        cout << format("You walked {} into another room.\n", directions.ValueAt(direction));
+
+        if (!surroundings.IsEmpty())
+        {
+            constexpr ListStyle sightListStyle = { "You see ", "a ", "", "", ", ", " and ", ".", false };
+            StreamList::Push(sightListStyle);
+            surroundings.Print();
+            StreamList::Pop();
+        }
+        else
+        {
+            cout << "You are alone with your thoughts.";
+        }
+        
+        EndTurnEcho();
+    }
+
+    void DoTalk()
+    {
+        auto [target, targetObject] = PromptForTartget("Who/what would you like to talk to?");
+
+        TopicInfo_t topic = topics.Random();
+
+        BeginTurnEcho();
+
+        cout << format("You had an interesting discussion with {} regarding {}.\n", target.full, topic.full);
+
+        targetObject.DoInteraction_Talk(topic);
+
+        EndTurnEcho();
+    }
+
+    void DoGrab()
+    {
+        auto [target, targetObject] = PromptForTartget("Who/what would you like to grab?");
+
+        BeginTurnEcho();
+
+        cout << format("You grabbed {}.\n", target.full);
+
+        targetObject.DoInteraction_Grab();
+
+        EndTurnEcho();
+    }
+
+    static void DoUseItem(Item item, EntityTypeInfo_t target, Entity& targetObject)
+    {
+        switch (item)
+        {
+        case Item::Bread:
+        {
+            cout << format("You gave a piece of bread to {}.\n", target.full);
+            return targetObject.DoInteraction_Bread();
+        }
+
+        case Item::Sword:
+        {
+            cout << format("You swung your sword at {}.\n", target.full);
+            return targetObject.DoInteraction_Sword();
+        }
+
+        case Item::Gold:
+        {
+            cout << format("You gave some gold to {}.\n", target.full);
+            return targetObject.DoInteraction_Gold();
+        }
+
+        case Item::Potion:
+        {
+            PotionInfo_t potion = potions.Random();
+            cout << format("You used a potion of {} on {}.\n", potion.full, target.full);
+            return targetObject.DoInteraction_Potion(potion);
+        }
+        }
+        throw new NotImplementedException(items.KeyAt(item));
+    }
+
+    static void DoUse()
+    {
+        Item item;
+        item = player.inventory.Prompt("Which item would you like to use?");
+
+        if (item == Item::Phonenumber)
+        {
+            cout << "If only you had a phone...\n";
+            return;
+        }
+
+        player.inventory.TryRemove(item, 1);
+
+        string prompt = format("Who/what would you like to use your {} on?", items.ValueAt(item));
+        auto [target, targetObject] = PromptForTartget(prompt);
+
+        BeginTurnEcho();
+
+        DoUseItem(item, target, targetObject);
+
+        EndTurnEcho();
+    }
+
+    void DoItems()
+    {
+        StreamList::Push(StreamList::JSONObjectList);
+
+        BeginTurnEcho();
+
+        cout << "Your current inventory:\n";
+        player.inventory.Print();
+
+        EndTurnEcho();
+
+        StreamList::Pop();
+    }
+
+    void DoNear()
+    {
+        StreamList::Push(StreamList::JSONValueList);
+
+        BeginTurnEcho();
+
+        cout << "Your current surroundings:\n";
+        surroundings.Print();
+
+        EndTurnEcho();
+
+        StreamList::Pop();
+    }
+
+    void DoQuit()
+    {
+        turnEndType = TurnEndType::Quit;
+    }
+
+    void DoRestart()
+    {
+        turnEndType = TurnEndType::Restart;
+    }
+
+    void DoAction(Action action)
+    {
+        switch (action)
+        {
+        case Action::Move:    return DoMove   ();
+        case Action::Talk:    return DoTalk   ();
+        case Action::Grab:    return DoGrab   ();
+        case Action::Use:     return DoUse    ();
+        case Action::Items:   return DoItems  ();
+        case Action::Near:    return DoNear   ();
+        case Action::Quit:    return DoQuit   ();
+        case Action::Restart: return DoRestart();
+        }
+        throw new NotImplementedException(actions.KeyAt(action));
+    }
+
+    // Returns false if dead
+    bool CheckPlayerIsAlive()
+    {
+        if (player.health.IsDead())
+        {
+            cout << "Your health has dropped to zero and you have died.\n";
+            bool wantsToRestart = (bool)boolean.Prompt("Would you like to start again?");
+            turnEndType = wantsToRestart ? TurnEndType::Restart : TurnEndType::Quit;
+            return false;
+        }
+        return true;
+    }
+
+private:
+    TurnEndType turnEndType = TurnEndType::Continue;
+} turnHandler;
+
 int main()
 {    
-    bool isQuitting = false;
-    bool isRestarting = false;
-    
-    while (!isQuitting)
+    while (turnHandler.GetTurnEndType() != TurnEndType::Quit)
     {
         // Load the game
         LoadWithPrompt();
@@ -102,175 +347,17 @@ int main()
         PrintInstructions();
 
         // Game loop
-        while (!isQuitting && !isRestarting)
+        while (turnHandler.GetTurnEndType() == TurnEndType::Continue)
         {
-            if (player.health.IsDead())
-            {
-                cout << "Your health has dropped to zero and you have died.\n";
-                isQuitting = !(isRestarting = (bool)boolean.Prompt("Would you like to start again?"));
-                break;
-            }
-            
-            Action action;
-            {
-                const array<Action, 2> alwaysAvailable = { Action::Quit, Action::Restart };
-
-                if (!player.health.statuses.Has(StatusEffects::Tree))
-                {
-                    vector<Action> options =
-                    {
-                        Action::Move,
-                        Action::Talk,
-                        Action::Grab,
-                        Action::Items,
-                        Action::Near,
-                    };
-                    if (!player.inventory.IsEmpty())
-                    {
-                        options.insert(options.begin() + 3, Action::Use);
-                    }
-                    action = PromptOptionWithHidden("What would you like to do?", options, alwaysAvailable);
-                }
-                else // Soft locked
-                {
-                    action = PromptOption("You are a tree.", alwaysAvailable);
-                }
-            }
-
-            switch (action)
-            {
-            case Action::Move:
-            {
-                Direction direction = directions.Prompt("Where would you like to move?");
-                surroundings.ReRoll(); // choice is an illusion :P
-
-                HorizontalRule();
-                cout << '\n';
-                cout << format("You walked {} into another room.\n", directions.ValueAt(direction));
-
-                if (!surroundings.IsEmpty())
-                {
-                    StreamList::Push("You see ", "a ", nullptr, "", ", ", " and ", ".", false);
-                    surroundings.Print();
-                    StreamList::Pop();
-                }
-                else
-                {
-                    cout << "You are alone with your thoughts.";
-                }
-                cout << '\n';
-                HorizontalRule();
-            }
-                break;
-
-            case Action::Talk:
-            {
-                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("Who/what would you like to talk to?"));
-                Entity& targetObject = surroundings.Get(target);
-
-                TopicInfo_t topic = topics.Random();
-
-                HorizontalRule();
-                cout << '\n';
-                cout << format("You had an interesting discussion with {} regarding {}.\n", target.full, topic.full);
-
-                targetObject.DoInteraction_Talk(topic);
-                cout << '\n';
-                HorizontalRule();
-            }
-                break;
-
-            case Action::Grab:
-            {
-                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt("Who/what would you like to grab?"));
-                Entity& targetObject = surroundings.Get(target);
-
-                HorizontalRule();
-                cout << '\n';
-                cout << format("You grabbed {}.\n", target.full);
-
-                targetObject.DoInteraction_Grab();
-                cout << '\n';
-                HorizontalRule();
-            }
-                break;
-
-            case Action::Use:
-            {
-                Item item;
-                item = player.inventory.Prompt("Which item would you like to use?");
-
-                if (item == Item::Phonenumber)
-                {
-                    cout << "If only you had a phone...\n";
-                    break;
-                }
-
-                player.inventory.TryRemove(item, 1);
-
-                EntityTypeInfo_t target = entityTypes.At(surroundings.Prompt(format("Who/what would you like to use your {} on?", items.ValueAt(item))));
-                Entity& targetObject = surroundings.Get(target);
-
-                PotionInfo_t potion = potions.Random(); // May go unused
-
-                HorizontalRule();
-                cout << '\n';
-                switch (item)
-                {
-                case Item::Bread:  cout << format("You gave a piece of bread to {}.\n",            target.full); targetObject.DoInteraction_Bread ();       break;
-                case Item::Sword:  cout << format("You swung your sword at {}.\n",                 target.full); targetObject.DoInteraction_Sword ();       break;
-                case Item::Gold:   cout << format("You gave some gold to {}.\n",                   target.full); targetObject.DoInteraction_Gold  ();       break;
-                case Item::Potion: cout << format("You used a potion of {} on {}.\n", potion.full, target.full); targetObject.DoInteraction_Potion(potion); break;
-                default: throw new NotImplementedException(items.KeyAt(item));
-                }
-                cout << '\n';
-                HorizontalRule();
-            }
-                break;
-
-            case Action::Items:
-                StreamList::Push("[\n", "  { ", ": ", " }", ",\n", nullptr, "\n]", true);
-
-                HorizontalRule();
-                cout << '\n';
-                cout << "Your current inventory:\n";
-                player.inventory.Print();
-                cout << '\n';
-                HorizontalRule();
-
-                StreamList::Pop();
-                break;
-
-            case Action::Near:
-                StreamList::Push("[\n", "  ", nullptr, "", ",\n", nullptr, "\n]", true);
-
-                HorizontalRule();
-                cout << '\n';
-                cout << "Your current surroundings:\n";
-                surroundings.Print();
-                cout << '\n';
-                HorizontalRule();
-
-                StreamList::Pop();
-                break;
-
-            case Action::Quit:
-                isQuitting = true;
-                break;
-
-            case Action::Restart:
-                isRestarting = true;
-                break;
-
-            default:
-                throw new NotImplementedException(actions.KeyAt(action));
-            }
-
-            if (isQuitting || isRestarting)
+            if (!turnHandler.CheckPlayerIsAlive())
             {
                 break;
             }
             
+            turnHandler.DoAction(turnHandler.PromptForAction());
+
+            surroundings.ReleaseQueued();
+
             cout << endl;
         }
     }

@@ -1,161 +1,6 @@
 #pragma once
 #include "utilities.hpp"
 
-enum class Argument
-{
-    Default = 0,
-    Current = 1,
-};
-
-class StreamList
-{
-private:
-    StreamList() :
-        start(""),
-        end("\n"),
-        prefix("- "),
-        suffix(""),
-        separator("\n"),
-        finalSeparator(0),
-        memberSeparator(": "),
-        spaceMembersEvenly(false)
-    {}
-
-    static StreamList& Get()
-    {
-        static StreamList singleton;
-        return singleton;
-    }
-
-    template<class _Ty>
-    struct Member
-    {
-    public:
-        Member(_Ty _default) :
-            value({ _default }), defaultValue(_default) {}
-
-        operator _Ty() const
-        {
-            return value.top();
-        }
-
-        Member& operator=(_Ty newValue)
-        {
-            return (value.top() = newValue), *this;
-        }
-
-        void Push(const variant<_Ty, Argument>& argument)
-        {
-            _Ty newValue;
-            if (holds_alternative<_Ty>(argument))
-            {
-                newValue = get<_Ty>(argument);
-            }
-            else
-            {
-                switch (get<Argument>(argument))
-                {
-                case Argument::Default: newValue = Default();    break;
-                case Argument::Current: newValue = (_Ty)(*this); break;
-                }
-            }
-            value.push(newValue);
-        }
-
-        void Pop()
-        {
-            value.pop();
-        }
-
-        _Ty Default() const
-        {
-            return defaultValue;
-        }
-
-    private:
-        stack<_Ty> value;
-        _Ty const defaultValue;
-    };
-
-public:
-    static void Push(
-        const variant<const char*, Argument>& start,
-        const variant<const char*, Argument>& prefix,
-        const variant<const char*, Argument>& memberSeparator,
-        const variant<const char*, Argument>& suffix,
-        const variant<const char*, Argument>& separator,
-        const variant<const char*, Argument>& finalSeparator,
-        const variant<const char*, Argument>& end,
-        const variant<bool,        Argument>& spaceMembersEvenly)
-    {
-        StreamList& sl = Get();
-        sl.start             .Push(start);
-        sl.end               .Push(end);
-        sl.prefix            .Push(prefix);
-        sl.suffix            .Push(suffix);
-        sl.separator         .Push(separator);
-        sl.finalSeparator    .Push(finalSeparator);
-        sl.memberSeparator   .Push(memberSeparator);
-        sl.spaceMembersEvenly.Push(spaceMembersEvenly);
-    }
-
-    static void Pop()
-    {
-        StreamList& sl = Get();
-        sl.start             .Pop();
-        sl.end               .Pop();
-        sl.prefix            .Pop();
-        sl.suffix            .Pop();
-        sl.separator         .Pop();
-        sl.finalSeparator    .Pop();
-        sl.memberSeparator   .Pop();
-        sl.spaceMembersEvenly.Pop();
-    }
-
-    static Member<const char*>& Start()
-    {
-        return Get().start;
-    }
-    static Member<const char*>& End()
-    {
-        return Get().end;
-    }
-    static Member<const char*>& Prefix()
-    {
-        return Get().prefix;
-    }
-    static Member<const char*>& Suffix()
-    {
-        return Get().suffix;
-    }
-    static Member<const char*>& Separator()
-    {
-        return Get().separator;
-    }
-    static Member<const char*>& FinalSeparator()
-    {
-        return Get().finalSeparator;
-    }
-    static Member<const char*>& MemberSeparator()
-    {
-        return Get().memberSeparator;
-    }
-    static Member<bool>& SpaceMembersEvenly()
-    {
-        return Get().spaceMembersEvenly;
-    }
-
-private:
-    Member<const char*> start;
-    Member<const char*> end;
-    Member<const char*> prefix;
-    Member<const char*> suffix;
-    Member<const char*> separator;
-    Member<const char*> finalSeparator; // For things like "and"
-    Member<const char*> memberSeparator;
-    Member<bool> spaceMembersEvenly;
-};
-
 template<ostreamable _Ty>
 size_t MeasureStreamable(_Ty item)
 {
@@ -166,66 +11,170 @@ size_t MeasureStreamable(_Ty item)
     return size;
 }
 
-template<ostreamable _Ty>
-void _ListItem(ostream& stream, size_t width, const _Ty& item)
+template<input_iterator _It>
+using IteratorOStreamer = void(*)(ostream& o, const _It& it);
+
+struct ListStyle
 {
-    stream << StreamList::Prefix() << setw(width) << item << StreamList::Suffix();
+    const char* start;
+    const char* prefix;
+    const char* memberSeparator;
+    const char* suffix;
+    const char* separator;
+    const char* finalSeparator = 0; // 0 represents "use separator"
+    const char* end;
+    bool spaceMembersEvenly = false;
+};
+
+class StreamList
+{
+private:
+    StreamList() :
+        style({ MarkdownUnorderedList }) {}
+
+    static StreamList& Get()
+    {
+        static StreamList singleton;
+        return singleton;
+    }
+
+    const ListStyle& GetCurrentStyle() const
+    {
+        return style.top();
+    }
+
+    template<input_iterator _InIt, IteratorOStreamer<_InIt> _DerefStreamer1, IteratorOStreamer<_InIt>... _DerefStreamers>
+    void ListItem(ostream& stream, const size_t (&widths)[sizeof...(_DerefStreamers) + 1ull], const _InIt& it) const
+    {
+        const ListStyle& style = GetCurrentStyle();
+        stream << style.prefix;
+        stream << setw(widths[0]);
+        _DerefStreamer1(stream, it);
+        size_t i = 1;
+        (((stream << style.memberSeparator << setw(widths[i++])),  _DerefStreamers(stream, it)), ...);
+        stream << style.suffix;
+    }
+
+    template<input_iterator _InIt, IteratorOStreamer<_InIt> _StreamDeref>
+    size_t MeasureEvenSpacing(_InIt beginIt, _InIt endIt) const
+    {
+        if (GetCurrentStyle().spaceMembersEvenly)
+        {
+            size_t width = 0;
+            for (_InIt it = beginIt; it != endIt; ++it)
+            {
+                stringstream streamSimulator;
+                _StreamDeref(streamSimulator, it);
+                streamSimulator.seekg(0, ios::end);
+                size_t itWidth = streamSimulator.tellg();
+                width = max(width, itWidth);
+            }
+            return width;
+        }
+        return 0;
+    }
+
+    template<input_iterator _InIt>
+    static _InIt Next(const _InIt it)
+    {
+        _InIt next = it;
+        return ++next;
+    }
+
+    template<input_iterator _InIt, IteratorOStreamer<_InIt> _DerefStreamer1, IteratorOStreamer<_InIt>... _DerefStreamers>
+    void _List(ostream& stream, _InIt beginIt, _InIt endIt) const
+    {
+        const ListStyle& style = GetCurrentStyle();
+
+        bool isUsingFinalSeparator = style.finalSeparator != 0;
+
+        size_t widths[] = {
+            MeasureEvenSpacing<_InIt, _DerefStreamer1>(beginIt, endIt),
+            MeasureEvenSpacing<_InIt, _DerefStreamers>(beginIt, endIt)...
+        };
+
+        stream << style.start;
+        ListItem<_InIt, _DerefStreamer1, _DerefStreamers...>(stream, widths, beginIt);
+        if (isUsingFinalSeparator)
+        {
+            for (++beginIt; beginIt != endIt; ++beginIt)
+            {
+                stream << (Next(beginIt) == endIt ? style.finalSeparator : style.separator);
+                ListItem<_InIt, _DerefStreamer1, _DerefStreamers...>(stream, widths, beginIt);
+            }
+        }
+        else
+        {
+            for (++beginIt; beginIt != endIt; ++beginIt)
+            {
+                stream << style.separator;
+                ListItem<_InIt, _DerefStreamer1, _DerefStreamers...>(stream, widths, beginIt);
+            }
+        }
+        stream << style.end;
+    }
+
+public:
+    static void Push(ListStyle style)
+    {
+        Get().style.push(style);
+    }
+    static void Pop()
+    {
+        Get().style.pop();
+    }
+
+    template<input_iterator _InIt, IteratorOStreamer<_InIt>... _DerefStreamers>
+    static void List(ostream& stream, _InIt beginIt, _InIt endIt)
+    {
+        Get()._List<_InIt, _DerefStreamers...>(stream, beginIt, endIt);
+    }
+
+    static constexpr ListStyle JSONObjectList{ "[\n", "  { ", ": ", " }", ",\n", 0, "\n]\n", true };
+    static constexpr ListStyle JSONValueList{ "[\n", "  ", "", "", ",\n", 0, "\n]\n", false };
+    static constexpr ListStyle JSONInlineObjectList{ "[ ", "  { ", ": ", " }", ", ", 0, " ]", false };
+    static constexpr ListStyle JSONInlineValueList{ "[ ", "  ", "", "", ", ", 0, " ]", false };
+    static constexpr ListStyle MarkdownUnorderedList{ "", " - ", "", "", "\n", 0, "\n", false };
+
+private:
+    stack<ListStyle> style;
+};
+
+template<input_iterator _InIt>
+constexpr void ItOStreamer_Deref(ostream& stream, const _InIt& it)
+{
+    stream << (*it);
 }
 
-template<ostreamable _Ty1, ostreamable _Ty2>
-void _ListItem(ostream& stream, size_t width1, size_t width2, const _Ty1& item1, const _Ty2& item2)
+template<input_iterator _InIt>
+constexpr void ItOStreamer_First(ostream& stream, const _InIt& it)
 {
-    stream << StreamList::Prefix() << setw(width1) << item1 << StreamList::MemberSeparator() << setw(width2) << item2 << StreamList::Suffix();
+    stream << (it->first);
+}
+
+template<input_iterator _InIt>
+constexpr void ItOStreamer_Second(ostream& stream, const _InIt& it)
+{
+    stream << (it->second);
 }
 
 template<input_iterator _InIt>
 void List(ostream& stream, _InIt begin, _InIt end)
 {
-    size_t width = 0;
-    if (StreamList::SpaceMembersEvenly())
-    {
-        for (_InIt it = begin; it != end; ++it)
-        {
-            width = max(width, MeasureStreamable(*it));
-        }
-    }
-    bool isUsingFinalSeparator = StreamList::FinalSeparator() != 0;
-
-    stream << StreamList::Start();
-    _ListItem(stream, width, *begin);
-    for (++begin; begin != end; ++begin)
-    {
-        _InIt next = begin; ++next;
-        bool isLast = isUsingFinalSeparator && next == end;
-        _ListItem(stream << (isLast ? StreamList::FinalSeparator() : StreamList::Separator()), width, *begin);
-    }
-    stream << StreamList::End();
+    StreamList::List<_InIt, ItOStreamer_Deref<_InIt>>(stream, begin, end);
 }
 
-template<input_iterator _InIt>
-void List(ostream& stream, _InIt begin, _InIt end)
-    requires(specialization_of<remove_const_t<remove_reference_t<decltype(*begin)>>, pair>)
+template<class _It>
+concept iterator_to_pair = input_iterator<_It> && requires(_It it)
 {
-    size_t width1{ 0 }, width2{ 0 };
-    if (StreamList::SpaceMembersEvenly())
-    {
-        for (_InIt it = begin; it != end; ++it)
-        {
-            width1 = max<size_t>(width1, MeasureStreamable(it->first));
-            width2 = max<size_t>(width2, MeasureStreamable(it->second));
-        }
-    }
-    bool isUsingFinalSeparator = StreamList::FinalSeparator() != 0;
+    it->first;
+    it->second;
+};
 
-    stream << StreamList::Start();
-    _ListItem(stream, width1, width2, begin->first, begin->second);
-    for (++begin; begin != end; ++begin)
-    {
-        _InIt next = begin; ++next;
-        bool isLast = isUsingFinalSeparator && next == end;
-        _ListItem(stream << (isLast ? StreamList::FinalSeparator() : StreamList::Separator()), width1, width2, begin->first, begin->second);
-    }
-    stream << StreamList::End();
+template<iterator_to_pair _InIt>
+void List(ostream& stream, _InIt begin, _InIt end)
+{
+    StreamList::List<_InIt, ItOStreamer_First<_InIt>, ItOStreamer_Second<_InIt>>(stream, begin, end);
 }
 
 template<iterable _Container>
@@ -240,31 +189,17 @@ void List(ostream& stream, const _Container& options)
     List(stream, begin(options), end(options));
 }
 
-template<iterable _Container>
-void ListKeys(ostream& stream, const _Container& options)
-    requires(specialization_of<remove_const_t<remove_reference_t<decltype(*begin(options))>>, pair>)
+template<class _Container>
+concept iteratorable_of_pairs = iterable<_Container> && requires(_Container _Cont)
 {
-    size_t width = 0;
-    if (StreamList::SpaceMembersEvenly())
-    {
-        for (auto it = begin(options); it != end(options); ++it)
-        {
-            width = max(width, MeasureStreamable(it->first));
-        }
-    }
-    bool isUsingFinalSeparator = StreamList::FinalSeparator() != 0;
+    { begin(_Cont) } -> iterator_to_pair;
+};
 
-    auto it = begin(options);
-
-    stream << StreamList::Start();
-    _ListItem(stream, width, it->first);
-    for (++it; it != end(options); ++it)
-    {
-        decltype(it) next = it; ++next;
-        bool isLast = isUsingFinalSeparator && next == end(options);
-        _ListItem(stream << (isLast ? StreamList::FinalSeparator() : StreamList::Separator()), width, it->first);
-    }
-    stream << StreamList::End();
+template<iteratorable_of_pairs _Container>
+void ListKeys(ostream& stream, const _Container& options)
+{
+    using _InIt = decltype(begin(options));
+    StreamList::List<_InIt, ItOStreamer_First<_InIt>>(stream, begin(options), end(options));
 }
 
 // Awaits a string from the user, prefixing each attempt with "> ".

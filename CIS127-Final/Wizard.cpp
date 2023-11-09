@@ -47,7 +47,7 @@ void Wizard::DoInteraction_Sword()
             "You are engulfed in flames as the fire potion coats you like hot oil.\n";
         player.DoInteraction_Potion(Potion::Fire);
     }
-    RemoveFromSurroundings();
+    RemoveFromWorld();
 }
 void Wizard::DoInteraction_Gold()
 {
