@@ -9,8 +9,8 @@
 enum class EntityType
 {
     Bread  = (int)Item::Bread,
-    Gold   = (int)Item::Gold,
     Potion = (int)Item::Potion,
+    Gold   = (int)Item::Gold,
 
     Player,
     Door,
@@ -23,8 +23,8 @@ enum class EntityType
 constexpr StrEnumCollection entityTypes
 {
     StrEnum{ EntityType::Bread,      "bread",   "the bread"   },
-    StrEnum{ EntityType::Gold,       "gold",    "the gold"    },
     StrEnum{ EntityType::Potion,     "potion",  "the potion"  },
+    StrEnum{ EntityType::Gold,       "gold",    "the gold"    },
 
     StrEnum{ EntityType::Player,     "myself",  "yourself"    },
     StrEnum{ EntityType::Door,       "door",    "the door"    },

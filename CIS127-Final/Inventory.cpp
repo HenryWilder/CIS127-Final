@@ -88,9 +88,9 @@ void Inventory::RemoveAll()
     items.clear();
 }
 
-void Inventory::Print() const
+void Inventory::Print(ostream& stream) const
 {
-    List(cout, items);
+    List(stream, items);
 }
 
 Item Inventory::Prompt(const string& prompt) const

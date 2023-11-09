@@ -6,9 +6,9 @@ Surroundings::~Surroundings()
     Clear();
 }
 
-void Surroundings::Print() const
+void Surroundings::Print(ostream& stream) const
 {
-    ListKeys(cout, things);
+    ListKeys(stream, things);
 }
 
 EntityType Surroundings::Prompt(const string& prompt) const
@@ -96,26 +96,18 @@ void Surroundings::ReRoll()
 {
     Clear();
     
-    const vector<string> possible = {
-        "door",    // Do nothing :P
-        "baker",   // Give bread
-        "smith",   // Repair sword
-        "wizard",  // Give potion
-        "monster", // Hurt the player
-    };
-    
     // 50% of rooms have a monster
-    if (DiceCheck(1, 2))
+    if (CoinFlip())
     {
         TryAddNew(EntityType::Monster);
         
         // 50% chance of having 2 monsters instead of 1 (25% total)
-        if (DiceCheck(1, 2))
+        if (CoinFlip())
         {
             TryAddNew(EntityType::Monster);
             
             // 50% chance of having 3 monsters instead of 2 (12.5% total)
-            if (DiceCheck(1, 2))
+            if (CoinFlip())
             {
                 TryAddNew(EntityType::Monster);
             }
@@ -128,7 +120,7 @@ void Surroundings::ReRoll()
     }
     
     // 75% of all rooms have a door
-    if (DiceCheck(3, 4))
+    if (AdvantagedCoinFlip())
     {
         TryAddNew(EntityType::Door);
     }

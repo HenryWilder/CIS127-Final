@@ -1,8 +1,7 @@
 #include "Monster.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
-#include <iostream>
-using namespace std;
+#include "TurnEchoStream.hpp"
 
 void Monster::DoInteraction_Grab()
 {
@@ -20,31 +19,31 @@ void Monster::DoInteraction_Grab()
         reaction = ChooseRandom({ "surprised", "confused", "unamused", "annoyed", "upset", "angered" });
         reactingTo = ChooseRandom({ "foolishness", "lack of self-preservation", "disrespect" });
     }
-    cout << "The monster seems " << reaction << " by your " << reactingTo << ", staring at you until you release it from your grip.\n";
+    echo << "The monster seems " << reaction << " by your " << reactingTo << ", staring at you until you release it from your grip.\n";
     
     
     if (reaction == "flustered" || ((reaction == "impressed" || reaction == "surprised") && reactingTo == "forwardness"))
     {
         player.inventory.Add(Item::Phonenumber); // todo
-        cout << "Upon being released, it discretely slips something into your pocket.";
+        echo << "Upon being released, it discretely slips something into your pocket.";
     }
     else if (isPositive)
     {
         player.influences.Modify(Collective::Monsters, 1);
-        cout << "It gives a little nod of respect.";
+        echo << "It gives a little nod of respect.";
     }
     else // negative
     {
         player.health.Damage(3);
-        cout << "It decides to return the favor, squeezing you in its massive claws as you feel your armor dent and tighten around your fragile, squishy body. ";
-        cout << "You lose 3 points of health.";
+        echo << "It decides to return the favor, squeezing you in its massive claws as you feel your armor dent and tighten around your fragile, squishy body. ";
+        echo << "You lose 3 points of health.";
     }
 }
 void Monster::DoInteraction_Bread()
 {
     bool isPositive = player.influences.Check(Collective::Monsters);
     
-    cout << "The monster ";
+    echo << "The monster ";
     if (isPositive)
     {
         string reaction = ChooseRandom({
@@ -74,12 +73,12 @@ void Monster::DoInteraction_Bread()
             "pulling you into a warm bear hug for a full thirty seconds before setting you down",
         });
         player.influences.Modify(Collective::Monsters, 1);
-        cout << reaction << " the gift, quietly accepting it and " << response << " before " << gratitude << ".";
+        echo << reaction << " the gift, quietly accepting it and " << response << " before " << gratitude << ".";
     }
     else
     {
         string reaction = ChooseRandom({ "scowels", "scoffs", "screams", "screeches", "foams", "growls", "hisses", });
-        cout << reaction << " at the very idea of accepting a gift from you, slapping it out of your hand and onto the floor.";
+        echo << reaction << " at the very idea of accepting a gift from you, slapping it out of your hand and onto the floor.";
     }
 }
 void Monster::DoInteraction_Sword()
@@ -88,9 +87,9 @@ void Monster::DoInteraction_Sword()
     if (isSuccessful)
     {
         string bodyCovering = ChooseRandom({ "gooey", "vaporous", "slimey", "meaty", "fuzzy", "fur-covered" });
-        cout << "Your sword slashes through the monster, splitting it into two " << bodyCovering << " chunks on the floor. ";
+        echo << "Your sword slashes through the monster, splitting it into two " << bodyCovering << " chunks on the floor. ";
         player.inventory.Add(Item::Gold);
-        cout << "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.";
+        echo << "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.";
     }
     else
     {
@@ -121,68 +120,68 @@ void Monster::DoInteraction_Sword()
             impact += " everything above the hilt";
         }
         
-        cout << "The monster " << reaction << " and " << impact << '.';
+        echo << "The monster " << reaction << " and " << impact << '.';
     }
 }
 void Monster::DoInteraction_Gold()
 {
-    cout << "The monster doesn't know what to do with the gold, tilting its head curiously but quickly losing interest.";
+    echo << "The monster doesn't know what to do with the gold, tilting its head curiously but quickly losing interest.";
 }
 
 // Talk
 
 void Monster::DoInteraction_Talk_Generic()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 
 // Potion
 
 void Monster::DoInteraction_Potion_Predict()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Heal()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Water()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Wish()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Ducks()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Force()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Salt()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Ants()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Demon()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Fire()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Explode()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Monster::DoInteraction_Potion_Tree()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }

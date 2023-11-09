@@ -1,81 +1,80 @@
 #include "Baker.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
-#include <iostream>
-using namespace std;
+#include "TurnEchoStream.hpp"
 
 void Baker::DoInteraction_Grab()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Bread()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Sword()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Gold()
 {
     player.inventory.Add(Item::Bread);
-    cout << "The baker thanks you for the gold and hands you a piece of bread.";
+    echo << "The baker thanks you for the gold and hands you a piece of bread.";
 }
 
 // Baker
 
 void Baker::DoInteraction_Talk_Generic()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 
 // Potion
 
 void Baker::DoInteraction_Potion_Predict()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Heal()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Water()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Wish()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Ducks()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Force()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Salt()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Ants()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Demon()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Fire()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Explode()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }
 void Baker::DoInteraction_Potion_Tree()
 {
-    cout << "[todo]";
+    echo << "[todo]";
 }

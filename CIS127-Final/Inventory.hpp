@@ -40,7 +40,7 @@ public:
     void RemoveAll();
     
     // Prints the inventory to the console
-    void Print() const;
+    void Print(ostream& stream) const;
     
     // Prompts the user with a list of the item keys
     Item Prompt(const string& prompt) const;

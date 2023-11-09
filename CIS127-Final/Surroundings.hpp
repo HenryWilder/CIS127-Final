@@ -10,7 +10,7 @@ public:
     ~Surroundings();
     
     // Prints a list of the surroundings to the console
-    void Print() const;
+    void Print(ostream& stream) const;
     
     // Prompts the user with a list of the surroundings, including "self".
     EntityType Prompt(const string& prompt) const;
