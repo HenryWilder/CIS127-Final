@@ -96,6 +96,15 @@
     <ClCompile Include="HelperConcepts.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TurnEchoStream.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TurnHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExtendedAscii.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interactable.hpp">
@@ -162,6 +171,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HelperConcepts.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnEchoStream.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TurnHandler.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtendedAscii.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

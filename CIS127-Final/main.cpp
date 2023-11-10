@@ -41,6 +41,7 @@ constexpr const wchar_t* instructions = LR"(
  ╞══════════════════════════════════════════════════════╡
  │                                                      │
  ▐ You can type 'quit' or 'restart' at any time.        │
+ │                                                      │
  └──────────────────────────────────────────────────────┘
 )";
 #pragma endregion
@@ -53,6 +54,12 @@ int main()
         LoadWithPrompt();
 
         cout << instructions << endl;
+
+        turnHandler.DoNear();
+        echo << '\n';
+        turnHandler.DoItems();
+        FlushEcho();
+        cout << endl;
 
         // Game loop
         while (turnHandler.GetTurnEndType() == TurnEndType::Continue)

@@ -136,6 +136,8 @@
     <ClCompile Include="Components.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enums.cpp" />
+    <ClCompile Include="ExtendedAscii.cpp" />
+    <ClCompile Include="TurnHandler.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="HelperConcepts.cpp" />
     <ClCompile Include="Influences.cpp" />
@@ -152,6 +154,7 @@
     <ClCompile Include="standard.cpp" />
     <ClCompile Include="StatusEffects.cpp" />
     <ClCompile Include="Surroundings.cpp" />
+    <ClCompile Include="TurnEchoStream.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="Wizard.cpp" />
   </ItemGroup>
@@ -161,6 +164,8 @@
     <ClInclude Include="Components.hpp" />
     <ClInclude Include="Door.hpp" />
     <ClInclude Include="Enums.hpp" />
+    <ClInclude Include="ExtendedAscii.hpp" />
+    <ClInclude Include="TurnHandler.hpp" />
     <ClInclude Include="Health.hpp" />
     <ClInclude Include="HelperConcepts.hpp" />
     <ClInclude Include="Influences.hpp" />
@@ -176,6 +181,7 @@
     <ClInclude Include="standard.hpp" />
     <ClInclude Include="StatusEffects.hpp" />
     <ClInclude Include="Surroundings.hpp" />
+    <ClInclude Include="TurnEchoStream.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="Wizard.hpp" />
   </ItemGroup>

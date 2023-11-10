@@ -26,7 +26,7 @@ bool Inventory::IsEmpty() const
     return items.empty();
 }
 
-void Inventory::Add(Item item, int count)
+void Inventory::Add(Item item, _In_range_(>, 0) int count)
 {
     assert(count > 0);
     if (items.contains(item))
@@ -39,7 +39,7 @@ void Inventory::Add(Item item, int count)
     }
 }
 
-int Inventory::TryRemove(Item item, int count)
+int Inventory::TryRemove(Item item, _In_range_(>, 0) int count)
 {
     assert(count > 0);
     auto it = items.find(item);
@@ -58,7 +58,7 @@ int Inventory::TryRemove(Item item, int count)
     return -1;
 }
 
-bool Inventory::ForceRemove(Item item, int count)
+bool Inventory::ForceRemove(Item item, _In_range_(>, 0) int count)
 {
     assert(count > 0);
     auto it = items.find(item);

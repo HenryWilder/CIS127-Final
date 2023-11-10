@@ -42,7 +42,7 @@ public:
     // If luck is already bad, it gets worse.
     LuckType Test();
     
-    void Give(_In_range_(!=, Neutral) LuckType kind, int amount = 1);
+    void Give(_In_range_(!=, Neutral) LuckType kind, _In_range_(>, 0) int amount = 1);
     
     // Removes all luck, both good and bad
     void Clear();

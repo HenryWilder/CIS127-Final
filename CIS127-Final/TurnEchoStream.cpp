@@ -3,6 +3,16 @@
 
 stringstream echo;
 
+void Echo_BlankLine()
+{
+    cout << L" │ ";
+    for (size_t i = 0; i < echoBoxInsideWidth; ++i)
+    {
+        cout << ' ';
+    }
+    cout << L" │\n";
+}
+
 void FlushEcho()
 {
     // Don't print blank
@@ -17,12 +27,12 @@ void FlushEcho()
 
     echo.seekg(0, ios::beg);
 
-    cout << L"\n┌";
-    for (size_t i = 0; i < echoBoxInsideWidth + 2; ++i)
+    cout << L"\n ┌─";
+    for (size_t i = 0; i < echoBoxInsideWidth; ++i)
     {
         cout << L'─';
     }
-    cout << L"┐\n";
+    cout << L"─┐\n";
 
     string line;
     bool isFirstLine = true;
@@ -30,12 +40,7 @@ void FlushEcho()
     {
         if (line.empty()) // Blank line
         {
-            cout << L"│ ";
-            for (size_t i = 0; i < echoBoxInsideWidth; ++i)
-            {
-                cout << ' ';
-            }
-            cout << L" │\n";
+            Echo_BlankLine();
         }
 
         while (!line.empty())
@@ -63,7 +68,7 @@ void FlushEcho()
                 line.erase(0, echoBoxInsideWidth);
             }
 
-            cout << L"│ ";
+            cout << L" │ ";
             cout << linePart;
             for (size_t i = linePart.size(); i < echoBoxInsideWidth; ++i)
             {
@@ -73,12 +78,12 @@ void FlushEcho()
         }
     }
 
-    cout << L"└";
-    for (size_t i = 0; i < echoBoxInsideWidth + 2; ++i)
+    cout << L" └─";
+    for (size_t i = 0; i < echoBoxInsideWidth; ++i)
     {
         cout << L'─';
     }
-    cout << L"┘\n";
+    cout << L"─┘\n";
 
     echo.str(string());
     echo.clear();

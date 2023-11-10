@@ -130,7 +130,7 @@ void TurnHandler::DoItems()
 {
     StreamList::Push(StreamList::JSONObjectList);
 
-    echo << "Your current inventory:\n";
+    echo << "Your current inventory: ";
     player.inventory.Print(echo);
 
     StreamList::Pop();
@@ -140,7 +140,7 @@ void TurnHandler::DoNear()
 {
     StreamList::Push(StreamList::JSONValueList);
 
-    echo << "Your current surroundings:\n";
+    echo << "Your current surroundings: ";
     surroundings.Print(echo);
 
     StreamList::Pop();

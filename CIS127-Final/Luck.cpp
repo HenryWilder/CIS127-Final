@@ -31,7 +31,7 @@ Luck::LuckType Luck::Test()
     return CategorizeLuck(luck--);
 }
 
-void Luck::Give(_In_range_(!=, Neutral) LuckType kind, int amount)
+void Luck::Give(_In_range_(!=, Neutral) LuckType kind, _In_range_(>, 0) int amount)
 {
     switch (kind)
     {

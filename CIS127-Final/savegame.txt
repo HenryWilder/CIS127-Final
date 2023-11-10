@@ -1,6 +1,6 @@
-name: Henry
+name: Henry Wilder
 health: 5 / 10
-statuses:0
+statuses: 0
 luck: 0
 items: 2
   sword - 20
