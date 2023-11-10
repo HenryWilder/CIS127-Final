@@ -2,6 +2,9 @@
 
 #include "standard.hpp"
 
+template<class _Ty, class... _Options>
+concept one_of = disjunction_v<is_same<_Ty, _Options>...>;
+
 template<class _Ty>
 concept ostreamable = requires(ostream stream, _Ty x) { stream << x; };
 

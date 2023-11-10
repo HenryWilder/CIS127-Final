@@ -12,7 +12,7 @@ void Blacksmith::DoInteraction_Bread()
 {
     if (player.influences.Check(GetCollective()))
     {
-        Item returnGift = ChooseRandom({ Item::Gold, Item::Sword });
+        Item returnGift = ChooseRandom(Item::Gold, Item::Sword);
         int quantity = returnGift == "sword" ? 10 : 1;
         player.inventory.Add(returnGift, quantity);
         echo << "The blacksmith accepts the bread, gifting you " << quantity << " " << returnGift << " as thanks";

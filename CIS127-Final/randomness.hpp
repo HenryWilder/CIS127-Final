@@ -1,49 +1,51 @@
 #pragma once
 #include "utilities.hpp"
 
-template<input_iterator _It>
-const auto& ChooseRandom(_It optionsBegin, _It optionsEnd)
+extern mt19937 gen;
+
+template<input_iterator _It = vector<string>::const_iterator>
+_It ChooseRandomIterator(_It optionsBegin, const _It optionsEnd)
 {
-    assert(optionsBegin != optionsEnd);
-    _It optionsRand = optionsBegin;
-    advance(optionsRand, rand() % distance(optionsBegin, optionsEnd));
-    return *optionsRand;
+    assert(optionsBegin != optionsEnd); // Options cannot be empty
+    const size_t size = distance(optionsBegin, optionsEnd);
+    advance(optionsBegin, max(0ull, uniform_int<size_t>(1ull, size)(gen) - 1ull));
+    return optionsBegin;
 }
 
-template<class _Container>
-const auto& ChooseRandom(const _Container& options)
+template<iterable _Container>
+auto ChooseRandom(const _Container& options)
+    -> const typename _Container::value_type&
 {
-    return ChooseRandom(begin(options), end(options));
+    return *ChooseRandomIterator(options.begin(), options.end());
 }
 
-template<class _Ty>
-const _Ty& ChooseRandom(const initializer_list<_Ty>&& options)
+template<iterable _Container = initializer_list<const char*>>
+auto ChooseRandom(const _Container&& options)
+    -> _Container::value_type
 {
-    return ChooseRandom(options);
+    return *ChooseRandomIterator(options.begin(), options.end());
 }
 
-template<class _Container>
-const auto& ChooseRandomKey(const _Container& associativeOptions)
+template<associative_iterable _Container>
+auto ChooseRandomKey(const _Container& associativeOptions)
+    -> const decltype(associativeOptions.begin()->first)&
 {
-    return ChooseRandom(associativeOptions).first;
+    return ChooseRandomIterator(associativeOptions.begin(), associativeOptions.end())->first;
 }
 
-template<class _Container>
-const auto& ChooseRandomValue(const _Container& associativeOptions)
+template<associative_iterable _Container>
+auto ChooseRandomValue(const _Container& associativeOptions)
+    -> const decltype(associativeOptions.begin()->second)&
 {
-    return ChooseRandom(associativeOptions).second;
+    return ChooseRandomIterator(associativeOptions.begin(), associativeOptions.end())->second;
 }
 
-#if 0 // Not sure why this isn't working...
-template<class... _Args>
-auto ChooseRandom(_Args&&... options)
-    requires(sizeof...(_Args) > 1 && all_same<_Args...>)
+template<class _Ty1, same_as<_Ty1>... _TyN>
+auto ChooseRandom(_Ty1&& option1, _TyN&&... optionN)
+    -> _Ty1
 {
-    using _Ty = common_type_t<_Args...>;
-    constexpr size_t numArgs = sizeof...(_Args);
-    return ChooseRandom(array<_Ty, numArgs>{ options... });
+    return ChooseRandom(array{ option1, optionN... });
 }
-#endif
 
 // Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.
 bool DiceCheck(int chance, int outOf);

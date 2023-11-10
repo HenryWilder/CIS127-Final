@@ -3,6 +3,7 @@
 #include "serialization.hpp"
 #include "TurnHandler.hpp"
 #include "ExtendedAscii.hpp"
+#include "SerializationUtils.hpp"
 
 #pragma region Instructions
 constexpr const wchar_t* instructions = LR"(
@@ -48,6 +49,15 @@ constexpr const wchar_t* instructions = LR"(
 
 int main()
 {
+    string test = "item 1, item 2, item 3, item 4";
+    split(test, ", ", [](const string_view& view)
+    {
+        cout << view << '\n';
+        return true;
+    });
+
+    return 0;
+
     while (turnHandler.GetTurnEndType() != TurnEndType::Quit)
     {
         // Load the game

@@ -1,8 +1,10 @@
-#ifndef utilities_hpp
-#define utilities_hpp
+#pragma once
 
 #include "standard.hpp"
 #include "HelperConcepts.hpp"
+#include "randomness.hpp"
+#include "ExtendedAscii.hpp"
+#include "Prompt.hpp"
 
 // Interface for classes that can be mutated but not reassigned
 // Useful for objects used exclusively as properties
@@ -78,5 +80,3 @@ constexpr bool isvowel(char ch)
 
     return find(begin(vowels), end(vowels), ch) != end(vowels);
 }
-
-#endif /* utilities_hpp */

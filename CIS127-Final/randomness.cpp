@@ -1,28 +1,29 @@
 #include "randomness.hpp"
 
+random_device rd;
+mt19937 gen(rd());
+
 bool DiceCheck(int chance, int outOf)
 {
-    return (rand() % outOf) < chance;
+    return uniform_int(1, outOf)(gen) <= chance;
 }
 
 bool Chance(float chance01)
 {
-    if      (chance01 >= 0.999f) return true;
-    else if (chance01 <= 0.001f) return false;
-    return rand() <= (int)roundf(chance01 * (float)RAND_MAX);
+    return uniform_real<float>()(gen) <= chance01;
 }
 
 bool CoinFlip()
 {
-    return rand() & 1;
+    return uniform_int<bool>()(gen);
 }
 
 bool AdvantagedCoinFlip()
 {
-    return rand() & 3;
+    return CoinFlip() || CoinFlip();
 }
 
 bool DisadvantagedCoinFlip()
 {
-    return (rand() & 3) == 3;
+    return CoinFlip() && CoinFlip();
 }

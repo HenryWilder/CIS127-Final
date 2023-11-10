@@ -1,5 +1,4 @@
-#ifndef standard_hpp
-#define standard_hpp
+#pragma once
 
 #include <string>
 #include <format>
@@ -8,6 +7,7 @@
 #include <iomanip>
 #include <sstream>
 #include <fstream>
+#include <filesystem>
 
 #include <array>
 #include <vector>
@@ -26,6 +26,7 @@
 #include <span>
 
 #include <cassert>
+#include <random>
 #include <algorithm>
 #include <concepts>
 #include <utility>
@@ -38,5 +39,4 @@
 #include <any>
 
 using namespace std;
-
-#endif // standard_hpp
+namespace fs = filesystem;
