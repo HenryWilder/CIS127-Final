@@ -1,23 +1,28 @@
-#include "TurnEchoStream.hpp"
+﻿#include "TurnEchoStream.hpp"
+#include "ExtendedAscii.hpp"
 
 stringstream echo;
 
 void FlushEcho()
 {
     // Don't print blank
+
+    echo.seekg(0, ios::end);
     if (echo.tellg() == 0)
     {
         return;
     }
 
+    // Print
+
     echo.seekg(0, ios::beg);
 
-    cout << "\n\xDA";
+    cout << L"\n┌";
     for (size_t i = 0; i < echoBoxInsideWidth + 2; ++i)
     {
-        cout << '\xC4';
+        cout << L'─';
     }
-    cout << "\xBF\n";
+    cout << L"┐\n";
 
     string line;
     bool isFirstLine = true;
@@ -25,12 +30,12 @@ void FlushEcho()
     {
         if (line.empty()) // Blank line
         {
-            cout << "\xB3 ";
+            cout << L"│ ";
             for (size_t i = 0; i < echoBoxInsideWidth; ++i)
             {
                 cout << ' ';
             }
-            cout << " \xB3\n";
+            cout << L" │\n";
         }
 
         while (!line.empty())
@@ -58,21 +63,22 @@ void FlushEcho()
                 line.erase(0, echoBoxInsideWidth);
             }
 
-            cout << "\xB3 " << linePart;
+            cout << L"│ ";
+            cout << linePart;
             for (size_t i = linePart.size(); i < echoBoxInsideWidth; ++i)
             {
                 cout << ' ';
             }
-            cout << " \xB3\n";
+            cout << L" │\n";
         }
     }
 
-    cout << "\xC0";
+    cout << L"└";
     for (size_t i = 0; i < echoBoxInsideWidth + 2; ++i)
     {
-        cout << '\xC4';
+        cout << L'─';
     }
-    cout << "\xD9\n";
+    cout << L"┘\n";
 
     echo.str(string());
     echo.clear();

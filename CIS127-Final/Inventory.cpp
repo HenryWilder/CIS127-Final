@@ -107,7 +107,7 @@ void Inventory::Init()
 
 void Inventory::Save(ostream& ofs) const
 {
-    ofs << "items: " << items.size();
+    ofs << "items: " << items.size() << '\n';
     for (const auto& [item, qty] : items)
     {
         ofs << "  " << item << " - " << qty << '\n';

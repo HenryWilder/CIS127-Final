@@ -37,7 +37,7 @@ pair<EntityTypeInfo_t, Entity&> TurnHandler::PromptForTartget(const string& prom
 
 void TurnHandler::DoMove()
 {
-    Direction direction = directions.Prompt("Where would you like to move?");
+    Direction direction = directions.Prompt("\nWhere would you like to move?");
     surroundings.ReRoll(); // choice is an illusion :P
 
     echo << format("You walked {} into another room.\n\n", directions.ValueAt(direction));
@@ -57,7 +57,7 @@ void TurnHandler::DoMove()
 
 void TurnHandler::DoTalk()
 {
-    auto [target, targetObject] = PromptForTartget("Who/what would you like to talk to?");
+    auto [target, targetObject] = PromptForTartget("\nWho/what would you like to talk to?");
 
     TopicInfo_t topic = topics.Random();
 
@@ -68,7 +68,7 @@ void TurnHandler::DoTalk()
 
 void TurnHandler::DoGrab()
 {
-    auto [target, targetObject] = PromptForTartget("Who/what would you like to grab?");
+    auto [target, targetObject] = PromptForTartget("\nWho/what would you like to grab?");
 
     echo << format("You grabbed {}.\n\n", target.full);
 
@@ -110,17 +110,17 @@ void TurnHandler::DoUseItem(Item item, EntityTypeInfo_t target, Entity& targetOb
 void TurnHandler::DoUse()
 {
     Item item;
-    item = player.inventory.Prompt("Which item would you like to use?");
+    item = player.inventory.Prompt("\nWhich item would you like to use?");
 
     if (item == Item::Phonenumber)
     {
-        echo << "If only you had a phone...\n";
+        echo << "If only you had a phone...";
         return;
     }
 
     player.inventory.TryRemove(item, 1);
 
-    string prompt = format("Who/what would you like to use your {} on?", items.ValueAt(item));
+    string prompt = format("\nWho/what would you like to use your {} on?", items.ValueAt(item));
     auto [target, targetObject] = PromptForTartget(prompt);
 
     DoUseItem(item, target, targetObject);

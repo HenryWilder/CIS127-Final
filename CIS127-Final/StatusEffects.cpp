@@ -38,10 +38,12 @@ void StatusEffects::Init()
 
 void StatusEffects::Save(ostream& ofs) const
 {
-    ofs << "statuses:" << statuses << '\n';
+    ofs << "statuses: " << (int)statuses << '\n';
 }
 
 void StatusEffects::Load(istream& ifs)
 {
-    ifs.ignore(16, ':') >> statuses;
+    int statusesInt;
+    ifs.ignore(16, ':') >> statusesInt;
+    statuses = (char)statusesInt;
 }
