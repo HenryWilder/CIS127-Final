@@ -49,7 +49,7 @@ public:
     const Element_t& At(const string& key) const
     {
         auto it = Find(key);
-        if (it != end(data)) return *it;
+        if (it != data.end()) return *it;
         throw new out_of_range(format("\"{}\" is not a key of this enum", key));
     }
     const Element_t& At(_Enum enumeration) const
@@ -99,8 +99,8 @@ public:
 
     constexpr bool Compare(const string& str, _Enum enumeration) const
     {
-        const Element_t* element = Find(enumeration); // Searching for an integer is less work than searching for a string
-        return (element != end(data)) && (element->key == str);
+        auto it = Find(enumeration); // Searching for an integer is less work than searching for a string
+        return (it != data.end()) && (it->key == str);
     }
 
     _Enum Prompt(const string& prompt) const
@@ -115,7 +115,7 @@ public:
 
     const Element_t& Random() const
     {
-        return ChooseRandom(begin(data), end(data));
+        return ChooseRandom(data);
     }
     _Enum RandomEnum() const
     {
@@ -131,17 +131,25 @@ public:
     }
 
 private: // Helpers
-    constexpr const Element_t* Find(const string& key) const
+    constexpr array<Element_t, _Size>::const_iterator Find(const string& key) const
     {
-        return find(begin(data), end(data), key);
+        for (auto it = data.begin(); it != data.end(); ++it)
+        {
+            if (*it == key) return it;
+        }
+        return data.end();
     }
-    constexpr const Element_t* Find(_Enum enumeration) const
+    constexpr array<Element_t, _Size>::const_iterator Find(_Enum enumeration) const
     {
-        return find(begin(data), end(data), enumeration);
+        for (auto it = data.begin(); it != data.end(); ++it)
+        {
+            if (*it == enumeration) return it;
+        }
+        return data.end();
     }
 
 private: // Members
-    Element_t data[_Size];
+    array<Element_t, _Size> data;
 };
 
 // First argument deduces _Enum.

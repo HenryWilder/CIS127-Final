@@ -20,7 +20,7 @@ void Wizard::DoInteraction_Bread()
 {
     if (player.influences.Check(GetCollective()))
     {
-        Item returnGift = ChooseRandom({ Item::Gold, Item::Potion });
+        Item returnGift = ChooseRandom(Item::Gold, Item::Potion);
         player.inventory.Add(returnGift);
         echo << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks";
     }

@@ -40,11 +40,14 @@ auto ChooseRandomValue(const _Container& associativeOptions)
     return ChooseRandomIterator(associativeOptions.begin(), associativeOptions.end())->second;
 }
 
-template<class _Ty1, same_as<_Ty1>... _TyN>
-auto ChooseRandom(_Ty1&& option1, _TyN&&... optionN)
-    -> _Ty1
+template<class... _Tys>
+common_type_t<_Tys...> ChooseRandom(_Tys&&... options)
+    requires(sizeof...(_Tys) > 1)
 {
-    return ChooseRandom(array{ option1, optionN... });
+    using _Ty = common_type_t<_Tys...>;
+    using array_t = array<_Ty, sizeof...(_Tys)>;
+    array_t arr = { options... };
+    return ChooseRandom<array_t>(arr);
 }
 
 // Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.

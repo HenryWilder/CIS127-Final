@@ -4,7 +4,7 @@
 #include "utilities.hpp"
 #include "Interactable.hpp"
 
-class Blacksmith :
+class Blacksmith final :
     public NPC
 {
 protected:

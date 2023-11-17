@@ -15,7 +15,7 @@ bool Chance(float chance01)
 
 bool CoinFlip()
 {
-    return uniform_int<bool>()(gen);
+    return (bool)uniform_int(0, 1)(gen);
 }
 
 bool AdvantagedCoinFlip()

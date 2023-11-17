@@ -116,7 +116,7 @@ void Surroundings::ReRoll()
     // 66% of rooms without monsters have an NPC
     else if (DiceCheck(2, 3))
     {
-        TryAddNew(ChooseRandom({ EntityType::Baker, EntityType::Blacksmith, EntityType::Wizard }));
+        TryAddNew(ChooseRandom(EntityType::Baker, EntityType::Blacksmith, EntityType::Wizard));
     }
     
     // 75% of all rooms have a door

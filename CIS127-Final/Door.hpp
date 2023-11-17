@@ -4,7 +4,7 @@
 #include "utilities.hpp"
 #include "Interactable.hpp"
 
-class Door :
+class Door final :
     public Entity
 {
 protected:

@@ -4,7 +4,7 @@
 #include "utilities.hpp"
 #include "Interactable.hpp"
 
-class Monster :
+class Monster final :
     public NPC
 {
 protected:

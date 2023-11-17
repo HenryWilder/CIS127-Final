@@ -47,7 +47,7 @@ void Player::DoInteraction_Gold()
 
 string ContextualOpinion()
 {
-    vector<string> contextualOpinion = {
+    return ChooseRandom(
         "may have overlooked",
         "exaggerated",
         "are overestimating",
@@ -55,9 +55,7 @@ string ContextualOpinion()
         "may forget",
         "fail to appriciate",
         "are perpetuating harmful propaganda regarding",
-        "make a good point about",
-    };
-    return ChooseRandom(contextualOpinion);
+        "make a good point about");
 }
 
 void NearbyThinksYou(const Surroundings& surroundings, vector<string> contextualResponses)

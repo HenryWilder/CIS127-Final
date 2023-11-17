@@ -4,7 +4,7 @@
 #include "utilities.hpp"
 #include "Interactable.hpp"
 
-class Wizard :
+class Wizard final :
     public NPC
 {
 protected:

@@ -49,12 +49,19 @@ constexpr const wchar_t* instructions = LR"(
 
 int main()
 {
-    string test = "item 1, item 2, item 3, item 4";
-    split(test, ", ", [](const string_view& view)
+    stringstream stream;
+
+    // Test save
     {
-        cout << view << '\n';
-        return true;
-    });
+        Writer testWriter(stream);
+        // todo
+    }
+
+    // Test load
+    {
+        Reader testReader(stream);
+        // todo
+    }
 
     return 0;
 
