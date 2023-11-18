@@ -40,6 +40,8 @@ string Writer::UnnamedName() const
 _Check_return_
 ScopeID Writer::BeginScope(const string& name, ScopeType type)
 {
+    dynamic_assert(name.find(' ') == string::npos, "please avoid putting spaces in property names to minimize confusion");
+    Indent();
     stream << name << ":\n";
     if (scope.IsInScope()) scope.PushElement();
     scope.PushScope(type);
@@ -91,15 +93,22 @@ void Writer::EndObject(ScopeID& id)
 _Check_return_
 ScopeID Reader::BeginScope(ScopeType type, const string& expectedName)
 {
+    dynamic_assert(expectedName.find(' ') == string::npos, "please avoid putting spaces in property names to minimize confusion");
+
     string name;
     getline(stream, name);
-    size_t colonPos = name.find(':');
 
+    size_t nameStartPos = name.find_first_not_of(' ');
+    if (nameStartPos == string::npos)
+        throw new runtime_error(ScopeTypeToString(type) + " head (\"" + name + "\") is missing or whitespace");
+
+    size_t colonPos = name.find(':');
     if (colonPos == string::npos)
         throw new runtime_error(ScopeTypeToString(type) + " head is missing colon (expected `name:`; got `name`)");
 
-    if (name.substr(0, colonPos) != expectedName)
-        throw new runtime_error("expected " + ScopeTypeToString(type) + " \"" + expectedName + "\", got \"" + name + "\"");
+    string nameRead = name.substr(nameStartPos, colonPos - nameStartPos);
+    if (nameRead != expectedName)
+        throw new runtime_error("expected " + ScopeTypeToString(type) + " \"" + expectedName + "\", got \"" + nameRead + "\"");
 
     scope.PushScope(type);
     return scope.CurrentDepth();

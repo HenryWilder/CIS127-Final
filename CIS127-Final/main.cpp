@@ -52,7 +52,7 @@ int main()
     stringstream stream;
 
     cout << "Writing...\n\n";
-    
+
     // Test save
     {
         Writer testWriter(stream);
@@ -61,22 +61,45 @@ int main()
         testWriter.Write("apple", "orange");
         testWriter.Write("balana", "This item is erroneous and should except.");
 
-        const char* listItems[] = {
-            "\tString properties are treated as newline-terminated \"raw\" strings. ",
-            " The entire line is read, and the quote marks are to allow for leading/trailing whitespace.  "
-        };
-        ScopeID listId = testWriter.BeginList("list");
-        for (const char* item : listItems)
         {
-            testWriter.Write(item);
+            const char* listItems[] = {
+                "\tString properties are treated as newline-terminated \"raw\" strings. ",
+                " The entire line is read, and the quote marks are to allow for leading/trailing whitespace.  "
+            };
+            ScopeID listId = testWriter.BeginList("list");
+            for (const char* item : listItems)
+            {
+                testWriter.Write(item);
+            }
+            testWriter.EndList(listId);
         }
-        testWriter.EndList(listId);
 
-        ScopeID objId = testWriter.BeginObject("object");
-        testWriter.Write("This is my first property :)");
-        testWriter.Write("intensity", 5);
-        testWriter.Write("item", Item::Bread);
-        testWriter.EndObject(objId);
+        {
+            ScopeID objId = testWriter.BeginObject("object");
+            testWriter.Write("0", "This is my first property :)");
+            testWriter.Write("intensity", 5);
+            testWriter.Write("item", Item::Bread);
+            {
+                ScopeID objListId = testWriter.BeginList("listProperty");
+                for (size_t i = 0; i < 10; ++i)
+                {
+                    testWriter.Write(i * 294);
+                }
+                testWriter.EndList(objListId);
+            }
+            {
+                ScopeID objObjId = testWriter.BeginObject("objectProperty");
+                testWriter.Write("apple", Action::Grab);
+                ScopeID objObjListId = testWriter.BeginObject("objectListProperty");
+                for (size_t i = 0; i < 20; ++i)
+                {
+                    testWriter.Write((float)i * 453.45f);
+                }
+                testWriter.EndObject(objObjListId);
+                testWriter.EndObject(objObjId);
+            }
+            testWriter.EndObject(objId);
+        }
     }
 
     //stream.seekg(0, ios::beg);
@@ -116,29 +139,60 @@ int main()
             cout << "Intentional exception:  " << err->what() << "\n";
         }
 
-        ScopeID listId = testReader.BeginList("list");
-        for (size_t i = 0; !testReader.IsEndOfList(listId); ++i)
         {
-            string item;
-            testReader.Read(item);
-            cout << "list[" << i << "] = \"" << item << "\"\n";
+            ScopeID listId = testReader.BeginList("list");
+            for (size_t i = 0; !testReader.IsEndOfList(listId); ++i)
+            {
+                string item;
+                testReader.Read(item);
+                cout << "list[" << i << "] = \"" << item << "\"\n";
+            }
         }
 
-        ScopeID objId = testReader.BeginObject("object");
-        
-        string firstProp;
-        testReader.Read(firstProp);
-        cout << "firstProp = " << firstProp << '\n';
+        {
+            ScopeID objId = testReader.BeginObject("object");
 
-        int intensity;
-        testReader.Read("intensity", intensity);
-        cout << "intensity = " << intensity << '\n';
+            string firstProp;
+            testReader.Read("0", firstProp);
+            cout << "object.firstProp = " << firstProp << '\n';
 
-        Item item;
-        testReader.Read("item", item);
-        cout << "item = " << item << '\n';
+            int intensity;
+            testReader.Read("intensity", intensity);
+            cout << "object.intensity = " << intensity << '\n';
 
-        testReader.EndObject(objId);
+            Item item;
+            testReader.Read("item", item);
+            cout << "object.item = " << item << '\n';
+
+            {
+                ScopeID listPropertyId = testReader.BeginList("listProperty");
+                for (size_t i = 0; !testReader.IsEndOfList(listPropertyId); ++i)
+                {
+                    int listItem;
+                    testReader.Read(listItem);
+                    cout << "object.listProperty[" << i << "] = " << listItem << "\n";
+                }
+            }
+
+            {
+                ScopeID objPropertyId = testReader.BeginObject("objectProperty");
+                Action apple;
+                testReader.Read("apple", apple);
+                cout << "object.objectProperty.apple = " << apple << '\n';
+                {
+                    ScopeID objListPropertyId = testReader.BeginList("objectListProperty");
+                    for (size_t i = 0; !testReader.IsEndOfList(objListPropertyId); ++i)
+                    {
+                        float amount;
+                        testReader.Read(amount);
+                        cout << "object.objectProperty.objectListProperty[" << i << "] = " << amount << "\n";
+                    }
+                }
+                testReader.EndObject(objPropertyId);
+            }
+
+            testReader.EndObject(objId);
+        }
     }
 
     cout << setfill('-') << setw(10) << "" << '\n' << endl;

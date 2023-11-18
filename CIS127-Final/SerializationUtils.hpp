@@ -263,6 +263,7 @@ public:
     template<ostreamable _Ty>
     void Write(const string& name, const _Ty& value)
     {
+        dynamic_assert(name.find(' ') == string::npos, "please avoid putting spaces in property names to minimize confusion");
         Indent();
         stream << name << ": ";
         WriteValue(value);
@@ -317,7 +318,10 @@ private:
     void Extract(string value, _Ty& result)
     {
         istringstream iss(value);
-        iss >> result;
+        _Ty resultProxy;
+        iss >> resultProxy;
+        if (iss.fail()) throw new runtime_error("type mismatch for property \"" + value + "\"");
+        result = resultProxy;
     }
 
 public:
@@ -337,6 +341,7 @@ public:
     template<istreamable _Ty>
     void Read(const string& expectedName, _Ty& value)
     {
+        dynamic_assert(expectedName.find(' ') == string::npos, "please avoid putting spaces in property names to minimize confusion");
         string line;
         getline(stream, line);
 
