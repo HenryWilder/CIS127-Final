@@ -44,30 +44,30 @@ private:
     }
 
     template<input_iterator _InIt, IteratorOStreamer<_InIt> _DerefStreamer1, IteratorOStreamer<_InIt>... _DerefStreamers>
-    void ListItem(ostream& stream, const size_t (&widths)[sizeof...(_DerefStreamers) + 1ull], const _InIt& it) const
+    void ListItem(ostream& stream, const streamsize (&widths)[sizeof...(_DerefStreamers) + 1ull], const _InIt& it) const
     {
-        const ListStyle& style = GetCurrentStyle();
-        stream << style.prefix;
+        const ListStyle& currentStyle = GetCurrentStyle();
+        stream << currentStyle.prefix;
         stream << setw(widths[0]);
         _DerefStreamer1(stream, it);
         size_t i = 1;
-        (((stream << style.memberSeparator << setw(widths[i++])),  _DerefStreamers(stream, it)), ...);
-        stream << style.suffix;
+        (((stream << currentStyle.memberSeparator << setw(widths[i++])),  _DerefStreamers(stream, it)), ...);
+        stream << currentStyle.suffix;
     }
 
     template<input_iterator _InIt, IteratorOStreamer<_InIt> _StreamDeref>
-    size_t MeasureEvenSpacing(_InIt beginIt, _InIt endIt) const
+    streamsize MeasureEvenSpacing(_InIt beginIt, _InIt endIt) const
     {
         if (GetCurrentStyle().spaceMembersEvenly)
         {
-            size_t width = 0;
+            streamsize width = 0;
             for (_InIt it = beginIt; it != endIt; ++it)
             {
                 stringstream streamSimulator;
                 _StreamDeref(streamSimulator, it);
                 streamSimulator.seekg(0, ios::end);
-                size_t itWidth = streamSimulator.tellg();
-                width = max(width, itWidth);
+                streampos itWidth = streamSimulator.tellg();
+                width = max<streamsize>(width, itWidth);
             }
             return width;
         }
@@ -84,22 +84,23 @@ private:
     template<input_iterator _InIt, IteratorOStreamer<_InIt> _DerefStreamer1, IteratorOStreamer<_InIt>... _DerefStreamers>
     void _List(ostream& stream, _InIt beginIt, _InIt endIt) const
     {
-        const ListStyle& style = GetCurrentStyle();
+        const ListStyle& currentStyle = GetCurrentStyle();
 
-        bool isUsingFinalSeparator = style.finalSeparator != 0;
+        bool isUsingFinalSeparator = currentStyle.finalSeparator != 0;
 
-        size_t widths[] = {
+        streamsize widths[] = {
             MeasureEvenSpacing<_InIt, _DerefStreamer1>(beginIt, endIt),
             MeasureEvenSpacing<_InIt, _DerefStreamers>(beginIt, endIt)...
         };
 
-        stream << style.start;
+        stream << currentStyle.start;
         ListItem<_InIt, _DerefStreamer1, _DerefStreamers...>(stream, widths, beginIt);
         if (isUsingFinalSeparator)
         {
             for (++beginIt; beginIt != endIt; ++beginIt)
             {
-                stream << (Next(beginIt) == endIt ? style.finalSeparator : style.separator);
+                const char* sep = Next(beginIt) == endIt ? currentStyle.finalSeparator : currentStyle.separator;
+                stream << sep;
                 ListItem<_InIt, _DerefStreamer1, _DerefStreamers...>(stream, widths, beginIt);
             }
         }
@@ -107,11 +108,11 @@ private:
         {
             for (++beginIt; beginIt != endIt; ++beginIt)
             {
-                stream << style.separator;
+                stream << currentStyle.separator;
                 ListItem<_InIt, _DerefStreamer1, _DerefStreamers...>(stream, widths, beginIt);
             }
         }
-        stream << style.end;
+        stream << currentStyle.end;
     }
 
 public:

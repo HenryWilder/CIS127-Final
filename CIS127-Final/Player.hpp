@@ -5,7 +5,7 @@
 #include "Components.hpp"
 #include "Interactable.hpp"
 
-class Player :
+class Player final :
     public Entity
 {
 protected:
@@ -46,15 +46,15 @@ public:
     void Init();
     void Save(ostream& ofs) const;
     void Load(istream& ifs);
-    
-public: // Properties
-    Health     health;
-    Inventory  inventory;
-    Influences influences;
-    Luck       luck;
-    
+
 private:
     string name = "";
+
+public: // Properties
+    Inventory  inventory;
+    Influences influences;
+    Health     health;
+    Luck       luck;
 };
 
 extern Player player;

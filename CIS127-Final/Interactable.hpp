@@ -71,6 +71,8 @@ protected:
     virtual void DoInteraction_Potion_Tree   () = 0;
 
 public:
+    virtual ~Entity() {}
+
     virtual void DoInteraction_Grab () = 0;
     virtual void DoInteraction_Bread() = 0;
     virtual void DoInteraction_Sword() = 0;

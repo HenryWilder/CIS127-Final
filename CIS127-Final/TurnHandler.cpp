@@ -103,6 +103,12 @@ void TurnHandler::DoUseItem(Item item, EntityTypeInfo_t target, Entity& targetOb
         echo << format("You used a potion of {} on {}.\n\n", potion.full, target.full);
         return targetObject.DoInteraction_Potion(potion);
     }
+
+    case Item::Phonenumber:
+    {
+        // todo
+        return;
+    }
     }
     throw new NotImplementedException(items.KeyAt(item));
 }

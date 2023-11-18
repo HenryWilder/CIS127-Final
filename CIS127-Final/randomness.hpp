@@ -7,8 +7,8 @@ template<input_iterator _It = vector<string>::const_iterator>
 _It ChooseRandomIterator(_It optionsBegin, const _It optionsEnd)
 {
     assert(optionsBegin != optionsEnd); // Options cannot be empty
-    const size_t size = distance(optionsBegin, optionsEnd);
-    advance(optionsBegin, max(0ull, uniform_int<size_t>(1ull, size)(gen) - 1ull));
+    const intptr_t size = distance(optionsBegin, optionsEnd);
+    advance(optionsBegin, max(0ull, uniform_int<intptr_t>(1ll, size)(gen) - 1ull));
     return optionsBegin;
 }
 

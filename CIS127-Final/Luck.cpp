@@ -21,6 +21,7 @@ Luck::LuckType Luck::Check()
     switch (type)
     {
     case Good: --luck; break;
+    case Neutral:      break;
     case Bad:  ++luck; break;
     }
     return type;
@@ -35,8 +36,9 @@ void Luck::Give(_In_range_(!=, Neutral) LuckType kind, _In_range_(>, 0) int amou
 {
     switch (kind)
     {
-    case Luck::Good: luck += amount; break;
-    case Luck::Bad:  luck -= amount; break;
+    case Good: luck += amount; break;
+    case Neutral:              break;
+    case Bad:  luck -= amount; break;
     }
 }
 

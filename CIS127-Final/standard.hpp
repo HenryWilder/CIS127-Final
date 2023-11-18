@@ -33,6 +33,7 @@
 #include <type_traits>
 #include <iterator>
 #include <functional>
+#include <regex>
 
 #include <tuple>
 #include <variant>
@@ -40,3 +41,19 @@
 
 using namespace std;
 namespace fs = filesystem;
+
+void PrettyError(const string& errorType, const string& file, const string& function, size_t line, const string& msg);
+
+// "do {} while(false)" Makes the macro syntactically correct to follow with a semicolon
+#if _DEBUG
+#define dynamic_assert(cond, msg)\
+    do {\
+        if (!(cond)) {\
+            PrettyError("failed assertion `" #cond "`", __FILE__, __FUNCSIG__, (size_t)__LINE__, (msg));\
+            std::terminate(); \
+        }\
+        __assume(cond);\
+    } while (false)
+#else
+#define dynamic_assert(cond, msg) do {} while (false)
+#endif

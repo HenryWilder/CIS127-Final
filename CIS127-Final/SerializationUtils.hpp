@@ -48,6 +48,24 @@
  * 
  ******************/
 
+template<class _Ty>
+constexpr bool is_stringlike = false;
+
+template<>
+constexpr bool is_stringlike<string> = true;
+
+template<>
+constexpr bool is_stringlike<char*> = true;
+
+template<>
+constexpr bool is_stringlike<const char*> = true;
+
+template<size_t _Size>
+constexpr bool is_stringlike<char[_Size]> = true;
+
+template<size_t _Size>
+constexpr bool is_stringlike<const char[_Size]> = true;
+
 enum class ScopeType { List, Object };
 
 string ScopeTypeToString(ScopeType type);
@@ -58,6 +76,47 @@ public:
     // Not sure how to handle the dangling pointer... There's no default runtime_error constructor...
     scope_mismatch(ScopeType expected, ScopeType encountered) :
         runtime_error("Scope mismatch error: expected " + ScopeTypeToString(expected) + ", got " + ScopeTypeToString(encountered)) {}
+};
+
+struct ScopeID
+{
+public:
+    friend class Reader;
+    friend class Writer;
+
+    ScopeID(const ScopeID&) = default;
+
+    // Cannot be reassigned, only constructed.
+    ScopeID& operator=(const ScopeID&) = delete;
+
+    ~ScopeID()
+    {
+        dynamic_assert(IsPopped(), "scope at index " + to_string(index) + " was not closed before being popped off of the stack");
+    }
+
+private:
+    static constexpr size_t npos = (size_t)(-1);
+
+    ScopeID(_In_range_(!=, npos) size_t index) :
+        index(index) {}
+
+    // Signifies that this scope has been popped and marks that it cannot be popped again.
+    void Pop()
+    {
+        index = npos;
+    }
+
+    bool IsValid() const
+    {
+        return index != npos;
+    }
+
+    bool IsPopped() const
+    {
+        return index == npos;
+    }
+
+    size_t index;
 };
 
 class ScopeHandler
@@ -76,6 +135,11 @@ public:
     ScopeHandler() :
         scopeStack{} {}
 
+    ~ScopeHandler()
+    {
+        dynamic_assert(scopeStack.empty(), "Scope handler is being destroyed, but not all scopes have been closed");
+    }
+
     // Nesting depth of scope stack. Used for indent.
     size_t CurrentDepth() const
     {
@@ -85,7 +149,7 @@ public:
     // Pushes a new scope of the type.
     void PushScope(ScopeType type)
     {
-        scopeStack.emplace_back(type);
+        scopeStack.emplace(type);
     }
 
     // Pops the current scope. Throws an exception if the scope isn't the expected type.
@@ -94,33 +158,20 @@ public:
     // Type of current scope.
     ScopeType CurrentScope() const
     {
-        return scopeStack.back().type;
-    }
-
-    // ScopeType at the scope.
-    ScopeType ScopeAt(size_t index) const
-    {
-        return scopeStack.at(index).type;
+        dynamic_assert(!scopeStack.empty(), "global scope has no type");
+        return scopeStack.top().type;
     }
 
     // Number of elements at the current scope. Used for unnamed elements.
     size_t CurrentElements() const
     {
-        return scopeStack.back().elements;
+        dynamic_assert(!scopeStack.empty(), "cannot count unscoped elements");
+        return scopeStack.top().elements;
     }
 
     // Increments number of elements at the top scope.
     // Call this before pushing a new scope so that it doesn't apply to the new scope instead of the containing scope.
-    void PushElement()
-    {
-        ++scopeStack.back().elements;
-    }
-
-    // Number of elements at the scope.
-    size_t ElementsAt(size_t index) const
-    {
-        return scopeStack.at(index).elements;
-    }
+    void PushElement();
 
     // Currently unscoped.
     bool IsInGlobal() const
@@ -140,45 +191,12 @@ public:
         return IsInScope() && CurrentScope() == type;
     }
 
-    // Pushes a new list scope.
-    void PushList()
-    {
-        PushScope(ScopeType::List);
-    }
-
-    // Pushes a new object scope.
-    void PushObject()
-    {
-        PushScope(ScopeType::Object);
-    }
-
-    // Pops the current scope. Throws an exception if the scope isn't a list.
-    void PopList()
-    {
-        PopScope(ScopeType::List);
-    }
-
-    // Pops the current scope. Throws an exception if the scope isn't a object.
-    void PopObject()
-    {
-        PopScope(ScopeType::Object);
-    }
-
-    // Top scope is a list.
-    bool IsInList() const
-    {
-        return IsInScopeType(ScopeType::List);
-    }
-
-    // Top scope is an object.
-    bool IsInObject() const
-    {
-        return IsInScopeType(ScopeType::Object);
-    }
-
 private:
-    vector<Scope> scopeStack;
+    stack<Scope> scopeStack;
 };
+
+// Spaces per indent
+constexpr size_t indentSize = 2;
 
 class Writer
 {
@@ -187,32 +205,68 @@ public:
         stream(stream) {}
 
 private:
-    void BeginScope(const string& name, ScopeType type);
-    void EndScope(ScopeType type);
+    string UnnamedName() const;
+    _Check_return_ ScopeID BeginScope(const string& name, ScopeType type);
+    _Check_return_ ScopeID BeginScope(ScopeType type);
+    void EndScope(ScopeType type, ScopeID& id);
 
 public:
     // Creates a new list scope with the name.
-    void BeginList(const string& name);
+    // Result must be passed to a corrosponding EndList() call.
+    _Check_return_ ScopeID BeginList(const string& name);
     
     // Creates a new unnamed list scope.
-    void BeginList();
+    // Result must be passed to a corrosponding EndList() call.
+    _Check_return_ ScopeID BeginList();
     
     // Closes the current list scope.
-    void EndList();
-
+    void EndList(ScopeID& id);
 
     // Creates a new object scope.
-    void BeginObject(const string& name);
-    
+    // Result must be passed to a corrosponding EndObject() call.
+    _Check_return_ ScopeID BeginObject(const string& name);
+
     // Creates a new unnamed object scope.
-    void BeginObject();
+    // Result must be passed to a corrosponding EndObject() call.
+    _Check_return_ ScopeID BeginObject();
     
     // Closes the current object scope.
-    void EndObject();
+    void EndObject(ScopeID& id);
 
-    void Write(const string& name, const string& value);
-    void Write(const string& name, int           value);
-    void Write(const string& name, float         value);
+private:
+    void Indent()
+    {
+        streamsize indent = (streamsize)(indentSize * scope.CurrentDepth());
+        stream << setfill(' ') << setw(indent) << "";
+    }
+
+    template<ostreamable _Ty>
+    void WriteValue(const _Ty& value)
+    {
+        if (scope.IsInScope()) scope.PushElement();
+        if constexpr (is_stringlike<_Ty>) stream << '"' << value << '"';
+        else                              stream        << value;
+        stream << '\n';
+    }
+
+public:
+    // Writes the nameless property to the stream.
+    // If the type is string-like, the value is enclosed in quote marks - allowing for whitespace to be included at the start and end.
+    template<ostreamable _Ty>
+    void Write(const _Ty& value)
+    {
+        Indent();
+        WriteValue(value);
+    }
+
+    // Writes the named property to the stream.
+    template<ostreamable _Ty>
+    void Write(const string& name, const _Ty& value)
+    {
+        Indent();
+        stream << name << ": ";
+        WriteValue(value);
+    }
 
 private:
     ScopeHandler scope;
@@ -225,17 +279,93 @@ public:
     Reader(istream& stream) :
         stream(stream) {}
 
-    size_t BeginList(const string& expectedName);
-    bool EndOfList(size_t id);
+private:
+    // Marks that a scope is expected to begin, and should have the name given.
+    _Check_return_ ScopeID BeginScope(ScopeType type, const string& expectedName);
 
-    size_t BeginObject(const string& expectedName);
-    bool EndOfObject(size_t id);
+    // Marks that a scope is expected to begin, and its name should be the number of elements in the scope so far.
+    _Check_return_ ScopeID BeginScope(ScopeType type);
 
-    void Read(const string& expectedName, string& value);
-    void Read(const string& expectedName, int&    value);
-    void Read(const string& expectedName, float&  value);
+    // Returns true if the scope has closed, as marked by the indentation having changed.
+    // Should be called as the condition of a while loop.
+    _Check_return_ bool IsEndOfScope(ScopeType type, ScopeID& id);
+
+public:
+    // Marks that a list is expected to begin, and should have the name given.
+    _Check_return_ ScopeID BeginList(const string& expectedName);
+
+    // Marks that a list is expected to begin, and its name should be the number of elements in the scope so far.
+    _Check_return_ ScopeID BeginList();
+
+    // Returns true if the list has closed, as marked by the indentation having changed.
+    // Should be called as the condition of a while loop.
+    _Check_return_ bool IsEndOfList(ScopeID& id);
+
+    // Marks that a object is expected to begin, and should have the name given.
+    _Check_return_ ScopeID BeginObject(const string& expectedName);
+
+    // Marks that a object is expected to begin, and its name should be the number of elements in the scope so far.
+    _Check_return_ ScopeID BeginObject();
+
+    // Closes object scope.
+    // Throws an exception if there are still elements at the same indentation that immediately follow this line.
+    void EndObject(ScopeID& id);
+
+private:
+    // Extraction operator for all types except string. Getline for string.
+    template<istreamable _Ty>
+    void Extract(string value, _Ty& result)
+    {
+        istringstream iss(value);
+        iss >> result;
+    }
+
+public:
+
+    // Reads the nameless property from the stream.
+    // Throws an exception if there is an extraction error.
+    template<istreamable _Ty>
+    void Read(_Ty& value)
+    {
+        string line;
+        getline(stream, line);
+        Extract(line, value);
+    }
+
+    // Reads the named property from the stream.
+    // Throws an exception if there is a name mismatch.
+    template<istreamable _Ty>
+    void Read(const string& expectedName, _Ty& value)
+    {
+        string line;
+        getline(stream, line);
+
+        size_t nameStartPos = line.find_first_not_of(' ');
+        if (nameStartPos == string::npos)
+            throw new runtime_error("Line is empty or whitespace");
+
+        size_t separatorPos = line.find(':');
+        if (separatorPos == string::npos)
+            throw new runtime_error("Line is missing property separator (expected `name: value`; missing ':')");
+
+        string propertyName = line.substr(nameStartPos, separatorPos - nameStartPos);
+        if (propertyName != expectedName)
+            throw new runtime_error("Expected property \"" + expectedName + "\", got \"" + propertyName + "\"");
+
+        try
+        {
+            Extract(line.substr(separatorPos + 1), value);
+        }
+        catch (runtime_error* err)
+        {
+            throw new runtime_error("On property " + propertyName + ":\n  " + err->what());
+        }
+    }
 
 private:
     ScopeHandler scope;
     istream& stream;
 };
+
+template<>
+void Reader::Extract<string>(string value, string& result);

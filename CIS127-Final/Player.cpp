@@ -58,7 +58,7 @@ string ContextualOpinion()
         "make a good point about");
 }
 
-void NearbyThinksYou(const Surroundings& surroundings, vector<string> contextualResponses)
+void NearbyThinksYou(const vector<string>& contextualResponses)
 {
     echo << "The " << surroundings.Random() << " thinks you " << ContextualOpinion() << " " << ChooseRandom(contextualResponses) << ".";
 }
@@ -92,7 +92,7 @@ void Player::DoInteraction_Talk_WineFish()
         "the work ethic of drunk merfolk",
         "how that would affect the wine market",
     };
-    NearbyThinksYou(surroundings, contextualResponses);
+    NearbyThinksYou(contextualResponses);
 }
 void Player::DoInteraction_Talk_SkeleStock()
 {
@@ -101,7 +101,7 @@ void Player::DoInteraction_Talk_SkeleStock()
         "the dwindling numbers of the skeleton army",
         "how important armor is to the health of the Skeleton Alliance's trade sector",
     };
-    NearbyThinksYou(surroundings, contextualResponses);
+    NearbyThinksYou(contextualResponses);
 }
 void Player::DoInteraction_Talk_WoodpeckerSiege()
 {
@@ -110,7 +110,7 @@ void Player::DoInteraction_Talk_WoodpeckerSiege()
         "the fact that a woodpecker pecks wood, not stone",
         "the effectiveness of hot oil on an army of woodpeckers",
     };
-    NearbyThinksYou(surroundings, contextualResponses);
+    NearbyThinksYou(contextualResponses);
 }
 void Player::DoInteraction_Talk_SmithTeleken()
 {
@@ -119,7 +119,7 @@ void Player::DoInteraction_Talk_SmithTeleken()
         "the craftsmanship needed to shape tools with one's mind",
         "the quality of a blade heated with telekenetic precision",
     };
-    NearbyThinksYou(surroundings, contextualResponses);
+    NearbyThinksYou(contextualResponses);
 }
 void Player::DoInteraction_Talk_PenguinBattle()
 {
@@ -128,7 +128,7 @@ void Player::DoInteraction_Talk_PenguinBattle()
         "just how much DNA the Penguin Guild's members actually share with real penguins",
         "how prone the Old Realm's shadow government is to shooting themselves in the foot when it comes to matters like this",
     };
-    NearbyThinksYou(surroundings, contextualResponses);
+    NearbyThinksYou(contextualResponses);
 }
 void Player::DoInteraction_Talk_Woodchuck()
 {
@@ -137,7 +137,7 @@ void Player::DoInteraction_Talk_Woodchuck()
         "how long a woodchuck's arms are",
         "the possibility of seven or more woodchucks banding together and forming a woodchuck mega-fusion",
     };
-    NearbyThinksYou(surroundings, contextualResponses);
+    NearbyThinksYou(contextualResponses);
 }
 
 // Potion
@@ -276,6 +276,8 @@ void Player::DoInteraction_Potion_Demon()
             echo << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
             break;
 
+        case Luck::Neutral:
+        case Luck::Bad:
         default:
             health.Damage(2);
             echo << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. "

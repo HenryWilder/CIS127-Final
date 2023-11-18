@@ -6,20 +6,20 @@
 #include "Prompt.hpp"
 using namespace std;
 
-template<class _Enum>
+template<class Enum>
 struct StrEnum
 {
-    constexpr StrEnum(_Enum _enumeration, const char* _keyval) :
+    constexpr StrEnum(Enum _enumeration, const char* _keyval) :
         enumeration(_enumeration), key(_keyval), full(_keyval) {}
 
-    constexpr StrEnum(_Enum _enumeration, const char* _key, const char* _value) :
+    constexpr StrEnum(Enum _enumeration, const char* _key, const char* _value) :
         enumeration(_enumeration), key(_key), full(_value) {}
 
-    _Enum enumeration;
+    Enum enumeration;
     const char* key;
     const char* full;
 
-    bool operator==(_Enum test) const
+    bool operator==(Enum test) const
     {
         return test == enumeration;
     }
@@ -30,20 +30,20 @@ struct StrEnum
     }
 
     // ".enumeration" is long.
-    operator _Enum() const
+    operator Enum() const
     {
         return enumeration;
     }
 };
 
-template<class _Enum, size_t _Size>
+template<class Enum, size_t SIZE>
 struct StrEnumCollection
 {
 public:
-    using Element_t = StrEnum<_Enum>;
+    using Element_t = StrEnum<Enum>;
 
-    template<same_as<Element_t>... _Args>
-    constexpr StrEnumCollection(_Args... args) :
+    template<same_as<Element_t>... Ts>
+    constexpr StrEnumCollection(Ts... args) :
         data{ args... } {}
 
     const Element_t& At(const string& key) const
@@ -52,7 +52,7 @@ public:
         if (it != data.end()) return *it;
         throw new out_of_range(format("\"{}\" is not a key of this enum", key));
     }
-    const Element_t& At(_Enum enumeration) const
+    const Element_t& At(Enum enumeration) const
     {
         auto it = Find(enumeration);
         if (it != end(data)) return *it;
@@ -63,16 +63,16 @@ public:
     {
         return At(key);
     }
-    const Element_t& operator[](_Enum enumeration) const
+    const Element_t& operator[](Enum enumeration) const
     {
         return At(enumeration);
     }
 
-    _Enum EnumAt(const string& key) const
+    Enum EnumAt(const string& key) const
     {
         return At(key).enumeration;
     }
-    const char* KeyAt(_Enum enumeration) const
+    const char* KeyAt(Enum enumeration) const
     {
         return At(enumeration).key;
     }
@@ -80,16 +80,16 @@ public:
     {
         return At(key).full;
     }
-    const char* ValueAt(_Enum enumeration) const
+    const char* ValueAt(Enum enumeration) const
     {
         return At(enumeration).full;
     }
 
-    ostream& WriteKey(ostream& stream, _Enum enumeration) const
+    ostream& WriteKey(ostream& stream, Enum enumeration) const
     {
         return stream << At(enumeration).key;
     }
-    istream& ReadKey(istream& stream, _Enum& enumeration) const
+    istream& ReadKey(istream& stream, Enum& enumeration) const
     {
         string str;
         stream >> str;
@@ -97,16 +97,16 @@ public:
         return stream;
     }
 
-    constexpr bool Compare(const string& str, _Enum enumeration) const
+    constexpr bool Compare(const string& str, Enum enumeration) const
     {
         auto it = Find(enumeration); // Searching for an integer is less work than searching for a string
         return (it != data.end()) && (it->key == str);
     }
 
-    _Enum Prompt(const string& prompt) const
+    Enum Prompt(const string& prompt) const
     {
-        array<_Enum, _Size> options{};
-        for (size_t i = 0; i < _Size; ++i)
+        array<Enum, SIZE> options{};
+        for (size_t i = 0; i < SIZE; ++i)
         {
             options[i] = data[i];
         }
@@ -117,7 +117,7 @@ public:
     {
         return ChooseRandom(data);
     }
-    _Enum RandomEnum() const
+    Enum RandomEnum() const
     {
         return Random().enumeration;
     }
@@ -131,7 +131,7 @@ public:
     }
 
 private: // Helpers
-    constexpr array<Element_t, _Size>::const_iterator Find(const string& key) const
+    constexpr array<Element_t, SIZE>::const_iterator Find(const string& key) const
     {
         for (auto it = data.begin(); it != data.end(); ++it)
         {
@@ -139,7 +139,7 @@ private: // Helpers
         }
         return data.end();
     }
-    constexpr array<Element_t, _Size>::const_iterator Find(_Enum enumeration) const
+    constexpr array<Element_t, SIZE>::const_iterator Find(Enum enumeration) const
     {
         for (auto it = data.begin(); it != data.end(); ++it)
         {
@@ -149,7 +149,7 @@ private: // Helpers
     }
 
 private: // Members
-    array<Element_t, _Size> data;
+    array<Element_t, SIZE> data;
 };
 
 // First argument deduces _Enum.

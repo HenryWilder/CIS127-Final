@@ -5,7 +5,7 @@
 #include "Interactable.hpp"
 #include "Enums.hpp"
 
-class Baker :
+class Baker final :
     public NPC
 {
 protected:
