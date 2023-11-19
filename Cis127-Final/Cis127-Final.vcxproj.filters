@@ -25,6 +25,30 @@
     <Filter Include="Header Files\Player Components">
       <UniqueIdentifier>{6acce29b-55e9-4183-8b38-4c2afb3c6eeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Serialization">
+      <UniqueIdentifier>{172ef3ad-81b2-44d2-94a3-9c8d4a688ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization">
+      <UniqueIdentifier>{49f56d44-5904-4075-8891-a5f64b5bc135}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization\Reading">
+      <UniqueIdentifier>{9a567312-c378-4ffb-a667-940e56ec25da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization\Writing">
+      <UniqueIdentifier>{8fa89458-3ceb-45aa-bb8c-bee2927a9f60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Serialization\Shared">
+      <UniqueIdentifier>{87f8ab97-13ec-4c25-a58d-ad8312ad7d4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization\Reading">
+      <UniqueIdentifier>{7c7bc2c4-da93-45dd-9572-7e17e720d735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization\Writing">
+      <UniqueIdentifier>{b732246c-8913-4dd8-9e7f-635afd012dd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization\Shared">
+      <UniqueIdentifier>{b2c9f701-10e3-4f2e-9987-eede9133af70}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Interactable.cpp">
@@ -34,9 +58,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="serialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Surroundings.cpp">
@@ -78,9 +99,6 @@
     <ClCompile Include="Influences.cpp">
       <Filter>Source Files\Player Components</Filter>
     </ClCompile>
-    <ClCompile Include="SerializationUtils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Enums.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -105,15 +123,48 @@
     <ClCompile Include="ExtendedAscii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Reader.cpp">
+      <Filter>Source Files\Serialization\Reading</Filter>
+    </ClCompile>
+    <ClCompile Include="Writer.cpp">
+      <Filter>Source Files\Serialization\Writing</Filter>
+    </ClCompile>
+    <ClCompile Include="ScopeHandler.cpp">
+      <Filter>Source Files\Serialization\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="serialization.cpp">
+      <Filter>Source Files\Serialization\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializationUtils.cpp">
+      <Filter>Source Files\Serialization\Shared</Filter>
+    </ClCompile>
+    <ClCompile Include="ScopeWriter.cpp">
+      <Filter>Source Files\Serialization\Writing</Filter>
+    </ClCompile>
+    <ClCompile Include="ListWriter.cpp">
+      <Filter>Source Files\Serialization\Writing</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectWriter.cpp">
+      <Filter>Source Files\Serialization\Writing</Filter>
+    </ClCompile>
+    <ClCompile Include="ScopeReader.cpp">
+      <Filter>Source Files\Serialization\Reading</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectReader.cpp">
+      <Filter>Source Files\Serialization\Reading</Filter>
+    </ClCompile>
+    <ClCompile Include="ListReader.cpp">
+      <Filter>Source Files\Serialization\Reading</Filter>
+    </ClCompile>
+    <ClCompile Include="ScopeReaderWriter.cpp">
+      <Filter>Source Files\Serialization\Shared</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interactable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Player.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="serialization.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Surroundings.hpp">
@@ -155,9 +206,6 @@
     <ClInclude Include="Influences.hpp">
       <Filter>Header Files\Player Components</Filter>
     </ClInclude>
-    <ClInclude Include="SerializationUtils.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Enums.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -181,6 +229,42 @@
     </ClInclude>
     <ClInclude Include="ExtendedAscii.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ListReader.hpp">
+      <Filter>Header Files\Serialization\Reading</Filter>
+    </ClInclude>
+    <ClInclude Include="Reader.hpp">
+      <Filter>Header Files\Serialization\Reading</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectReader.hpp">
+      <Filter>Header Files\Serialization\Reading</Filter>
+    </ClInclude>
+    <ClInclude Include="Writer.hpp">
+      <Filter>Header Files\Serialization\Writing</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeHandler.hpp">
+      <Filter>Header Files\Serialization\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="serialization.hpp">
+      <Filter>Header Files\Serialization\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializationUtils.hpp">
+      <Filter>Header Files\Serialization\Shared</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeReader.hpp">
+      <Filter>Header Files\Serialization\Reading</Filter>
+    </ClInclude>
+    <ClInclude Include="ListWriter.hpp">
+      <Filter>Header Files\Serialization\Writing</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectWriter.hpp">
+      <Filter>Header Files\Serialization\Writing</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeWriter.hpp">
+      <Filter>Header Files\Serialization\Writing</Filter>
+    </ClInclude>
+    <ClInclude Include="ScopeReaderWriter.hpp">
+      <Filter>Header Files\Serialization\Shared</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

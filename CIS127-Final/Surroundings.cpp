@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Surroundings.hpp"
 #include "Player.hpp"
 

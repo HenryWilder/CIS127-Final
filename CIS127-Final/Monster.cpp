@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Monster.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"

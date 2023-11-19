@@ -1,5 +1,5 @@
-#include "Interactable.hpp"
 #include "utilities.hpp"
+#include "Interactable.hpp"
 #include "Surroundings.hpp"
 
 #include "Door.hpp"

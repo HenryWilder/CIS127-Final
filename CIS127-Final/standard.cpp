@@ -1,5 +1,7 @@
+#include "utilities.hpp"
 #include "standard.hpp"
 
+#if _DEBUG
 void PrettyError(const string& errorType, const string& file, const string& function, size_t line, const string& msg)
 {
     auto HorizontalRule = +[] { cerr << setw(50) << '\n'; };
@@ -27,3 +29,4 @@ void PrettyError(const string& errorType, const string& file, const string& func
     HorizontalRule();
     cerr << setfill(' ');
 }
+#endif

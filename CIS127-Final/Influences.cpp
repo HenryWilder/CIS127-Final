@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Influences.hpp"
 
 int Influences::Get(Collective targetCollective) const

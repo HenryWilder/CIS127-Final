@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "StatusEffects.hpp"
 
 char StatusEffects::Get() const

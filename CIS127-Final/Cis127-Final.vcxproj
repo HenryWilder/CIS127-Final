@@ -89,7 +89,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +107,9 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +125,9 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,7 +143,9 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,6 +161,15 @@
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="ExtendedAscii.cpp" />
+    <ClCompile Include="ListReader.cpp" />
+    <ClCompile Include="ListWriter.cpp" />
+    <ClCompile Include="ObjectReader.cpp" />
+    <ClCompile Include="ObjectWriter.cpp" />
+    <ClCompile Include="Reader.cpp" />
+    <ClCompile Include="ScopeHandler.cpp" />
+    <ClCompile Include="ScopeReader.cpp" />
+    <ClCompile Include="ScopeReaderWriter.cpp" />
+    <ClCompile Include="ScopeWriter.cpp" />
     <ClCompile Include="TurnHandler.cpp" />
     <ClCompile Include="Health.cpp" />
     <ClCompile Include="HelperConcepts.cpp" />
@@ -173,6 +190,7 @@
     <ClCompile Include="TurnEchoStream.cpp" />
     <ClCompile Include="utilities.cpp" />
     <ClCompile Include="Wizard.cpp" />
+    <ClCompile Include="Writer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Baker.hpp" />
@@ -181,6 +199,15 @@
     <ClInclude Include="Door.hpp" />
     <ClInclude Include="Enums.hpp" />
     <ClInclude Include="ExtendedAscii.hpp" />
+    <ClInclude Include="ListReader.hpp" />
+    <ClInclude Include="ListWriter.hpp" />
+    <ClInclude Include="ObjectWriter.hpp" />
+    <ClInclude Include="Reader.hpp" />
+    <ClInclude Include="ScopeHandler.hpp" />
+    <ClInclude Include="ObjectReader.hpp" />
+    <ClInclude Include="ScopeReader.hpp" />
+    <ClInclude Include="ScopeReaderWriter.hpp" />
+    <ClInclude Include="ScopeWriter.hpp" />
     <ClInclude Include="TurnHandler.hpp" />
     <ClInclude Include="Health.hpp" />
     <ClInclude Include="HelperConcepts.hpp" />
@@ -200,6 +227,7 @@
     <ClInclude Include="TurnEchoStream.hpp" />
     <ClInclude Include="utilities.hpp" />
     <ClInclude Include="Wizard.hpp" />
+    <ClInclude Include="Writer.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

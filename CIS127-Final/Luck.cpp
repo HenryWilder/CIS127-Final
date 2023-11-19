@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Luck.hpp"
 
 bool Luck::Apply(bool success)

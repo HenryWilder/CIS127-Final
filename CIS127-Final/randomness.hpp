@@ -6,9 +6,15 @@ extern mt19937 gen;
 template<input_iterator _It = vector<string>::const_iterator>
 _It ChooseRandomIterator(_It optionsBegin, const _It optionsEnd)
 {
+    using _Diff = _Iter_diff_t<_It>;
+
     assert(optionsBegin != optionsEnd); // Options cannot be empty
-    const intptr_t size = distance(optionsBegin, optionsEnd);
-    advance(optionsBegin, max(0ull, uniform_int<intptr_t>(1ll, size)(gen) - 1ull));
+    const _Diff size = distance<_It>(optionsBegin, optionsEnd);
+    assert(size > 0);
+    const _Diff lastIndex = size - 1;
+    const _Diff randomIndex = uniform_int<_Diff>(0, lastIndex)(gen);
+    const _Diff offset = max<_Diff>(0, randomIndex);
+    advance<_It, _Diff>(optionsBegin, offset);
     return optionsBegin;
 }
 

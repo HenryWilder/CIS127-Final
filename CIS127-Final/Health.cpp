@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Health.hpp"
 
 int Health::Get() const

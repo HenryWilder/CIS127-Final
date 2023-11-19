@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Inventory.hpp"
 #include "Prompt.hpp"
 

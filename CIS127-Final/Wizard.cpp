@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Wizard.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"

@@ -4,7 +4,6 @@
 #include "HelperConcepts.hpp"
 #include "randomness.hpp"
 #include "ExtendedAscii.hpp"
-#include "Prompt.hpp"
 
 // Interface for classes that can be mutated but not reassigned
 // Useful for objects used exclusively as properties
@@ -22,6 +21,7 @@ protected:
     NotCopyable& operator=(const NotCopyable&) = delete;
 };
 
+// Essentially "is this a base of 2?"
 constexpr bool IsExactlyOneBitSet(size_t flags)
 {
     bool isSetBitEncountered = false;

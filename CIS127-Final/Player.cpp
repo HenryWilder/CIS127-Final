@@ -1,5 +1,5 @@
-#include "Player.hpp"
 #include "utilities.hpp"
+#include "Player.hpp"
 #include "Surroundings.hpp"
 #include "Components.hpp"
 #include "randomness.hpp"

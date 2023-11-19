@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "randomness.hpp"
 
 random_device rd;

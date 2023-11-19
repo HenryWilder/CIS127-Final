@@ -1,8 +1,10 @@
-#include "serialization.hpp"
 #include "utilities.hpp"
+#include "serialization.hpp"
+#include "SerializationUtils.hpp"
+#include "Reader.hpp"
+#include "Writer.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
-#include <fstream>
 
 constexpr const char filename[] = "savegame.txt";
 
@@ -61,5 +63,24 @@ void Save()
     {
         SaveToFile(file);
         file.close();
+    }
+}
+
+void SerializationUnitTest()
+{
+    stringstream fileSimulator;
+
+    // Test save
+    {
+        Writer writer(fileSimulator);
+        writer.Write("apple", 5);
+        writer.Write("orange", "regular");
+    }
+
+    cout << fileSimulator.str();
+
+    // Test load
+    {
+        Reader reader(fileSimulator);
     }
 }

@@ -5,4 +5,8 @@
 void LoadWithPrompt();
 void Save();
 
+#if _DEBUG
+void SerializationUnitTest();
+#endif
+
 #endif /* serialization_hpp */

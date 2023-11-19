@@ -1,3 +1,4 @@
+#include "utilities.hpp"
 #include "Prompt.hpp"
 
 bool IsInputExisting()

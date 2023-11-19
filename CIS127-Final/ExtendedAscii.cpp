@@ -1,4 +1,5 @@
-﻿#include "ExtendedAscii.hpp"
+﻿#include "utilities.hpp"
+#include "ExtendedAscii.hpp"
 #include <iostream>
 #include <unordered_map>
 using namespace std;

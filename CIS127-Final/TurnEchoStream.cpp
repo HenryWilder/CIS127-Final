@@ -1,4 +1,5 @@
-﻿#include "TurnEchoStream.hpp"
+﻿#include "utilities.hpp"
+#include "TurnEchoStream.hpp"
 #include "ExtendedAscii.hpp"
 
 stringstream echo;
@@ -35,7 +36,7 @@ void FlushEcho()
     cout << L"─┐\n";
 
     string line;
-    bool isFirstLine = true;
+    bool isFirstLine = true; // I forget why I made this...
     while (getline(echo, line))
     {
         if (line.empty()) // Blank line
