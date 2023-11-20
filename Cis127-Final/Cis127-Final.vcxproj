@@ -89,7 +89,9 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +107,9 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,7 +125,9 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,7 +143,9 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
+      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,7 +157,7 @@
   <ItemGroup>
     <ClCompile Include="Baker.cpp" />
     <ClCompile Include="Blacksmith.cpp" />
-    <ClCompile Include="Components.cpp" />
+    <ClCompile Include="PlayerComponents.cpp" />
     <ClCompile Include="Door.cpp" />
     <ClCompile Include="Enums.cpp" />
     <ClCompile Include="ExtendedAscii.cpp" />
@@ -166,7 +174,6 @@
     <ClCompile Include="Prompt.cpp" />
     <ClCompile Include="randomness.cpp" />
     <ClCompile Include="serialization.cpp" />
-    <ClCompile Include="SerializationUtils.cpp" />
     <ClCompile Include="standard.cpp" />
     <ClCompile Include="StatusEffects.cpp" />
     <ClCompile Include="Surroundings.cpp" />
@@ -177,7 +184,8 @@
   <ItemGroup>
     <ClInclude Include="Baker.hpp" />
     <ClInclude Include="Blacksmith.hpp" />
-    <ClInclude Include="Components.hpp" />
+    <ClInclude Include="IPlayerComponent.hpp" />
+    <ClInclude Include="PlayerComponents.hpp" />
     <ClInclude Include="Door.hpp" />
     <ClInclude Include="Enums.hpp" />
     <ClInclude Include="ExtendedAscii.hpp" />
@@ -193,7 +201,6 @@
     <ClInclude Include="Prompt.hpp" />
     <ClInclude Include="randomness.hpp" />
     <ClInclude Include="serialization.hpp" />
-    <ClInclude Include="SerializationUtils.hpp" />
     <ClInclude Include="standard.hpp" />
     <ClInclude Include="StatusEffects.hpp" />
     <ClInclude Include="Surroundings.hpp" />

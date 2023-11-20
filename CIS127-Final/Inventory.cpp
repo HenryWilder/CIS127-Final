@@ -1,6 +1,7 @@
 #include "utilities.hpp"
 #include "Inventory.hpp"
 #include "Prompt.hpp"
+#include "TurnEchoStream.hpp"
 
 bool Inventory::HasItem(Item item) const
 {
@@ -20,14 +21,16 @@ int Inventory::CountItem(Item item) const
 void Inventory::AddItem(Item item, _In_range_(>, 0) int count)
 {
     assert(count > 0);
+    size_t newTotal;
     if (items.contains(item))
     {
-        items.at(item) += count;
+        newTotal = (items.at(item) += count);
     }
     else
     {
-        items.emplace(item, count);
+        items.emplace(item, (newTotal = count));
     }
+    echo << "[You gained " << count << " " << item << " and now have " << newTotal << ".]\n";
 }
 
 int Inventory::TryRemoveItemQty(Item item, _In_range_(>, 0) int count)
@@ -39,11 +42,14 @@ int Inventory::TryRemoveItemQty(Item item, _In_range_(>, 0) int count)
         if (it->second == count)
         {
             items.erase(it);
+            echo << "[You lost all of your " << item << " and have none left.]\n";
             return 0;
         }
         else if (it->second > count)
         {
-            return it->second -= count;
+            size_t newTotal = it->second -= count;
+            echo << "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
+            return newTotal;
         }
     }
     return -1;
@@ -58,11 +64,13 @@ bool Inventory::ForceRemoveItemQty(Item item, _In_range_(>, 0) int count)
         if (it->second <= count)
         {
             items.erase(it);
+            echo << "[You lost all of your " << item << " and have none left.]\n";
             return it->second == count;
         }
         else // it->second > count
         {
-            it->second -= count;
+            size_t newTotal = it->second -= count;
+            echo << "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
             return true;
         }
     }

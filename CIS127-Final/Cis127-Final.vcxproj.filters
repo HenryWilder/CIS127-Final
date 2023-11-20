@@ -25,6 +25,12 @@
     <Filter Include="Header Files\Player Components">
       <UniqueIdentifier>{6acce29b-55e9-4183-8b38-4c2afb3c6eeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Serialization">
+      <UniqueIdentifier>{172ef3ad-81b2-44d2-94a3-9c8d4a688ecf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Serialization">
+      <UniqueIdentifier>{49f56d44-5904-4075-8891-a5f64b5bc135}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Interactable.cpp">
@@ -34,9 +40,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="serialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Surroundings.cpp">
@@ -60,7 +63,7 @@
     <ClCompile Include="Wizard.cpp">
       <Filter>Source Files\NPCs</Filter>
     </ClCompile>
-    <ClCompile Include="Components.cpp">
+    <ClCompile Include="PlayerComponents.cpp">
       <Filter>Source Files\Player Components</Filter>
     </ClCompile>
     <ClCompile Include="Health.cpp">
@@ -77,9 +80,6 @@
     </ClCompile>
     <ClCompile Include="Influences.cpp">
       <Filter>Source Files\Player Components</Filter>
-    </ClCompile>
-    <ClCompile Include="SerializationUtils.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Enums.cpp">
       <Filter>Source Files</Filter>
@@ -105,15 +105,12 @@
     <ClCompile Include="ExtendedAscii.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="serialization.cpp">
+      <Filter>Source Files\Serialization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Interactable.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Player.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="serialization.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Surroundings.hpp">
@@ -146,7 +143,7 @@
     <ClInclude Include="Health.hpp">
       <Filter>Header Files\Player Components</Filter>
     </ClInclude>
-    <ClInclude Include="Components.hpp">
+    <ClInclude Include="PlayerComponents.hpp">
       <Filter>Header Files\Player Components</Filter>
     </ClInclude>
     <ClInclude Include="StatusEffects.hpp">
@@ -154,9 +151,6 @@
     </ClInclude>
     <ClInclude Include="Influences.hpp">
       <Filter>Header Files\Player Components</Filter>
-    </ClInclude>
-    <ClInclude Include="SerializationUtils.hpp">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Enums.hpp">
       <Filter>Header Files</Filter>
@@ -181,6 +175,15 @@
     </ClInclude>
     <ClInclude Include="ExtendedAscii.hpp">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="serialization.hpp">
+      <Filter>Header Files\Serialization</Filter>
+    </ClInclude>
+    <ClInclude Include="IPlayerComponent.hpp">
+      <Filter>Header Files\Player Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.hpp">
+      <Filter>Header Files\Player Components</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

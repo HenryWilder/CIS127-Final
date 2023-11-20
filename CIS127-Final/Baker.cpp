@@ -6,17 +6,19 @@
 
 void Baker::DoInteraction_Grab()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Bread()
 {
     if (player.CheckInfluence(GetCollective()))
     {
-        echo << "The baker thanks you for the bread and gives you 1 gold in return.";
+        echo << "The baker thanks you for the bread and gives you some gold in return.";
     }
-    else if (player.TryRemoveItemQty(Item::Gold, 2) != -1)
+    else if (player.CountItem(Item::Gold) >= 2)
     {
-        echo << "The baker thanks you for the bread and sells it back to you for 2 gold.";
+        echo << "The baker thanks you for the bread and sells it back to you.\n";
+        player.TryRemoveItemQty(Item::Gold, 2);
+        player.AddItem(Item::Bread);
     }
     else
     {
@@ -28,81 +30,81 @@ void Baker::DoInteraction_Sword()
     switch (player.TestLuck())
     {
     case LuckType::Good:
+        echo << "The baker crumbles into a baker's dozen loafs of bread that scatter across the floor. You rapidly snatch up each one.\n";
         player.AddItem(Item::Bread, 13);
-        echo << "The baker crumbles into a baker's dozen loafs of bread that scatter across the floor. You rapidly snatch up each one.";
         RemoveFromWorld();
         break;
 
     case LuckType::Neutral:
-        echo << "The baker didn't much enjoy that, but they're gone now.";
+        echo << "The baker didn't much enjoy that, but they're gone now.\n";
         RemoveFromWorld();
         break;
 
     case LuckType::Bad:
-        echo << "You have angered the bread gods, and "; // todo
+        echo << "You have angered the bread gods, and [TODO]\n"; // todo
         break;
     }
 }
 void Baker::DoInteraction_Gold()
 {
+    echo << "The baker thanks you for the gold and hands you some bread.\n";
     player.AddItem(Item::Bread);
-    echo << "The baker thanks you for the gold and hands you a piece of bread.";
 }
 
 // Baker
 
 void Baker::DoInteraction_Talk_Generic()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 
 // Potion
 
 void Baker::DoInteraction_Potion_Predict()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Heal()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Water()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Wish()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Ducks()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Force()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Salt()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Ants()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Demon()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Fire()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Explode()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Baker::DoInteraction_Potion_Tree()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }

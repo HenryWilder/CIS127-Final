@@ -1,6 +1,7 @@
 #include "utilities.hpp"
 #include "Interactable.hpp"
 #include "Surroundings.hpp"
+#include "TurnEchoStream.hpp"
 
 #include "Door.hpp"
 #include "Baker.hpp"
@@ -69,6 +70,7 @@ void Entity::DoInteraction_Potion(Potion effect)
 void Entity::RemoveFromWorld()
 {
     surroundings.QueueForRemoval(GetType());
+    echo << "[" << entityTypes.ValueAt(GetType()) << " is now gone.]\n";
 }
 
 Entity* NewInteractableOfType(EntityType type)

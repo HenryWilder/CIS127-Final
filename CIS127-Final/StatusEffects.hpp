@@ -46,3 +46,24 @@ public:
 private:
     char statuses = 0;
 };
+
+namespace std
+{
+    inline string to_string(StatusEffects::StatusFlags _Val)
+    {
+        constexpr const char *names[] = { "fire", "poison", "tree" };
+        if (!_Val) return "null";
+        string result = "";
+        for (size_t i = 0; i < _countof(names); ++i)
+        {
+            StatusEffects::StatusFlags flag = (StatusEffects::StatusFlags)(1 << i);
+            if (_Val & flag)
+            {
+                const char *flagName = names[i];
+                if (result == "") result = flagName;
+                else result = result + ", " + flagName; // using + instead of += so that string concatenation works
+            }
+        }
+        return result;
+    }
+}

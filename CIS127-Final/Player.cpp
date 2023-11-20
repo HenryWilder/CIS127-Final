@@ -11,67 +11,64 @@
 
 void Player::DoInteraction_Grab()
 {
-    echo << "...Weirdo.";
+    echo << "...Weirdo.\n";
 }
 void Player::DoInteraction_Bread()
 {
+    echo << "It was delicious, replenishing 1 point of health.\n";
     Heal(1);
-    echo << "It was delicious, replenishing 1 point of health.";
 }
 void Player::DoInteraction_Sword()
 {
     switch (TestLuck())
     {
     case LuckType::Good:
-        echo << "Fortunately, your armor is strong enough and your sword so cumbersome at such an angle that you barely scuffed yourself.";
+        echo << "Fortunately, your armor is strong enough and your sword so cumbersome at such an angle that you barely scuffed yourself.\n";
         break;
 
     case LuckType::Neutral:
         Damage(1);
-        echo << "You took 1 point of damage, dummy.";
+        echo << "Dummy.\n";
         break;
 
     case LuckType::Bad:
         Damage(999);
-        echo << "What did you expect was going to happen?";
+        echo << "What did you think was going to happen?\n";
         break;
     }
 }
 void Player::DoInteraction_Gold()
 {
+    echo << "You make a show of thanking yourself kindly for the gold before returning it to your money pouch.\n";
     AddItem(Item::Gold);
-    echo << "You make a show of thanking yourself kindly for the gold before returning it to your money pouch.";
 }
 
 // Talk
 
-string ContextualOpinion()
+void NearbyThinksYou(const vector<string>& contextualResponses)
 {
-    return ChooseRandom(
+    string contextualOpinion = ChooseRandom(
         "may have overlooked",
         "exaggerated",
         "are overestimating",
         "underestimate",
         "may forget",
         "fail to appriciate",
-        "are perpetuating harmful propaganda regarding",
+        "are perpetuating harmful stereotypes regarding",
         "make a good point about");
-}
 
-void NearbyThinksYou(const vector<string>& contextualResponses)
-{
-    echo << "The " << surroundings.Random() << " thinks you " << ContextualOpinion() << " " << ChooseRandom(contextualResponses) << ".";
+    echo << "The " << surroundings.Random() << " thinks you " << contextualOpinion << " " << ChooseRandom(contextualResponses) << ".\n";
 }
 
 void Player::DoInteraction_Talk_Generic()
 {
     if (surroundings.IsEmpty())
     {
-        echo << ChooseRandom({ "Fortunately", "Sadly" }) << ", nobody was around to hear it...";
+        echo << ChooseRandom("Fortunately", "Sadly") << ", nobody was around to hear it...";
         return;
     }
     
-    const vector<string> possibleResponses = {
+    string response = ChooseRandom(
         "found it rather odd",
         "thinks you might need a checkup",
         "considers your points rather thought-provoking and insightful, if a little one-sided",
@@ -79,11 +76,10 @@ void Player::DoInteraction_Talk_Generic()
         "is confused who you were talking to",
         "looked around to check if there were any hidden familiars you may have been putting on a performance for",
         "gave you a weird look",
-        "thinks you underestimate the effectiveness of brute force",
-    };
+        "thinks you underestimate the effectiveness of brute force");
     
     // It is by design that the responder might be inanimate. I thought it would be funny.
-    echo << "The " << surroundings.Random() << " " << ChooseRandom(possibleResponses) << ".";
+    echo << "The " << surroundings.Random() << " " << response << ".\n";
 }
 void Player::DoInteraction_Talk_WineFish()
 {
@@ -144,22 +140,22 @@ void Player::DoInteraction_Talk_Woodchuck()
 
 void Player::DoInteraction_Potion_Predict()
 {
+    echo << "You recieve foresight of everything that will happen in the near future, and plan accordingly.\n";
     GiveLuck(LuckType::Good, 5);
-    echo << "You recieve foresight of everything that will happen in the near future, and plan accordingly.";
 }
 void Player::DoInteraction_Potion_Heal()
 {
+    echo << "You felt rejuvenated.\n";
     Heal(1);
-    echo << "You felt rejuvenated, recovering 1 point of health.";
 }
 void Player::DoInteraction_Potion_Water()
 {
     // Todo: status effect
-    echo << "It soothes your wounds. Hopefully this doesn't rust your armor.";
+    echo << "It soothes your wounds. Hopefully this doesn't rust your armor.\n";
 }
 void Player::DoInteraction_Potion_Wish()
 {
-    echo << "A genie appears from the the potion bottle.";
+    echo << "A genie appears from the the potion bottle.\n";
 
     Wish wish = wishes.Prompt("\"What would you like for your wish, " + GetName() + "?\"");
     echo << "The genie pauses for a moment before replying, \"Granted.\"\n";
@@ -179,8 +175,8 @@ void Player::DoInteraction_Potion_Wish()
     switch (wish)
     {
     case Wish::Wealth:
+        echo << "You feel your money pouch get a little heavier.\n";
         AddItem(Item::Gold, 3);
-        echo << "You feel your money pouch get a little heavier.";
         break;
 
     case Wish::Health:
@@ -189,13 +185,13 @@ void Player::DoInteraction_Potion_Wish()
         {
             // Other characters don't actually heal. NPC health is weird in this game.
             echo << "\"You wished for health, you didn't specify for whom\"\nYou notice the "
-                 << surroundings.Random() << " appears to have regained some health...";
+                 << surroundings.Random() << " appears to have regained some health...\n";
         }
         // Heal the player
         else
         {
+            echo << "You feel your wounds heal, replenishing 2 health points.\n";
             Heal(2);
-            echo << "You feel your wounds heal, replenishing 2 health points.";
         }
         break;
 
@@ -203,54 +199,54 @@ void Player::DoInteraction_Potion_Wish()
         // Interpret power as political influence
         if (CoinFlip())
         {
-            ModifyInfluence(randCollective, +1);
-            echo << "You feel an inexplicable sensation of political influence over the " << randCollective.full << ".";
+            echo << "You feel an inexplicable sensation of political influence over the " << randCollective.full << ".\n";
             MaybeAddBabykickerNote();
+            ModifyInfluence(randCollective, +1);
         }
         // Interpret power as physical strength
         else
         {
+            echo << "Your blade seems to magically sharpen itself, regaining 10 durability.\n";
             AddItem(Item::Sword, 10);
-            echo << "Your blade seems to magically sharpen itself, regaining 10 durability.";
         }
         break;
 
     case Wish::Status:
-        ModifyInfluence(randCollective, +1);
-        echo << "You feel an inexplicable sensation of high status among the " << randCollective.full << ".";
+        echo << "You feel an inexplicable sensation of high status among the " << randCollective.full << ".\n";
         MaybeAddBabykickerNote();
+        ModifyInfluence(randCollective, +1);
         break;
 
     case Wish::Luck:
+        echo << "Nothing seems to have changed. You aren't even sure if the wish did anything.\n";
         GiveLuck(LuckType::Good, 5);
-        echo << "Nothing seems to have changed. You aren't even sure if the wish did anything.";
         break;
 
     case Wish::Faith:
-        ModifyInfluence(randCollective, +1);
-        echo << "You feel an inexplicable sensation of religious influence over the " << randCollective.full << ".";
+        echo << "You feel an inexplicable sensation of religious influence over the " << randCollective.full << ".\n";
         MaybeAddBabykickerNote();
+        ModifyInfluence(randCollective, +1);
         break;
     }
 
-    echo << "\nThe genie disappears.";
+    echo << "\nThe genie disappears.\n";
 }
 void Player::DoInteraction_Potion_Ducks()
 {
-    echo << "A dozen ducks pop into existence around you. They seem lost and disoriented for a moment before waddling northeast towards the nearest pond.";
+    echo << "A dozen ducks pop into existence around you. They seem lost and disoriented for a moment before waddling northeast towards the nearest pond.\n";
 }
 void Player::DoInteraction_Potion_Force()
 {
     surroundings.ReRoll();
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Player::DoInteraction_Potion_Salt()
 {
-    echo << "Your wounds begin burning and you feel dehydrated.";
+    echo << "Your wounds begin burning and you feel dehydrated.\n";
 }
 void Player::DoInteraction_Potion_Ants()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Player::DoInteraction_Potion_Demon()
 {
@@ -265,75 +261,75 @@ void Player::DoInteraction_Potion_Demon()
     
     if (demon == "imp")
     {
+        echo << "The imp seems rather annoyed, throwing a fireball at you before de-summoning itself. You take 2 points of damage.\n";
         Damage(2);
-        echo << "The imp seems rather annoyed, throwing a fireball at you before de-summoning itself. You take 2 points of damage.";
     }
     else if (demon == "warewolf")
     {
         switch (CheckLuck())
         {
         case LuckType::Good:
-            echo << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
+            echo << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.\n";
             break;
 
         case LuckType::Neutral:
         case LuckType::Bad:
         default:
-            Damage(2);
             echo << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. "
-                    "You are protected from most of the attack thanks to your armor, but it still takes away 2 points of your health.";
+                    "You are protected from most of the attack thanks to your armor, but it still does some damage.\n";
+            Damage(2);
             break;
         }
     }
     else if (demon == "tentacle")
     {
+        echo << "The tentacle slaps you violently, causing you to spin around in place before it slithers back down into its hole, disappearing from view.\n";
         Damage(1);
-        echo << "The tentacle slaps you violently, causing you to spin around in place before it slithers back down into its hole, disappearing from view. "
-                "You lost 1 point of health.";
     }
     else if (demon == "vampire")
     {
         switch (CheckLuck())
         {
         case LuckType::Good:
-            AddItem(Item::Bread, 3);
             echo << "The vampire seemed confused as to why they were summoned, "
                     "but decides now is as decent a time as any to dispose of the garlic bread people keep throwing at them. "
                     "They " << ChooseRandom({ "plop", "stuff", "drop", "place" }) << " the bread into your hand and promptly transform into a small black bat, "
-                    "flying away into the darkness.";
+                    "flying away into the darkness.\n";
+            AddItem(Item::Bread, 3);
             break;
 
         case LuckType::Neutral:
             echo << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. "
-                    "You take no damage, but it still stings.";
+                    "You take no damage, but it still stings.\n";
             break;
 
         case LuckType::Bad:
-            Damage(1);
             echo << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. "
-                    "The kick was surprisingly hard, taking 1 point of your health.";
+                    "The kick was surprisingly hard, taking 1 point of your health.\n";
+            Damage(1);
             break;
         }
     }
 }
 void Player::DoInteraction_Potion_Fire()
 {
-    Damage(1);
+    echo << "It hurt quite a bit.\n";
     ApplyStatusEffect(StatusEffects::Fire);
-    echo << "It hurt quite a bit, taking away 1 point of health.";
+    Damage(1);
 }
 void Player::DoInteraction_Potion_Explode()
 {
-    Damage(3);
+    echo << "You feel your armor heat up tremendously, practically baking you within it.\n";
     if (CoinFlip())
     {
         ApplyStatusEffect(StatusEffects::Fire);
     }
-    echo << "You feel your armor heat up tremendously, practically baking you within it. You feel 3 health points drain from your soul.";
+    Damage(3);
 }
 void Player::DoInteraction_Potion_Tree()
 {
-    echo << "You transform into a tree.";
+    echo << "You transform into a tree.\n";
+    ApplyStatusEffect(StatusEffects::Tree);
 }
 
 const string& Player::GetName() const

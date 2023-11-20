@@ -1,5 +1,6 @@
 #include "utilities.hpp"
 #include "Health.hpp"
+#include "TurnEchoStream.hpp"
 
 int Health::Heal(int points)
 {
@@ -9,13 +10,13 @@ int Health::Heal(int points)
     if (possibleToHeal <= points)
     {
         health += points;
-        return 0;
     }
     else
     {
         health = maxHealth;
-        return points - possibleToHeal;
     }
+    echo << "[You gained " << points << " health.]\n";
+    return points - possibleToHeal;
 }
 
 bool Health::Damage(int points)
@@ -29,6 +30,7 @@ bool Health::Damage(int points)
     {
         health = 0;
     }
+    echo << "[You took " << points << " damage.]\n";
     return health != 0;
 }
 

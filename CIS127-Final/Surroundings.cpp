@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#include "TurnEchoStream.hpp"
 #include "Surroundings.hpp"
 #include "Player.hpp"
 
@@ -125,6 +126,8 @@ void Surroundings::ReRoll()
     {
         TryAddNew(EntityType::Door);
     }
+
+    echo << "[Your surroundings have changed.]\n";
 }
 
 EntityType Surroundings::Random() const

@@ -7,89 +7,88 @@
 
 void Blacksmith::DoInteraction_Grab()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Bread()
 {
     if (player.CheckInfluence(GetCollective()))
     {
-        Item returnGift = ChooseRandom(Item::Gold, Item::Sword);
-        int quantity = returnGift == "sword" ? 10 : 1;
+        auto[returnGift, quantity] = ChooseRandom(pair{ Item::Gold, 1 }, pair{ Item::Sword, 10 });
+        echo << "The blacksmith accepts the bread, gifting you some " << returnGift << " as thanks.\n";
         player.AddItem(returnGift, quantity);
-        echo << "The blacksmith accepts the bread, gifting you " << quantity << " " << returnGift << " as thanks";
     }
     else
     {
-        echo << "The blacksmith believes your bread is far too stale, proving their point by sharpening it into a sword and using it to slice another sword.";
+        echo << "The blacksmith believes your bread is far too stale, proving their point by sharpening it into a sword and using it to slice another sword.\n";
     }
 }
 void Blacksmith::DoInteraction_Sword()
 {
     player.ModifyInfluence(GetCollective(), -1);
-    player.RemoveAllOfItem(Item::Sword);
     echo << "Without hesitation, the blacksmith meets your slash with a parry from their own sword.\n"
-        "Your sword flies out of your hand and shatters against the wall, leaving you unarmed.";
+        "Your sword flies out of your hand and shatters against the wall, leaving you unarmed.\n";
+    player.RemoveAllOfItem(Item::Sword);
 }
 void Blacksmith::DoInteraction_Gold()
 {
+    echo << "The blacksmith thanks you for the gold and adds some durability to your sword.\n";
     player.AddItem(Item::Sword, 10);
-    echo << "The blacksmith thanks you for the gold and adds some durability to your sword.";
 }
 
 // Talk
 
 void Blacksmith::DoInteraction_Talk_Generic()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 
 // Potion
 
 void Blacksmith::DoInteraction_Potion_Predict()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Heal()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Water()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Wish()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Ducks()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Force()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Salt()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Ants()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Demon()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Fire()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Explode()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Blacksmith::DoInteraction_Potion_Tree()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }

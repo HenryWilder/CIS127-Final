@@ -6,85 +6,85 @@
 
 void Door::DoInteraction_Grab()
 {
+    echo << "The door opens, allowing you through.\n";
     surroundings.ReRoll();
-    echo << "The door opens, allowing you through.";
 }
 void Door::DoInteraction_Bread()
 {
+    echo << "The door says nothing, but you get the odd sensation that it appriciates the gift.\n";
     player.GiveLuck(LuckType::Good);
-    echo << "The door says nothing, but you get the odd sensation that it appriciates the gift.";
 }
 void Door::DoInteraction_Sword()
 {
     if (DisadvantagedCoinFlip())
     {
+        echo << "The door crumbles to bits and you walk through it.\n";
         surroundings.ReRoll();
-        echo << "The door crumbles to bits and you walk through it.";
     }
     else
     {
-        echo << "The door does not yield.";
+        echo << "The door does not yield.\n";
     }
 }
 void Door::DoInteraction_Gold()
 {
-    echo << "The door remains silent and unmoved. It has no concept for money.";
+    echo << "The door remains silent and unmoved. It has no concept for money.\n";
 }
 
 // Talk
 
 void Door::DoInteraction_Talk_Generic()
 {
-    echo << "The door listens silently.";
+    echo << "The door listens silently.\n";
 }
 
 // Potion
 
 void Door::DoInteraction_Potion_Predict()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Heal()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Water()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Wish()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Ducks()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Force()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Salt()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Ants()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Demon()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Fire()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Explode()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Door::DoInteraction_Potion_Tree()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }

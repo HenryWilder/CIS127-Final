@@ -15,31 +15,32 @@ void Wizard::DoInteraction_Grab()
     {
         reaction = ChooseRandom({ "surprised", "unamused", "annoyed" });
     }
-    echo << "The wizard appears " << reaction << " by your action.";
+    echo << "The wizard appears " << reaction << " by your action.\n";
 }
 void Wizard::DoInteraction_Bread()
 {
     if (player.CheckInfluence(GetCollective()))
     {
         Item returnGift = ChooseRandom(Item::Gold, Item::Potion);
+        echo << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks.\n";
         player.AddItem(returnGift);
-        echo << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks";
     }
     else
     {
         // Todo: make this less random?
-        echo << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue() << " collective.";
+        echo << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue() << " collective.\n";
     }
 }
 void Wizard::DoInteraction_Sword()
 {
-    player.ModifyInfluence(GetCollective(), -1);
     echo << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
+    RemoveFromWorld( );
+    player.ModifyInfluence(GetCollective( ), -1);
     echo << "As the wizard's robe falls to the ground, a potion falls from a pocket onto the floor.\n";
     if (player.ApplyLuck(DiceCheck(1, 2)))
     {
+        echo << "It lands gently on the robe and you pick it up, adding it to your inventory. It could be useful later.\n";
         player.AddItem(Item::Potion);
-        echo << "It lands gently on the robe and you pick it up, adding it to your inventory. It could be useful later.";
     }
     else
     {
@@ -47,68 +48,67 @@ void Wizard::DoInteraction_Sword()
             "You are engulfed in flames as the fire potion coats you like hot oil.\n";
         player.DoInteraction_Potion(Potion::Fire);
     }
-    RemoveFromWorld();
 }
 void Wizard::DoInteraction_Gold()
 {
+    echo << "The wizard thanks you for the gold and gives you a potion.\n";
     player.AddItem(Item::Potion);
-    echo << "The wizard thanks you for the gold and gives you a potion.";
 }
 
 // Talk
 
 void Wizard::DoInteraction_Talk_Generic()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 
 // Potion
 
 void Wizard::DoInteraction_Potion_Predict()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Heal()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Water()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Wish()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Ducks()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Force()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Salt()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Ants()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Demon()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Fire()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Explode()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }
 void Wizard::DoInteraction_Potion_Tree()
 {
-    echo << "[todo]";
+    echo << "[todo]\n";
 }

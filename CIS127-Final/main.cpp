@@ -55,6 +55,7 @@ int main()
 
         cout << instructions << endl;
 
+        echo << '\n'; // To put some space between the "[]" messages and this
         turnHandler.DoNear();
         echo << '\n';
         turnHandler.DoItems();
@@ -64,10 +65,7 @@ int main()
         // Game loop
         while (turnHandler.GetTurnEndType() == TurnEndType::Continue)
         {
-            if (!turnHandler.CheckPlayerIsAlive())
-            {
-                break;
-            }
+            if (!turnHandler.CheckPlayerIsAlive()) break;
             
             turnHandler.DoAction(turnHandler.PromptForAction());
 
