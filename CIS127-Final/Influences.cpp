@@ -1,7 +1,7 @@
 #include "utilities.hpp"
 #include "Influences.hpp"
 
-int Influences::Get(Collective targetCollective) const
+int Influences::GetInfluence(Collective targetCollective) const
 {
     auto it = influence.find(targetCollective);
     if (it != influence.end())
@@ -11,12 +11,7 @@ int Influences::Get(Collective targetCollective) const
     return 0;
 }
 
-const map<Collective, int>& Influences::GetAll() const
-{
-    return influence;
-}
-
-void Influences::Modify(Collective targetCollective, int change)
+void Influences::ModifyInfluence(Collective targetCollective, int change)
 {
     auto it = influence.find(targetCollective);
     if (it != influence.end())
@@ -29,19 +24,14 @@ void Influences::Modify(Collective targetCollective, int change)
     }
 }
 
-void Influences::ClearAll()
+bool Influences::CheckInfluence(Collective targetCollective) const
 {
-    influence.clear();
-}
-
-bool Influences::Check(Collective targetCollective) const
-{
-    return DiceCheck(10 + Get(targetCollective), 20);
+    return DiceCheck(10 + GetInfluence(targetCollective), 20);
 }
 
 void Influences::Init()
 {
-    ClearAll();
+    ClearAllInfluence();
 }
 
 void Influences::Save(ostream& ofs) const

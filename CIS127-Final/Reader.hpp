@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "SerializationUtils.hpp"
 #include "ScopeHandler.hpp"
 
@@ -124,3 +125,4 @@ void Reader::_Extract<string>(string value, string& result);
 
 template<>
 void Reader::_Extract<bool>(string value, bool& result);
+#endif

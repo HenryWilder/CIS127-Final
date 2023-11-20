@@ -104,6 +104,6 @@ NPC* NewNPCOfType(NPCType type, Collective collective)
 
 void ItemEntity::Collect()
 {
-    player.inventory.Add(GetItemEnum());
+    player.AddItem(GetItemEnum());
     RemoveFromWorld();
 }

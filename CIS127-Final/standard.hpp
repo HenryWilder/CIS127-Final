@@ -2,6 +2,12 @@
 
 // This file acts as my pch
 
+#pragma warning(push)
+// kinda wonder why the standard library is causing this warning.
+// I've checked, but the argument being converted isn't a variable within my control.
+// It appears that the warning is being caused by the very instantiation of the function, and not as a result of any abuse.
+#pragma warning(disable:4365)
+
 #include <sal.h>
 
 #include <string>
@@ -44,12 +50,13 @@
 #include <variant>
 #include <any>
 
+#pragma warning(pop)
+
 using namespace std;
 namespace fs = filesystem;
 
-// "do {} while(false)" Makes the macro syntactically correct to follow with a semicolon
 #if _DEBUG
-void PrettyError(const string& errorType, const string& file, const string& function, size_t line, const string& msg);
+void PrettyError(const string &errorType, const string &file, const string &function, size_t line, const string &msg);
 
 // Custom runtime assertion with more readable formatting
 #define dynamic_assert(cond, msg)\
@@ -61,6 +68,7 @@ void PrettyError(const string& errorType, const string& file, const string& func
         __assume(cond);\
     } while (false)
 #else
+#define PrettyError(errorType, file, function, line, msg) static_assert(false, "Should not be using PrettyError in release build.")
 #define dynamic_assert(cond, msg) do {} while (false)
 #endif
 

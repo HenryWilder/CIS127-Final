@@ -1,7 +1,7 @@
 #include "utilities.hpp"
 #include "Luck.hpp"
 
-bool Luck::Apply(bool success)
+bool Luck::ApplyLuck(bool success)
 {
     if (!success || luck > 0)
     {
@@ -16,36 +16,31 @@ bool Luck::Apply(bool success)
     return success;
 }
 
-Luck::LuckType Luck::Check()
+LuckType Luck::CheckLuck()
 {
     LuckType type = CategorizeLuck(luck);
     switch (type)
     {
-    case Good: --luck; break;
-    case Neutral:      break;
-    case Bad:  ++luck; break;
+    case LuckType::Good: --luck; break;
+    case LuckType::Neutral:      break;
+    case LuckType::Bad:  ++luck; break;
     }
     return type;
 }
 
-Luck::LuckType Luck::Test()
+LuckType Luck::TestLuck()
 {
     return CategorizeLuck(luck--);
 }
 
-void Luck::Give(_In_range_(!=, Neutral) LuckType kind, _In_range_(>, 0) int amount)
+void Luck::GiveLuck(_In_range_(!=, LuckType::Neutral) LuckType kind, _In_range_(>, 0) int amount)
 {
     switch (kind)
     {
-    case Good: luck += amount; break;
-    case Neutral:              break;
-    case Bad:  luck -= amount; break;
+    case LuckType::Good: luck += amount; break;
+    case LuckType::Neutral:              break;
+    case LuckType::Bad:  luck -= amount; break;
     }
-}
-
-void Luck::Clear()
-{
-    luck = 0;
 }
 
 void Luck::Init()

@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "ScopeReader.hpp"
 
 class ListReaderClient :
@@ -46,3 +47,4 @@ public:
 private:
     void _DoSafetyChecks( ) const;
 };
+#endif

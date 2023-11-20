@@ -11,11 +11,11 @@ void Blacksmith::DoInteraction_Grab()
 }
 void Blacksmith::DoInteraction_Bread()
 {
-    if (player.influences.Check(GetCollective()))
+    if (player.CheckInfluence(GetCollective()))
     {
         Item returnGift = ChooseRandom(Item::Gold, Item::Sword);
         int quantity = returnGift == "sword" ? 10 : 1;
-        player.inventory.Add(returnGift, quantity);
+        player.AddItem(returnGift, quantity);
         echo << "The blacksmith accepts the bread, gifting you " << quantity << " " << returnGift << " as thanks";
     }
     else
@@ -25,14 +25,14 @@ void Blacksmith::DoInteraction_Bread()
 }
 void Blacksmith::DoInteraction_Sword()
 {
-    player.influences.Modify(GetCollective(), -1);
-    player.inventory.RemoveAll(Item::Sword);
+    player.ModifyInfluence(GetCollective(), -1);
+    player.RemoveAllOfItem(Item::Sword);
     echo << "Without hesitation, the blacksmith meets your slash with a parry from their own sword.\n"
         "Your sword flies out of your hand and shatters against the wall, leaving you unarmed.";
 }
 void Blacksmith::DoInteraction_Gold()
 {
-    player.inventory.Add(Item::Sword, 10);
+    player.AddItem(Item::Sword, 10);
     echo << "The blacksmith thanks you for the gold and adds some durability to your sword.";
 }
 

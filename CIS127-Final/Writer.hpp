@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "SerializationUtils.hpp"
 #include "ScopeHandler.hpp"
 
@@ -10,10 +11,10 @@ class ObjectWriter;
 class Writer
 {
 private:
-    void _Indent();
+    void _Indent( );
 
     template<ostreamable T>
-    void _Insert(const T& value)
+    void _Insert(const T &value)
     {
         if constexpr (is_stringlike<T>)
         {
@@ -33,58 +34,59 @@ private:
 private: // Available to both ListWriter and ObjectWriter
     friend class ScopeWriter;
 
-    void PopScope();
+    void PopScope( );
 
-    size_t CurrentDepth() const
+    size_t CurrentDepth( ) const
     {
-        return scope.CurrentDepth();
+        return scope.CurrentDepth( );
     }
-    ScopeType CurrentScope() const
+    ScopeType CurrentScope( ) const
     {
-        return scope.CurrentScope();
+        return scope.CurrentScope( );
     }
 
 private: // Available to ListWriter
     friend class ListWriterClient;
 
-    unique_ptr<ListWriter> BeginListElement();
-    unique_ptr<ObjectWriter> BeginObjectElement();
+    unique_ptr<ListWriter> BeginListElement( );
+    unique_ptr<ObjectWriter> BeginObjectElement( );
 
     template<ostreamable T>
-    void WriteElement(const T& value)
+    void WriteElement(const T &value)
     {
-        _Indent();
+        _Indent( );
         _Insert(value);
     }
 
 private: // Available to ObjectWriter
     friend class ObjectWriterClient;
 
-    unique_ptr<ListWriter> BeginListProperty(const string& name);
-    unique_ptr<ObjectWriter> BeginObjectProperty(const string& name);
+    unique_ptr<ListWriter> BeginListProperty(const string &name);
+    unique_ptr<ObjectWriter> BeginObjectProperty(const string &name);
 
     // Writes the named object property to the stream.
     // Should not be used in global scope.
     template<ostreamable T>
-    void WriteProperty(const string& name, const T& value)
+    void WriteProperty(const string &name, const T &value)
     {
         assert_serialization_naming_standard(name);
 
-        _Indent();
+        _Indent( );
         stream << name << ": ";
         _Insert(value);
     }
 
 public:
-    Writer(ostream& stream) :
-        stream(stream) {}
+    Writer(ostream &stream) :
+        stream(stream)
+    { }
 
-    unique_ptr<ListWriter> BeginList(const string& name);
-    unique_ptr<ObjectWriter> BeginObject(const string& name);
+    unique_ptr<ListWriter> BeginList(const string &name);
+    unique_ptr<ObjectWriter> BeginObject(const string &name);
 
     // Writes the named global-scope item to the stream.
     template<ostreamable T>
-    void Write(const string& name, const T& value)
+    void Write(const string &name, const T &value)
     {
         assert_serialization_naming_standard(name);
 
@@ -94,5 +96,7 @@ public:
 
 private:
     ScopeHandler scope;
-    ostream& stream;
+    ostream &stream;
 };
+
+#endif // 0

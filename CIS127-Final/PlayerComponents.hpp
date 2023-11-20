@@ -1,6 +1,4 @@
-#ifndef Components_hpp
-#define Components_hpp
-
+#pragma once
 #include "utilities.hpp"
 
 #include "StatusEffects.hpp"
@@ -8,5 +6,3 @@
 #include "Inventory.hpp"
 #include "Influences.hpp"
 #include "Luck.hpp"
-
-#endif /* Components_hpp */

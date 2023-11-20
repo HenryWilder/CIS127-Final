@@ -19,10 +19,10 @@ void Wizard::DoInteraction_Grab()
 }
 void Wizard::DoInteraction_Bread()
 {
-    if (player.influences.Check(GetCollective()))
+    if (player.CheckInfluence(GetCollective()))
     {
         Item returnGift = ChooseRandom(Item::Gold, Item::Potion);
-        player.inventory.Add(returnGift);
+        player.AddItem(returnGift);
         echo << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks";
     }
     else
@@ -33,12 +33,12 @@ void Wizard::DoInteraction_Bread()
 }
 void Wizard::DoInteraction_Sword()
 {
-    player.influences.Modify(GetCollective(), -1);
+    player.ModifyInfluence(GetCollective(), -1);
     echo << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
     echo << "As the wizard's robe falls to the ground, a potion falls from a pocket onto the floor.\n";
-    if (player.luck.Apply(DiceCheck(1, 2)))
+    if (player.ApplyLuck(DiceCheck(1, 2)))
     {
-        player.inventory.Add(Item::Potion);
+        player.AddItem(Item::Potion);
         echo << "It lands gently on the robe and you pick it up, adding it to your inventory. It could be useful later.";
     }
     else
@@ -51,7 +51,7 @@ void Wizard::DoInteraction_Sword()
 }
 void Wizard::DoInteraction_Gold()
 {
-    player.inventory.Add(Item::Potion);
+    player.AddItem(Item::Potion);
     echo << "The wizard thanks you for the gold and gives you a potion.";
 }
 

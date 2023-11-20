@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "ScopeWriter.hpp"
 
 class ListWriterClient :
@@ -54,3 +55,5 @@ public:
 private:
     void _DoSafetyChecks( ) const;
 };
+
+#endif // 0

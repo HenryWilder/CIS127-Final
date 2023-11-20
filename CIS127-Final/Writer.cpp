@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#if 0
 #include "Writer.hpp"
 
 // Writer
@@ -62,3 +63,4 @@ void Writer::_Indent()
 {
     ::Indent(stream, CurrentDepth());
 }
+#endif

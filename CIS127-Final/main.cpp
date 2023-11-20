@@ -48,10 +48,6 @@ constexpr const wchar_t* instructions = LR"(
 
 int main()
 {
-    SerializationUnitTest();
-
-    return 0;
-
     while (turnHandler.GetTurnEndType() != TurnEndType::Quit)
     {
         // Load the game

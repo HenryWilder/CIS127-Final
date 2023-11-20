@@ -17,7 +17,7 @@ Action TurnHandler::PromptForAction()
             Action::Items,
             Action::Near,
         };
-        if (!player.inventory.IsEmpty())
+        if (!player.IsInventoryEmpty())
         {
             options.insert(options.begin() + 3, Action::Use);
         }
@@ -117,7 +117,7 @@ void TurnHandler::DoUseItem(Item item, EntityTypeInfo_t target, Entity& targetOb
 void TurnHandler::DoUse()
 {
     Item item;
-    item = player.inventory.Prompt("\nWhich item would you like to use?");
+    item = player.PromptItem("\nWhich item would you like to use?");
 
     if (item == Item::Phonenumber)
     {
@@ -125,7 +125,7 @@ void TurnHandler::DoUse()
         return;
     }
 
-    player.inventory.TryRemove(item, 1);
+    player.TryRemoveItemQty(item, 1);
 
     string prompt = format("\nWho/what would you like to use your {} on?", items.ValueAt(item));
     auto [target, targetObject] = PromptForTartget(prompt);
@@ -138,7 +138,7 @@ void TurnHandler::DoItems()
     StreamList::Push(StreamList::JSONObjectList);
 
     echo << "Your current inventory: ";
-    player.inventory.Print(echo);
+    player.PrintInventory(echo);
 
     StreamList::Pop();
 }
@@ -181,7 +181,7 @@ void TurnHandler::DoAction(Action action)
 
 bool TurnHandler::CheckPlayerIsAlive()
 {
-    if (player.health.IsDead())
+    if (player.IsDead())
     {
         echo << "Your health has dropped to zero and you have died.";
         FlushEcho();

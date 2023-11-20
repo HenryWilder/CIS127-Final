@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "utilities.hpp"
 
 class ScopeReaderWriter
@@ -6,7 +7,7 @@ class ScopeReaderWriter
 public:
     ~ScopeReaderWriter( )
     {
-        
+
     }
 
 protected:
@@ -33,3 +34,5 @@ protected:
 private:
     bool isValid;
 };
+
+#endif // 0

@@ -1,9 +1,10 @@
 #pragma once
+#if 0
 #include "utilities.hpp"
 
 /******************
  * Similar to YAML
- * 
+ *
  * In file:
  * ----------------
  * name: value
@@ -34,7 +35,7 @@
  *     item
  *     item
  * ----------------
- * 
+ *
  * Write code:
  * ----------------
  * Writer writer(file);
@@ -52,20 +53,20 @@
  *   writer.EndObject(objectId);
  * }
  * ----------------
- * 
+ *
  * Read code:
  * ----------------
  * Reader reader(file);
  * reader.Read("name", value);
  * reader.Read("name", value);
  * ----------------
- * 
+ *
  ******************/
 
-// I am absolutely LOADING this section up with assertions and exceptions
-// because it's the closest this program gets to running arbitrary, interpreted code.
-// Assertions confirm that *I* have written the read/write code correctly.
-// Exceptions confirm that the user has not invalidated their save file.
+ // I am absolutely LOADING this section up with assertions and exceptions
+ // because it's the closest this program gets to running arbitrary, interpreted code.
+ // Assertions confirm that *I* have written the read/write code correctly.
+ // Exceptions confirm that the user has not invalidated their save file.
 
 template<class _Ty>
 constexpr bool is_stringlike = false;
@@ -74,10 +75,10 @@ template<>
 constexpr bool is_stringlike<string> = true;
 
 template<>
-constexpr bool is_stringlike<char*> = true;
+constexpr bool is_stringlike<char *> = true;
 
 template<>
-constexpr bool is_stringlike<const char*> = true;
+constexpr bool is_stringlike<const char *> = true;
 
 template<size_t _Size>
 constexpr bool is_stringlike<char[_Size]> = true;
@@ -85,7 +86,10 @@ constexpr bool is_stringlike<char[_Size]> = true;
 template<size_t _Size>
 constexpr bool is_stringlike<const char[_Size]> = true;
 
-enum class ScopeType { List, Object };
+enum class ScopeType
+{
+    List, Object
+};
 
 namespace std
 {
@@ -93,9 +97,9 @@ namespace std
     {
         switch (_Val)
         {
-        case ScopeType::List:   return "list";
-        case ScopeType::Object: return "object";
-        default:                return "unknown";
+            case ScopeType::List:   return "list";
+            case ScopeType::Object: return "object";
+            default:                return "unknown";
         }
     }
 }
@@ -103,7 +107,7 @@ namespace std
 // Spaces per indent
 constexpr size_t indentSize = 2;
 
-ostream& Indent(ostream& stream, size_t depth);
+ostream &Indent(ostream &stream, size_t depth);
 
 inline bool serialization_naming_standard_predicate(char ch)
 {
@@ -136,3 +140,5 @@ inline bool serialization_naming_standard_predicate(char ch)
             "expected " + to_string(expectedDepth) + "; got " + to_string(currentDepth) + "\n"\
             "make sure scope pushes and pops are balanced");\
     } while (false)
+
+#endif // 0

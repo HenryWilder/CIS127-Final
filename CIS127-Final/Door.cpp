@@ -11,7 +11,7 @@ void Door::DoInteraction_Grab()
 }
 void Door::DoInteraction_Bread()
 {
-    player.luck.Give(Luck::Good);
+    player.GiveLuck(LuckType::Good);
     echo << "The door says nothing, but you get the odd sensation that it appriciates the gift.";
 }
 void Door::DoInteraction_Sword()

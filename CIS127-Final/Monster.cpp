@@ -6,7 +6,7 @@
 
 void Monster::DoInteraction_Grab()
 {
-    bool isPositive = player.influences.Check(Collective::Monsters);
+    bool isPositive = player.CheckInfluence(Collective::Monsters);
     
     
     string reaction, reactingTo;
@@ -25,24 +25,24 @@ void Monster::DoInteraction_Grab()
     
     if (reaction == "flustered" || ((reaction == "impressed" || reaction == "surprised") && reactingTo == "forwardness"))
     {
-        player.inventory.Add(Item::Phonenumber); // todo
+        player.AddItem(Item::Phonenumber); // todo
         echo << "Upon being released, it discretely slips something into your pocket.";
     }
     else if (isPositive)
     {
-        player.influences.Modify(Collective::Monsters, 1);
+        player.ModifyInfluence(Collective::Monsters, 1);
         echo << "It gives a little nod of respect.";
     }
     else // negative
     {
-        player.health.Damage(3);
+        player.Damage(3);
         echo << "It decides to return the favor, squeezing you in its massive claws as you feel your armor dent and tighten around your fragile, squishy body. ";
         echo << "You lose 3 points of health.";
     }
 }
 void Monster::DoInteraction_Bread()
 {
-    bool isPositive = player.influences.Check(Collective::Monsters);
+    bool isPositive = player.CheckInfluence(Collective::Monsters);
     
     echo << "The monster ";
     if (isPositive)
@@ -73,7 +73,7 @@ void Monster::DoInteraction_Bread()
             "wrapping its long, heavy arms around you in thanks. It drops you onto the floor after a few seconds, and you lie there stunned for a moment before managing to stand back up",
             "pulling you into a warm bear hug for a full thirty seconds before setting you down",
         });
-        player.influences.Modify(Collective::Monsters, 1);
+        player.ModifyInfluence(Collective::Monsters, 1);
         echo << reaction << " the gift, quietly accepting it and " << response << " before " << gratitude << ".";
     }
     else
@@ -84,18 +84,18 @@ void Monster::DoInteraction_Bread()
 }
 void Monster::DoInteraction_Sword()
 {
-    bool isSuccessful = player.luck.Apply(DiceCheck(1, 2));
+    bool isSuccessful = player.ApplyLuck(DiceCheck(1, 2));
     if (isSuccessful)
     {
         string bodyCovering = ChooseRandom({ "gooey", "vaporous", "slimey", "meaty", "fuzzy", "fur-covered" });
         echo << "Your sword slashes through the monster, splitting it into two " << bodyCovering << " chunks on the floor. ";
-        player.inventory.Add(Item::Gold);
+        player.AddItem(Item::Gold);
         echo << "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.";
     }
     else
     {
-        player.inventory.TryRemove(Item::Sword);
-        bool isSwordSurviving = player.inventory.Has(Item::Sword);
+        player.TryRemoveItemQty(Item::Sword);
+        bool isSwordSurviving = player.HasItem(Item::Sword);
         
         string reaction = ChooseRandom({
             "grabs your sword mid-swing, gripping it tightly in its claws",

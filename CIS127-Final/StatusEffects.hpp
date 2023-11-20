@@ -1,10 +1,8 @@
-#ifndef StatusEffects_hpp
-#define StatusEffects_hpp
-
-#include "utilities.hpp"
+#pragma once
+#include "IPlayerComponent.hpp"
 
 class StatusEffects :
-    private NotCopyable
+    public IPlayerComponent
 {
 public:
     // Bitflags
@@ -16,34 +14,35 @@ public:
     };
     
     // Returns the combined set of all active status flags.
-    char Get() const;
+    char GetStatusEffects( ) const
+    {
+        return statuses;
+    }
     
     // Returns true of all of the provided statuses are active.
     // Multiple statuses are tested at once by combining them with `|`.
-    bool HasEvery(StatusFlags testStatuses) const;
+    bool HasEveryStatusEffect(StatusFlags testStatuses) const;
     
     // Returns true of one or more of the provided statuses are active.
     // Multiple statuses are tested at once by combining them with `|`.
-    bool HasAny(StatusFlags testStatuses) const;
+    bool HasAnyStatusEffect(StatusFlags testStatuses) const;
     
     // Alias for "HasAnyStatus()" to add clarity when testing only one status.
-    bool Has(StatusFlags testStatus) const;
+    bool HasStatusEffect(StatusFlags testStatus) const;
     
     // Sets the provided status(es) to true.
     // Multiple statuses can be set at once by combining them with `|`.
-    void Apply(StatusFlags applyStatuses);
+    void ApplyStatusEffect(StatusFlags applyStatuses);
     
     // Sets the provided status(es) to false.
     // Multiple statuses can be cleared at once by combining them with `|`.
     // Default: clears all statuses.
-    void Clear(StatusFlags clearStatuses = (StatusFlags)~0);
+    void ClearStatusEffect(StatusFlags clearStatuses = (StatusFlags)~0);
 
-    void Init();
-    void Save(ostream& ofs) const;
-    void Load(istream& ifs);
+    void Init() override;
+    void Save(ostream& ofs) const override;
+    void Load(istream& ifs) override;
     
 private:
     char statuses = 0;
 };
-
-#endif /* StatusEffects_hpp */

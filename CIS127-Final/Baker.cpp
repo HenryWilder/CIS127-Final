@@ -10,11 +10,11 @@ void Baker::DoInteraction_Grab()
 }
 void Baker::DoInteraction_Bread()
 {
-    if (player.influences.Check(GetCollective()))
+    if (player.CheckInfluence(GetCollective()))
     {
         echo << "The baker thanks you for the bread and gives you 1 gold in return.";
     }
-    else if (player.inventory.TryRemove(Item::Gold, 2) != -1)
+    else if (player.TryRemoveItemQty(Item::Gold, 2) != -1)
     {
         echo << "The baker thanks you for the bread and sells it back to you for 2 gold.";
     }
@@ -25,27 +25,27 @@ void Baker::DoInteraction_Bread()
 }
 void Baker::DoInteraction_Sword()
 {
-    switch (player.luck.Test())
+    switch (player.TestLuck())
     {
-    case Luck::Good:
-        player.inventory.Add(Item::Bread, 13);
+    case LuckType::Good:
+        player.AddItem(Item::Bread, 13);
         echo << "The baker crumbles into a baker's dozen loafs of bread that scatter across the floor. You rapidly snatch up each one.";
         RemoveFromWorld();
         break;
 
-    case Luck::Neutral:
+    case LuckType::Neutral:
         echo << "The baker didn't much enjoy that, but they're gone now.";
         RemoveFromWorld();
         break;
 
-    case Luck::Bad:
+    case LuckType::Bad:
         echo << "You have angered the bread gods, and "; // todo
         break;
     }
 }
 void Baker::DoInteraction_Gold()
 {
-    player.inventory.Add(Item::Bread);
+    player.AddItem(Item::Bread);
     echo << "The baker thanks you for the gold and hands you a piece of bread.";
 }
 

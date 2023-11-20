@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#if 0
 #include "ScopeHandler.hpp"
 
 ScopeHandler::~ScopeHandler()
@@ -37,3 +38,5 @@ ScopeType ScopeHandler::CurrentScope() const
     dynamic_assert(!IsInGlobal(), "global scope has no type.\nremember to test !IsInGlobal() first.");
     return scopeStack.top();
 }
+
+#endif

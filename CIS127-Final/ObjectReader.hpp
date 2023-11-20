@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "ScopeReader.hpp"
 
 class ObjectReaderClient :
@@ -51,3 +52,4 @@ public:
 private:
     void _DoSafetyChecks( ) const;
 };
+#endif

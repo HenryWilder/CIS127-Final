@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "ScopeWriter.hpp"
 
 class ObjectWriterClient :
@@ -31,21 +32,21 @@ public:
     static constexpr ScopeType SCOPE_TYPE = ScopeType::Object;
 
     ObjectWriter( ) = delete;
-    ~ObjectWriter();
+    ~ObjectWriter( );
 
-    void EndObject();
+    void EndObject( );
 
-    unique_ptr<ListWriter> BeginListProperty(const string& propertyName)
+    unique_ptr<ListWriter> BeginListProperty(const string &propertyName)
     {
         return _BeginListProperty(propertyName);
     }
-    unique_ptr<ObjectWriter> BeginObjectProperty(const string& propertyName)
+    unique_ptr<ObjectWriter> BeginObjectProperty(const string &propertyName)
     {
         return _BeginObjectProperty(propertyName);
     }
 
     template<istreamable T>
-    void WriteProperty(const string& propertyName, const T& value)
+    void WriteProperty(const string &propertyName, const T &value)
     {
         _DoSafetyChecks( );
         _WriteProperty<T>(propertyName, value);
@@ -54,3 +55,5 @@ public:
 private:
     void _DoSafetyChecks( ) const;
 };
+
+#endif // 0

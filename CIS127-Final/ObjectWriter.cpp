@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#if 0
 #include "ObjectWriter.hpp"
 
 ObjectWriter::~ObjectWriter( )
@@ -21,3 +22,4 @@ void ObjectWriter::_DoSafetyChecks( ) const
     assert_scope_type_is_matching(_CurrentScope( ), SCOPE_TYPE);
     assert_scope_depth_is_matching(_CurrentDepth( ), depth);
 }
+#endif

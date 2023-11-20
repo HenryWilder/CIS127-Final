@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "ScopeReaderWriter.hpp"
 #include "Writer.hpp"
 
@@ -29,3 +30,5 @@ protected:
 
     Writer &writer;
 };
+
+#endif // 0

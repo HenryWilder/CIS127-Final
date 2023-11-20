@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#if 0
 #include "Reader.hpp"
 #include "ListReader.hpp"
 
@@ -118,3 +119,4 @@ void Reader::_Extract<bool>(string value, bool& result)
     else throw new runtime_error("type mismatch for property; value was \"" + value + "\"");
 }
 
+#endif

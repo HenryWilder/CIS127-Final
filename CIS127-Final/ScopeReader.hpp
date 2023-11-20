@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "ScopeReaderWriter.hpp"
 #include "Reader.hpp"
 
@@ -24,3 +25,4 @@ protected:
 
     Reader &reader;
 };
+#endif

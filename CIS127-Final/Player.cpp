@@ -1,7 +1,7 @@
 #include "utilities.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
-#include "Components.hpp"
+#include "PlayerComponents.hpp"
 #include "randomness.hpp"
 #include "Prompt.hpp"
 #include "TurnEchoStream.hpp"
@@ -15,31 +15,31 @@ void Player::DoInteraction_Grab()
 }
 void Player::DoInteraction_Bread()
 {
-    health.Heal(1);
+    Heal(1);
     echo << "It was delicious, replenishing 1 point of health.";
 }
 void Player::DoInteraction_Sword()
 {
-    switch (luck.Test())
+    switch (TestLuck())
     {
-    case Luck::Good:
+    case LuckType::Good:
         echo << "Fortunately, your armor is strong enough and your sword so cumbersome at such an angle that you barely scuffed yourself.";
         break;
 
-    case Luck::Neutral:
-        health.Damage(1);
+    case LuckType::Neutral:
+        Damage(1);
         echo << "You took 1 point of damage, dummy.";
         break;
 
-    case Luck::Bad:
-        health.Damage(999);
+    case LuckType::Bad:
+        Damage(999);
         echo << "What did you expect was going to happen?";
         break;
     }
 }
 void Player::DoInteraction_Gold()
 {
-    inventory.Add(Item::Gold);
+    AddItem(Item::Gold);
     echo << "You make a show of thanking yourself kindly for the gold before returning it to your money pouch.";
 }
 
@@ -144,12 +144,12 @@ void Player::DoInteraction_Talk_Woodchuck()
 
 void Player::DoInteraction_Potion_Predict()
 {
-    luck.Give(Luck::Good, 5);
+    GiveLuck(LuckType::Good, 5);
     echo << "You recieve foresight of everything that will happen in the near future, and plan accordingly.";
 }
 void Player::DoInteraction_Potion_Heal()
 {
-    health.Heal(1);
+    Heal(1);
     echo << "You felt rejuvenated, recovering 1 point of health.";
 }
 void Player::DoInteraction_Potion_Water()
@@ -169,7 +169,7 @@ void Player::DoInteraction_Potion_Wish()
     auto MaybeAddBabykickerNote = [&]()
     {
         bool isBabykickerCollective = randCollective == Collective::BabypunchingPuppykickers;
-        bool isFirstTime = influences.Get(Collective::BabypunchingPuppykickers) == 1; // Don't get repetitious.
+        bool isFirstTime = GetInfluence(Collective::BabypunchingPuppykickers) == 1; // Don't get repetitious.
         if (isBabykickerCollective && isFirstTime)
         {
             echo << '\n' << COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE;
@@ -179,7 +179,7 @@ void Player::DoInteraction_Potion_Wish()
     switch (wish)
     {
     case Wish::Wealth:
-        inventory.Add(Item::Gold, 3);
+        AddItem(Item::Gold, 3);
         echo << "You feel your money pouch get a little heavier.";
         break;
 
@@ -194,7 +194,7 @@ void Player::DoInteraction_Potion_Wish()
         // Heal the player
         else
         {
-            health.Heal(2);
+            Heal(2);
             echo << "You feel your wounds heal, replenishing 2 health points.";
         }
         break;
@@ -203,31 +203,31 @@ void Player::DoInteraction_Potion_Wish()
         // Interpret power as political influence
         if (CoinFlip())
         {
-            influences.Modify(randCollective, 1);
+            ModifyInfluence(randCollective, +1);
             echo << "You feel an inexplicable sensation of political influence over the " << randCollective.full << ".";
             MaybeAddBabykickerNote();
         }
         // Interpret power as physical strength
         else
         {
-            inventory.Add(Item::Sword, 10);
+            AddItem(Item::Sword, 10);
             echo << "Your blade seems to magically sharpen itself, regaining 10 durability.";
         }
         break;
 
     case Wish::Status:
-        influences.Modify(randCollective, 1);
+        ModifyInfluence(randCollective, +1);
         echo << "You feel an inexplicable sensation of high status among the " << randCollective.full << ".";
         MaybeAddBabykickerNote();
         break;
 
     case Wish::Luck:
-        luck.Give(Luck::Good, 5);
+        GiveLuck(LuckType::Good, 5);
         echo << "Nothing seems to have changed. You aren't even sure if the wish did anything.";
         break;
 
     case Wish::Faith:
-        influences.Modify(randCollective, 1);
+        ModifyInfluence(randCollective, +1);
         echo << "You feel an inexplicable sensation of religious influence over the " << randCollective.full << ".";
         MaybeAddBabykickerNote();
         break;
@@ -265,21 +265,21 @@ void Player::DoInteraction_Potion_Demon()
     
     if (demon == "imp")
     {
-        health.Damage(2);
+        Damage(2);
         echo << "The imp seems rather annoyed, throwing a fireball at you before de-summoning itself. You take 2 points of damage.";
     }
     else if (demon == "warewolf")
     {
-        switch (luck.Check())
+        switch (CheckLuck())
         {
-        case Luck::Good:
+        case LuckType::Good:
             echo << "The warewolf seems friendly, and you get a chance to play fetch with it before it disappears in a puff of smoke.";
             break;
 
-        case Luck::Neutral:
-        case Luck::Bad:
+        case LuckType::Neutral:
+        case LuckType::Bad:
         default:
-            health.Damage(2);
+            Damage(2);
             echo << "The warewolf growls at you and bites your arm before disappearing in a puff of smoke. "
                     "You are protected from most of the attack thanks to your armor, but it still takes away 2 points of your health.";
             break;
@@ -287,29 +287,29 @@ void Player::DoInteraction_Potion_Demon()
     }
     else if (demon == "tentacle")
     {
-        health.Damage(1);
+        Damage(1);
         echo << "The tentacle slaps you violently, causing you to spin around in place before it slithers back down into its hole, disappearing from view. "
                 "You lost 1 point of health.";
     }
     else if (demon == "vampire")
     {
-        switch (luck.Check())
+        switch (CheckLuck())
         {
-        case Luck::Good:
-            inventory.Add(Item::Bread, 3);
+        case LuckType::Good:
+            AddItem(Item::Bread, 3);
             echo << "The vampire seemed confused as to why they were summoned, "
                     "but decides now is as decent a time as any to dispose of the garlic bread people keep throwing at them. "
                     "They " << ChooseRandom({ "plop", "stuff", "drop", "place" }) << " the bread into your hand and promptly transform into a small black bat, "
                     "flying away into the darkness.";
             break;
 
-        case Luck::Neutral:
+        case LuckType::Neutral:
             echo << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. "
                     "You take no damage, but it still stings.";
             break;
 
-        case Luck::Bad:
-            health.Damage(1);
+        case LuckType::Bad:
+            Damage(1);
             echo << "The vampire seems frustrated by your frivolous summoning and kicks you in your armored shin before transforming into a bat and gliding off into the night. "
                     "The kick was surprisingly hard, taking 1 point of your health.";
             break;
@@ -318,16 +318,16 @@ void Player::DoInteraction_Potion_Demon()
 }
 void Player::DoInteraction_Potion_Fire()
 {
-    health.Damage(1);
-    health.statuses.Apply(StatusEffects::Fire);
+    Damage(1);
+    ApplyStatusEffect(StatusEffects::Fire);
     echo << "It hurt quite a bit, taking away 1 point of health.";
 }
 void Player::DoInteraction_Potion_Explode()
 {
-    health.Damage(3);
+    Damage(3);
     if (CoinFlip())
     {
-        health.statuses.Apply(StatusEffects::Fire);
+        ApplyStatusEffect(StatusEffects::Fire);
     }
     echo << "You feel your armor heat up tremendously, practically baking you within it. You feel 3 health points drain from your soul.";
 }
@@ -344,29 +344,33 @@ const string& Player::GetName() const
 void Player::Init()
 {
     name = PromptLine("What's your name?");
-    health    .Init();
-    luck      .Init();
-    influences.Init();
-    inventory .Init();
+    Inventory     :: Init( );
+    Influences    :: Init( );
+    Health        :: Init( );
+    StatusEffects :: Init( );
+    Luck          :: Init( );
 }
 
 void Player::Save(ostream& ofs) const
 {
     ofs << "name: " << name << '\n';
-    health    .Save(ofs);
-    luck      .Save(ofs);
-    inventory .Save(ofs);
-    influences.Save(ofs);
+    Inventory     :: Save(ofs);
+    Influences    :: Save(ofs);
+    Health        :: Save(ofs);
+    StatusEffects :: Save(ofs);
+    Luck          :: Save(ofs);
 }
 
 void Player::Load(istream& ifs)
 {
     ifs.ignore(16, ':').ignore(1, ' '); // Need to explicitly ignore the space as well due to getline
     getline(ifs, name);
-    health    .Load(ifs);
-    luck      .Load(ifs);
-    inventory .Load(ifs);
-    influences.Load(ifs);
+    Inventory     :: Load(ifs);
+    Influences    :: Load(ifs);
+    Health        :: Load(ifs);
+    StatusEffects :: Load(ifs);
+    Luck          :: Load(ifs);
 }
 
+// Global instance of the player so that other entities can interact with it
 Player player;

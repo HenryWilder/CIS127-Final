@@ -10,7 +10,6 @@
 #include "Wizard.hpp"
 #include "Monster.hpp"
 #include "Door.hpp"
-#include "Components.hpp"
 #include "Player.hpp"
 #include "Surroundings.hpp"
 
@@ -26,12 +25,12 @@ class TurnHandler
 private:
     static bool IsPlayerSoftLocked()
     {
-        return player.health.statuses.Has(StatusEffects::Tree);
+        return player.HasStatusEffect(StatusEffects::Tree);
     }
 
     static bool IsPlayerWithoutItems()
     {
-        return player.inventory.IsEmpty();
+        return player.IsInventoryEmpty();
     }
 
 public:
