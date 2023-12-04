@@ -41,7 +41,7 @@ void Baker::DoInteraction_Sword()
         break;
 
     case LuckType::Bad:
-        echo << "You have angered the bread gods, and [TODO]\n"; // todo
+        echo << "You have angered the bread gods, and [todo]\n"; // todo
         break;
     }
 }

@@ -39,9 +39,9 @@ pair<EntityTypeInfo_t, Entity&> TurnHandler::PromptForTartget(const string& prom
 void TurnHandler::DoMove()
 {
     Direction direction = directions.Prompt("\nWhere would you like to move?");
-    surroundings.ReRoll(); // choice is an illusion :P
 
     echo << format("You walked {} into another room.\n\n", directions.ValueAt(direction));
+    surroundings.ReRoll(); // choice is an illusion :P
 
     if (!surroundings.IsEmpty())
     {

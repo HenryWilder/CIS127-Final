@@ -46,8 +46,14 @@ constexpr const wchar_t* instructions = LR"(
 )";
 #pragma endregion
 
+void ConfigureUnicode( );
+
 int main()
 {
+    ConfigureUnicode( );
+
+    cout << endl;
+
     while (turnHandler.GetTurnEndType() != TurnEndType::Quit)
     {
         // Load the game
@@ -81,4 +87,34 @@ int main()
     Save();
     
     return 0;
+}
+
+void ConfigureUnicode( )
+{
+    cout << "Some consoles have trouble displaying unicode characters.\n" << endl;
+    
+    // ░ ▒ ▓ │ ┤ ╡ ╢ ╖
+    // ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐
+    // └ ┴ ┬ ├ ─ ┼ ╞ ╟
+    // ╚ ╔ ╩ ╦ ╠ ═ ╬ ╧
+    // ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫
+    // ╪ ┘ ┌ █ ▄ ▌ ▐ ▀
+
+    const wchar_t example[] =
+        L" ┌───────────────┐ \n"
+        L" │ Hello, world! │ \n"
+        L" └───────────────┘ \n"
+        L" ╔══════════════════════╤═══╕ \n"
+        L" ▐ This is an example.  │ 1.│\n"
+        L" ╟──────────────────────┼───┴──╖ ╓──╖\n"
+        L" ║    ░░░░░▒▒▒▒▓▓▓▓████ │ 2. █ ╠═╬══╣\n"
+        L" ╚══════════════════════╧══════╝ ╙──╜\n";
+
+    SetUseUnicode(false);
+    cout << " ascii"   << '\n' << example << endl;
+    SetUseUnicode(true);
+    cout << " unicode" << '\n' << example << endl;
+
+    string userPick = PromptOption("Which of the above do you prefer?", { "unicode", "ascii" });
+    SetUseUnicode(userPick == "unicode");
 }

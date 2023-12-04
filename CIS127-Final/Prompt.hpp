@@ -84,6 +84,8 @@ private:
     template<input_iterator _InIt, IteratorOStreamer<_InIt> _DerefStreamer1, IteratorOStreamer<_InIt>... _DerefStreamers>
     void _List(ostream& stream, _InIt beginIt, _InIt endIt) const
     {
+        if (beginIt == endIt) return; // Quick exit for empty lists.
+
         const ListStyle& currentStyle = GetCurrentStyle();
 
         bool isUsingFinalSeparator = currentStyle.finalSeparator != 0;

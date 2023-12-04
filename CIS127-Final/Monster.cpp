@@ -20,7 +20,10 @@ void Monster::DoInteraction_Grab()
         reaction = ChooseRandom("surprised", "confused", "unamused", "annoyed", "upset", "angered");
         reactingTo = ChooseRandom("foolishness", "lack of self-preservation", "disrespect");
     }
-    untilRelease = "staring at you";
+    untilRelease = ChooseRandom(
+        "staring at you",
+        "watching you with curiosity");
+
     echo << "The monster seems " << reaction << " by your " << reactingTo << ", " << untilRelease << " until you release it from your grip.\n";
     
     

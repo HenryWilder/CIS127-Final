@@ -6,7 +6,7 @@ stringstream echo;
 
 void FlushEcho()
 {
-    constexpr char BOX_HORIZONTAL_LINE_CHAR = '\xC4'; // L'─'
+    const char BOX_HORIZONTAL_LINE_CHAR = ExtendedAscii(L'─');
 
     // Don't print blank
 

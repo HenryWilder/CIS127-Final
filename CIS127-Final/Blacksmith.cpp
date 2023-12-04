@@ -7,7 +7,7 @@
 
 void Blacksmith::DoInteraction_Grab()
 {
-    echo << "[todo]\n";
+    echo << "The blacksmith gives you a funny look, and asks if there was something you wanted.\n";
 }
 void Blacksmith::DoInteraction_Bread()
 {
