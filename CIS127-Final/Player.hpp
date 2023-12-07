@@ -34,6 +34,11 @@ public:
         return EntityType::Player;
     }
 
+    void SetName(const string& value)
+    {
+        name = value;
+    }
+
     const string &GetName( ) const;
 
     void Init( ) final;

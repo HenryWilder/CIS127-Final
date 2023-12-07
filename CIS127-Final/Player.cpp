@@ -346,9 +346,8 @@ const string &Player::GetName( ) const
     return name;
 }
 
-void Player::Init( )
+void Player::Init()
 {
-    name = PromptLine("What's your name?");
     Inventory    ::Init( );
     Influences   ::Init( );
     Health       ::Init( );

@@ -2,10 +2,21 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "build: release",
             "type": "shell",
             "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Msbuild\\Current\\Bin\\MSBuild.exe",
             "args": ["/property:GenerateFullPaths=true", "/t:build", "/p:Configuration=Release", "/p:Platform=x64", "Cis127-Final.sln"],
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build: debug",
+            "type": "shell",
+            "command": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Msbuild\\Current\\Bin\\MSBuild.exe",
+            "args": ["/property:GenerateFullPaths=true", "/t:build", "/p:Configuration=Debug", "/p:Platform=x64", "Cis127-Final.sln"],
             "group": {
                 "kind": "build",
                 "isDefault": true

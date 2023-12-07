@@ -9,11 +9,12 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/x64/Debug/Cis127-Final.exe",
-            "args": [],
+            "args": ["--unicode", "--no-instructions", "--load"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "console": "externalTerminal"
+            "console": "externalTerminal",
+            "preLaunchTask": "build: debug"
         }
     ]
 }

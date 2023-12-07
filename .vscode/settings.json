@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.py": "python",
+        "*.graph": "eagraph",
+        "*.cg": "eagraph",
+        "*.ASM": "assembly",
+        "iostream": "cpp",
+        "fstream": "cpp",
+        "xiosbase": "cpp",
+        "iosfwd": "cpp"
+    }
+}
