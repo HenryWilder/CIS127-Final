@@ -1,18 +1,18 @@
 #include "utilities.hpp"
 #include "Prompt.hpp"
 
-bool IsInputExisting()
+bool IsInputExisting( )
 {
-    return cin.tellg() > 0 && cin.good() && cin.peek() == ' ';
+    return cin.tellg( ) > 0 && cin.good( ) && cin.peek( ) == ' ';
 }
 
 // Awaits a string from the user, prefixing each attempt with "> ".
 // Able to take multiple inputs "at once" if the user inserts spaces between prompts.
-string Prompt()
+string Prompt( )
 {
     while (true)
     {
-        if (!IsInputExisting())
+        if (!IsInputExisting( ))
         {
             cout << "> ";
         }
@@ -25,17 +25,17 @@ string Prompt()
     }
 }
 
-string PromptLine()
+string PromptLine( )
 {
     while (true)
     {
-        if (!IsInputExisting())
+        if (!IsInputExisting( ))
         {
             cout << "> ";
         }
         string input;
         cin >> input;
-        while (IsInputExisting())
+        while (IsInputExisting( ))
         {
             string word;
             cin >> word;
@@ -48,14 +48,14 @@ string PromptLine()
     }
 }
 
-string Prompt(const string& prompt)
+string Prompt(const string &prompt)
 {
     cout << prompt << '\n';
-    return Prompt();
+    return Prompt( );
 }
 
-string PromptLine(const string& prompt)
+string PromptLine(const string &prompt)
 {
     cout << prompt << '\n';
-    return PromptLine();
+    return PromptLine( );
 }

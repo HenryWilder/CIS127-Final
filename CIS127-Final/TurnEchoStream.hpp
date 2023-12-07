@@ -6,4 +6,4 @@ extern stringstream echo;
 constexpr size_t echoBoxInsideWidth = 100;
 
 // Prints the stream to cout (inside a box) and clears the stream.
-void FlushEcho();
+void FlushEcho( );

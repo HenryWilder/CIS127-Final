@@ -30,17 +30,17 @@ void StatusEffects::ClearStatusEffect(StatusFlags clearStatuses)
     echo << "[You lost the " << to_string(clearStatuses) << " status effect(s).]\n";
 }
 
-void StatusEffects::Init()
+void StatusEffects::Init( )
 {
     statuses = 0;
 }
 
-void StatusEffects::Save(ostream& ofs) const
+void StatusEffects::Save(ostream &ofs) const
 {
     ofs << "statuses: " << (int)statuses << '\n';
 }
 
-void StatusEffects::Load(istream& ifs)
+void StatusEffects::Load(istream &ifs)
 {
     int statusesInt;
     ifs.ignore(16, ':') >> statusesInt;

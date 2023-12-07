@@ -4,14 +4,14 @@
 
 stringstream echo;
 
-void FlushEcho()
+void FlushEcho( )
 {
     const char BOX_HORIZONTAL_LINE_CHAR = ExtendedAscii(L'─');
 
     // Don't print blank
 
     echo.seekg(0, ios::end);
-    if (echo.tellg() == 0) return;
+    if (echo.tellg( ) == 0) return;
 
     // Print
 
@@ -23,13 +23,13 @@ void FlushEcho()
     while (getline(echo, line))
     {
         // Line is blank before parsing
-        if (line.empty())
+        if (line.empty( ))
         {
             cout << L" │ " << setfill(' ') << setw(echoBoxInsideWidth) << "" << L" │\n";
         }
 
         // Line is consumed as it wraps over multiple lines
-        while (!line.empty())
+        while (!line.empty( ))
         {
             bool isWiderThanBox = line.size( ) > echoBoxInsideWidth;
             string linePart = line.substr(0, echoBoxInsideWidth);
@@ -68,6 +68,6 @@ void FlushEcho()
     cout << L" └─" << setfill(BOX_HORIZONTAL_LINE_CHAR) << setw(echoBoxInsideWidth) << "" << L"─┘\n";
 
     // Empty the echo stream so we don't repeat it next flush
-    echo.str(string());
-    echo.clear();
+    echo.str(string( ));
+    echo.clear( );
 }

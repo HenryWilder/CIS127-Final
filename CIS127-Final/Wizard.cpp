@@ -4,22 +4,22 @@
 #include "Surroundings.hpp"
 #include "TurnEchoStream.hpp"
 
-void Wizard::DoInteraction_Grab()
+void Wizard::DoInteraction_Grab( )
 {
     string reaction, actionDescriptor;
     if (DiceCheck(1, 2))
     {
-        reaction = ChooseRandom({ "surprised", "intrigued", "embarrassed" });
+        reaction = ChooseRandom("surprised", "intrigued", "embarrassed");
     }
     else
     {
-        reaction = ChooseRandom({ "surprised", "unamused", "annoyed" });
+        reaction = ChooseRandom("surprised", "unamused", "annoyed");
     }
     echo << "The wizard appears " << reaction << " by your action.\n";
 }
-void Wizard::DoInteraction_Bread()
+void Wizard::DoInteraction_Bread( )
 {
-    if (player.CheckInfluence(GetCollective()))
+    if (player.CheckInfluence(GetCollective( )))
     {
         Item returnGift = ChooseRandom(Item::Gold, Item::Potion);
         echo << "The wizard accepts the bread, gifting you 1 " << returnGift << " as thanks.\n";
@@ -28,16 +28,16 @@ void Wizard::DoInteraction_Bread()
     else
     {
         // Todo: make this less random?
-        echo << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue() << " collective.\n";
+        echo << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue( ) << " collective.\n";
     }
 }
-void Wizard::DoInteraction_Sword()
+void Wizard::DoInteraction_Sword( )
 {
     echo << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
     RemoveFromWorld( );
     player.ModifyInfluence(GetCollective( ), -1);
     echo << "As the wizard's robe falls to the ground, a potion falls from a pocket onto the floor.\n";
-    if (player.ApplyLuck(DiceCheck(1, 2)))
+    if (player.ApplyLuck(CoinFlip( )))
     {
         echo << "It lands gently on the robe and you pick it up, adding it to your inventory. It could be useful later.\n";
         player.AddItem(Item::Potion);
@@ -49,7 +49,7 @@ void Wizard::DoInteraction_Sword()
         player.DoInteraction_Potion(Potion::Fire);
     }
 }
-void Wizard::DoInteraction_Gold()
+void Wizard::DoInteraction_Gold( )
 {
     echo << "The wizard thanks you for the gold and gives you a potion.\n";
     player.AddItem(Item::Potion);
@@ -57,58 +57,63 @@ void Wizard::DoInteraction_Gold()
 
 // Talk
 
-void Wizard::DoInteraction_Talk_Generic()
+void Wizard::DoInteraction_Talk_Generic( )
 {
     echo << "[todo]\n";
 }
 
 // Potion
 
-void Wizard::DoInteraction_Potion_Predict()
+void Wizard::DoInteraction_Potion(Potion potion)
 {
-    echo << "[todo]\n";
+    switch (potion)
+    {
+        case Potion::Predict:
+            echo << "[todo]";
+            break;
+        case Potion::Heal:
+            echo << "[todo]";
+            break;
+        case Potion::Water:
+            echo << "[todo]";
+            break;
+        case Potion::Wish:
+            echo << "[todo]";
+            break;
+        case Potion::Ducks:
+            echo << "[todo]";
+            break;
+        case Potion::Force:
+            echo << "[todo]";
+            break;
+        case Potion::Salt:
+            echo << "[todo]";
+            break;
+        case Potion::Ants:
+            echo << "[todo]";
+            break;
+        case Potion::Demon:
+            echo << "[todo]";
+            break;
+        case Potion::Fire:
+            echo << "[todo]";
+            break;
+        case Potion::Explode:
+            echo << "[todo]";
+            break;
+        case Potion::Tree:
+            echo << "[todo]";
+            break;
+    }
 }
-void Wizard::DoInteraction_Potion_Heal()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Water()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Wish()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Ducks()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Force()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Salt()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Ants()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Demon()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Fire()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Explode()
-{
-    echo << "[todo]\n";
-}
-void Wizard::DoInteraction_Potion_Tree()
-{
-    echo << "[todo]\n";
-}
+
+
+
+
+
+
+
+
+
+
+

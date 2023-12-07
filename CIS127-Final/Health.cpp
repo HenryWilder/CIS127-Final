@@ -34,18 +34,18 @@ bool Health::Damage(int points)
     return health != 0;
 }
 
-void Health::Init()
+void Health::Init( )
 {
-    health    = 5;
+    health = 5;
     maxHealth = 10;
 }
 
-void Health::Save(ostream& ofs) const
+void Health::Save(ostream &ofs) const
 {
     ofs << "health: " << health << " / " << maxHealth << '\n';
 }
 
-void Health::Load(istream& ifs)
+void Health::Load(istream &ifs)
 {
     (ifs.ignore(16, ':') >> health).ignore(3, '/') >> maxHealth;
 }

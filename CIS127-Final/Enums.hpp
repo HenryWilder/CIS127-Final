@@ -9,28 +9,30 @@ using namespace std;
 template<class Enum>
 struct StrEnum
 {
-    constexpr StrEnum(Enum _enumeration, const char* _keyval) :
-        enumeration(_enumeration), key(_keyval), full(_keyval) {}
+    constexpr StrEnum(Enum _enumeration, const char *_keyval) :
+        enumeration(_enumeration), key(_keyval), full(_keyval)
+    { }
 
-    constexpr StrEnum(Enum _enumeration, const char* _key, const char* _value) :
-        enumeration(_enumeration), key(_key), full(_value) {}
+    constexpr StrEnum(Enum _enumeration, const char *_key, const char *_value) :
+        enumeration(_enumeration), key(_key), full(_value)
+    { }
 
     Enum enumeration;
-    const char* key;
-    const char* full;
+    const char *key;
+    const char *full;
 
     bool operator==(Enum test) const
     {
         return test == enumeration;
     }
 
-    bool operator==(const string& test) const
+    bool operator==(const string &test) const
     {
         return test == key;
     }
 
     // ".enumeration" is long.
-    operator Enum() const
+    operator Enum( ) const
     {
         return enumeration;
     }
@@ -44,52 +46,53 @@ public:
 
     template<same_as<Element_t>... Ts>
     constexpr StrEnumCollection(Ts... args) :
-        data{ args... } {}
+        data{ args... }
+    { }
 
-    const Element_t& At(const string& key) const
+    const Element_t &At(const string &key) const
     {
         auto it = Find(key);
-        if (it != data.end()) return *it;
+        if (it != data.end( )) return *it;
         throw new out_of_range(format("\"{}\" is not a key of this enum", key));
     }
-    const Element_t& At(Enum enumeration) const
+    const Element_t &At(Enum enumeration) const
     {
         auto it = Find(enumeration);
         if (it != end(data)) return *it;
         throw new out_of_range(format("{} is not an explicit enumeration of this enum", (int)enumeration));
     }
 
-    const Element_t& operator[](const string& key) const
+    const Element_t &operator[](const string &key) const
     {
         return At(key);
     }
-    const Element_t& operator[](Enum enumeration) const
+    const Element_t &operator[](Enum enumeration) const
     {
         return At(enumeration);
     }
 
-    Enum EnumAt(const string& key) const
+    Enum EnumAt(const string &key) const
     {
         return At(key).enumeration;
     }
-    const char* KeyAt(Enum enumeration) const
+    const char *KeyAt(Enum enumeration) const
     {
         return At(enumeration).key;
     }
-    const char* ValueAt(const string& key) const
+    const char *ValueAt(const string &key) const
     {
         return At(key).full;
     }
-    const char* ValueAt(Enum enumeration) const
+    const char *ValueAt(Enum enumeration) const
     {
         return At(enumeration).full;
     }
 
-    ostream& WriteKey(ostream& stream, Enum enumeration) const
+    ostream &WriteKey(ostream &stream, Enum enumeration) const
     {
         return stream << At(enumeration).key;
     }
-    istream& ReadKey(istream& stream, Enum& enumeration) const
+    istream &ReadKey(istream &stream, Enum &enumeration) const
     {
         string str;
         stream >> str;
@@ -97,13 +100,13 @@ public:
         return stream;
     }
 
-    constexpr bool Compare(const string& str, Enum enumeration) const
+    constexpr bool Compare(const string &str, Enum enumeration) const
     {
         auto it = Find(enumeration); // Searching for an integer is less work than searching for a string
-        return (it != data.end()) && (it->key == str);
+        return (it != data.end( )) && (it->key == str);
     }
 
-    Enum Prompt(const string& prompt) const
+    Enum Prompt(const string &prompt) const
     {
         array<Enum, SIZE> options{};
         for (size_t i = 0; i < SIZE; ++i)
@@ -113,39 +116,39 @@ public:
         return PromptOption(prompt, options);
     }
 
-    const Element_t& Random() const
+    const Element_t &Random( ) const
     {
         return ChooseRandom(data);
     }
-    Enum RandomEnum() const
+    Enum RandomEnum( ) const
     {
-        return Random().enumeration;
+        return Random( ).enumeration;
     }
-    const char* RandomKey() const
+    const char *RandomKey( ) const
     {
-        return Random().key;
+        return Random( ).key;
     }
-    const char* RandomValue() const
+    const char *RandomValue( ) const
     {
-        return Random().full;
+        return Random( ).full;
     }
 
 private: // Helpers
-    constexpr array<Element_t, SIZE>::const_iterator Find(const string& key) const
+    constexpr array<Element_t, SIZE>::const_iterator Find(const string &key) const
     {
-        for (auto it = data.begin(); it != data.end(); ++it)
+        for (auto it = data.begin( ); it != data.end( ); ++it)
         {
             if (*it == key) return it;
         }
-        return data.end();
+        return data.end( );
     }
     constexpr array<Element_t, SIZE>::const_iterator Find(Enum enumeration) const
     {
-        for (auto it = data.begin(); it != data.end(); ++it)
+        for (auto it = data.begin( ); it != data.end( ); ++it)
         {
             if (*it == enumeration) return it;
         }
-        return data.end();
+        return data.end( );
     }
 
 private: // Members
@@ -162,11 +165,11 @@ StrEnumCollection(StrEnum<_Enum>, _Args...) -> StrEnumCollection<_Enum, (sizeof.
 // This can be done by a macro because the operators are just aliases for members of the collection.
 // It's simpler to do this by macro because it is a large amount of highly repetitive code that can't be done though a template.
 #define STR_ENUM_OPERATORS(ENUM_CLASSNAME, COLLECTION) \
-    inline ostream& operator<<(ostream& stream, ENUM_CLASSNAME enumeration) { return COLLECTION.WriteKey(stream, enumeration); } \
-    inline istream& operator>>(istream& stream, ENUM_CLASSNAME &enumeration) { return COLLECTION.ReadKey(stream, enumeration); } \
-    constexpr bool operator==(const string& str, ENUM_CLASSNAME enumeration) { return COLLECTION.Compare(str, enumeration); } \
+    inline ostream& operator<<(ostream& stream, ENUM_CLASSNAME  enumeration) { return  COLLECTION.WriteKey(stream, enumeration); } \
+    inline istream& operator>>(istream& stream, ENUM_CLASSNAME &enumeration) { return  COLLECTION.ReadKey (stream, enumeration); } \
+    constexpr bool operator==(const string& str, ENUM_CLASSNAME enumeration) { return  COLLECTION.Compare(str, enumeration); } \
     constexpr bool operator!=(const string& str, ENUM_CLASSNAME enumeration) { return !COLLECTION.Compare(str, enumeration); } \
-    constexpr bool operator==(ENUM_CLASSNAME enumeration, const string& str) { return COLLECTION.Compare(str, enumeration); } \
+    constexpr bool operator==(ENUM_CLASSNAME enumeration, const string& str) { return  COLLECTION.Compare(str, enumeration); } \
     constexpr bool operator!=(ENUM_CLASSNAME enumeration, const string& str) { return !COLLECTION.Compare(str, enumeration); } \
     using ENUM_CLASSNAME ## Info_t = const StrEnum<ENUM_CLASSNAME>&
 
@@ -268,7 +271,7 @@ enum class Potion
     Fire,    // Deals some damage
     Explode, // Deals high damage; can 1-hit most things including doors
     Tree,    // Turns the target into a tree, soft-locking the game if the target was the player.
-    
+
     // Problem: Softlocking the game is a major enough risk that none of the effects are worth using potions on yourself.
     // Perhaps there could be a chance that NPCs can un-tree the player after one turn? Throwing away a turn is less destructive than a full-on soft-lock.
 };
@@ -370,7 +373,7 @@ constexpr StrEnumCollection collectives
 
 STR_ENUM_OPERATORS(Collective, collectives);
 
-constexpr const char COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE[] = "You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name.";
+constexpr const char COLLECTIVE_BABYPUNCHING_PUPPYKICKERS_NOTE[ ] = "You feel a bit of pity for the group's unfortunate name, a poor translation from the fennecborns' native tongue for \"soft-handed littlepaw-walkers\". Maybe with your newfound sway, you can convince them to change their name.";
 
 // Wish
 
@@ -415,3 +418,27 @@ constexpr StrEnumCollection demons
 };
 
 STR_ENUM_OPERATORS(Demon, demons);
+
+// Monster types
+
+enum class MonsterType
+{
+    Reptile,
+    Mammal,
+    Avian,
+    Aquatic,
+    Slime,
+    Eldrich,
+};
+
+constexpr StrEnumCollection monsterTypes
+{
+    StrEnum{ MonsterType::Reptile, "reptile" },
+    StrEnum{ MonsterType::Mammal,  "mammal"  },
+    StrEnum{ MonsterType::Avian,   "avian"   },
+    StrEnum{ MonsterType::Aquatic, "aquatic" },
+    StrEnum{ MonsterType::Slime,   "slime"   },
+    StrEnum{ MonsterType::Eldrich, "eldrich" },
+};
+
+STR_ENUM_OPERATORS(MonsterType, monsterTypes);

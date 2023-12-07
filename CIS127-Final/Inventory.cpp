@@ -11,17 +11,17 @@ bool Inventory::HasItem(Item item) const
 int Inventory::CountItem(Item item) const
 {
     auto it = items.find(item);
-    if (it != items.end())
+    if (it != items.end( ))
     {
         return it->second;
     }
     return 0;
 }
 
-void Inventory::AddItem(Item item, _In_range_(>, 0) int count)
+void Inventory::AddItem(Item item, _In_range_(> , 0) int count)
 {
     assert(count > 0);
-    size_t newTotal;
+    int newTotal;
     if (items.contains(item))
     {
         newTotal = (items.at(item) += count);
@@ -33,11 +33,11 @@ void Inventory::AddItem(Item item, _In_range_(>, 0) int count)
     echo << "[You gained " << count << " " << item << " and now have " << newTotal << ".]\n";
 }
 
-int Inventory::TryRemoveItemQty(Item item, _In_range_(>, 0) int count)
+int Inventory::TryRemoveItemQty(Item item, _In_range_(> , 0) int count)
 {
     assert(count > 0);
     auto it = items.find(item);
-    if (it != items.end())
+    if (it != items.end( ))
     {
         if (it->second == count)
         {
@@ -47,7 +47,7 @@ int Inventory::TryRemoveItemQty(Item item, _In_range_(>, 0) int count)
         }
         else if (it->second > count)
         {
-            size_t newTotal = it->second -= count;
+            int newTotal = it->second -= count;
             echo << "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
             return newTotal;
         }
@@ -55,11 +55,11 @@ int Inventory::TryRemoveItemQty(Item item, _In_range_(>, 0) int count)
     return -1;
 }
 
-bool Inventory::ForceRemoveItemQty(Item item, _In_range_(>, 0) int count)
+bool Inventory::ForceRemoveItemQty(Item item, _In_range_(> , 0) int count)
 {
     assert(count > 0);
     auto it = items.find(item);
-    if (it != items.end())
+    if (it != items.end( ))
     {
         if (it->second <= count)
         {
@@ -69,7 +69,7 @@ bool Inventory::ForceRemoveItemQty(Item item, _In_range_(>, 0) int count)
         }
         else // it->second > count
         {
-            size_t newTotal = it->second -= count;
+            int newTotal = it->second -= count;
             echo << "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
             return true;
         }
@@ -77,35 +77,35 @@ bool Inventory::ForceRemoveItemQty(Item item, _In_range_(>, 0) int count)
     return false;
 }
 
-void Inventory::PrintInventory(ostream& stream) const
+void Inventory::PrintInventory(ostream &stream) const
 {
     List(stream, items);
 }
 
-Item Inventory::PromptItem(const string& prompt) const
+Item Inventory::PromptItem(const string &prompt) const
 {
     return PromptKey(prompt, items);
 }
 
-void Inventory::Init()
+void Inventory::Init( )
 {
-    ClearInventory();
+    ClearInventory( );
     AddItem(Item::Gold, 5);
     AddItem(Item::Sword, 20);
 }
 
-void Inventory::Save(ostream& ofs) const
+void Inventory::Save(ostream &ofs) const
 {
-    ofs << "items: " << items.size() << '\n';
-    for (const auto& [item, qty] : items)
+    ofs << "items: " << items.size( ) << '\n';
+    for (const auto &[item, qty] : items)
     {
         ofs << "  " << item << " - " << qty << '\n';
     }
 }
 
-void Inventory::Load(istream& ifs)
+void Inventory::Load(istream &ifs)
 {
-    items.clear();
+    items.clear( );
     size_t numItems;
     ifs.ignore(16, ':') >> numItems;
     for (size_t i = 0; i < numItems; ++i)

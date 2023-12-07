@@ -23,38 +23,39 @@ enum class TurnEndType
 class TurnHandler
 {
 private:
-    static bool IsPlayerSoftLocked()
+    static bool IsPlayerSoftLocked( )
     {
         return player.HasStatusEffect(StatusEffects::Tree);
     }
 
-    static bool IsPlayerWithoutItems()
+    static bool IsPlayerWithoutItems( )
     {
-        return player.IsInventoryEmpty();
+        return player.IsInventoryEmpty( );
     }
 
 public:
-    TurnEndType GetTurnEndType() const
+    TurnEndType GetTurnEndType( ) const
     {
         return turnEndType;
     }
 
-    static Action PromptForAction();
-    static pair<EntityTypeInfo_t, Entity&> PromptForTartget(const string& prompt);
+    static Action PromptForAction( );
+    static pair<EntityTypeInfo_t, Entity &> PromptForTartget(const string &prompt);
 
-    static void DoMove();
-    static void DoTalk();
-    static void DoGrab();
-    static void DoUseItem(Item item, EntityTypeInfo_t target, Entity& targetObject);
-    static void DoUse();
-    static void DoItems();
-    static void DoNear();
-    void DoQuit();
-    void DoRestart();
-    void DoAction(Action action);
+    static void DoMove ( );
+    static void DoTalk ( );
+    static void DoGrab ( );
+    static void DoUseItem(Item item, EntityTypeInfo_t target, Entity &targetObject);
+    static void DoUse  ( );
+    static void DoItems( );
+    static void DoNear ( );
+
+    void DoQuit   ( );
+    void DoRestart( );
+    void DoAction (Action action);
 
     // Returns false if dead
-    bool CheckPlayerIsAlive();
+    bool CheckPlayerIsAlive( );
 
 private:
     TurnEndType turnEndType = TurnEndType::Continue;

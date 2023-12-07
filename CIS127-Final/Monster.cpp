@@ -4,11 +4,11 @@
 #include "Surroundings.hpp"
 #include "TurnEchoStream.hpp"
 
-void Monster::DoInteraction_Grab()
+void Monster::DoInteraction_Grab( )
 {
     bool isPositive = player.CheckInfluence(Collective::Monsters);
-    
-    
+
+
     string reaction, reactingTo, untilRelease;
     if (isPositive)
     {
@@ -25,8 +25,8 @@ void Monster::DoInteraction_Grab()
         "watching you with curiosity");
 
     echo << "The monster seems " << reaction << " by your " << reactingTo << ", " << untilRelease << " until you release it from your grip.\n";
-    
-    
+
+
     if (reaction == "flustered" || ((reaction == "impressed" || reaction == "surprised") && reactingTo == "forwardness"))
     {
         echo << "Upon being released, it discretely slips something into the metal breastplate pocket of your armor.\n";
@@ -49,10 +49,10 @@ void Monster::DoInteraction_Grab()
         player.Damage(3);
     }
 }
-void Monster::DoInteraction_Bread()
+void Monster::DoInteraction_Bread( )
 {
     bool isPositive = player.CheckInfluence(Collective::Monsters);
-    
+
     echo << "The monster ";
     if (isPositive)
     {
@@ -91,30 +91,30 @@ void Monster::DoInteraction_Bread()
         echo << reaction << " at the very idea of accepting a gift from you, slapping it out of your hand and onto the floor.\n";
     }
 }
-void Monster::DoInteraction_Sword()
+void Monster::DoInteraction_Sword( )
 {
     bool isSuccessful = player.ApplyLuck(DiceCheck(1, 2));
     if (isSuccessful)
     {
         string bodyCovering = ChooseRandom("gooey", "vaporous", "slimey", "meaty", "fuzzy", "fur-covered");
         echo << "Your sword slashes through the monster, splitting it into two " << bodyCovering << " chunks on the floor. "
-             "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.\n";
+            "A gold coin drops to the cold, hard floor with a clink. You pick it up, adding it to your collection as the body fizzles to dust.\n";
         player.AddItem(Item::Gold);
     }
     else
     {
         bool isSwordSurviving = player.CountItem(Item::Sword) >= 1;
-        
+
         string reaction = ChooseRandom(
             "grabs your sword mid-swing, gripping it tightly in its claws",
             "swats your sword out of your hand, flinging it into the wall",
             "squeezes your sword's blade with two hands",
             "bites down on your sword violently with its massive shark-teeth");
-        
+
         string impact;
         if (isSwordSurviving)
         {
-            
+
             impact = ChooseRandom("slightly", "somewhat", "lightly", "partly", "gently"); // adverb
             impact += " ";
             impact += ChooseRandom("bending", "dulling", "denting", "melting", "cracking", "chipping"); // verb
@@ -127,70 +127,81 @@ void Monster::DoInteraction_Sword()
             impact += ChooseRandom("shattering", "obliterating", "liquifying", "anihilating", "evaporating", "disintegrating", "digesting"); // verb
             impact += " everything above the hilt";
         }
-        
+
         echo << "The monster " << reaction << " and " << impact << ".\n";
         player.TryRemoveItemQty(Item::Sword);
     }
 }
-void Monster::DoInteraction_Gold()
+void Monster::DoInteraction_Gold( )
 {
     echo << "The monster doesn't know what to do with the gold, tilting its head curiously but quickly losing interest.\n";
 }
 
 // Talk
 
-void Monster::DoInteraction_Talk_Generic()
+void Monster::DoInteraction_Talk_Generic( )
 {
-    echo << "[todo]\n";
+    echo << "You feel the creature's many eyes burning through your soul.\n";
 }
 
 // Potion
 
-void Monster::DoInteraction_Potion_Predict()
+void Monster::DoInteraction_Potion(Potion potion)
 {
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Heal()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Water()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Wish()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Ducks()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Force()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Salt()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Ants()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Demon()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Fire()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Explode()
-{
-    echo << "[todo]\n";
-}
-void Monster::DoInteraction_Potion_Tree()
-{
-    echo << "[todo]\n";
+    switch (potion)
+    {
+        case Potion::Predict:
+            echo << "The monster snarls, and you see in its eyes that it knows exactly what you are going to do next; even if it cannot prevent it.\n";
+            hasForesight = true;
+            break;
+        case Potion::Heal:
+        {
+            const char *action = ChooseRandom("tilts its head", "gives a toothy grin", "growls", "oozes an acidic substance onto the floor");
+            const char *reaction = CheckForesight( ) ? "having predicted that" : ChooseRandom("pleased that", "curious why", "confused that");
+            echo << "The monster " << action << ", " << reaction << " you would heal it.\n";
+            break;
+        }
+        case Potion::Water:
+            echo << "The monster seems not to mind being wet in the slightest.\n";
+            break;
+        case Potion::Wish:
+        {
+            const char *wish = ChooseRandom(
+                "world peace",
+                "its parental figure's health",
+                "the doom of humanity",
+                "\"decay\"",
+                "all things to rot",
+                "eternal life",
+                ""
+            );
+            echo << "You can't completely understand what it said. But from what little you know of its tongue, the monster seemed to wished for " << wish << "...\n";
+            echo << "Considering nothing changed, you assume the wish is beyond the scope of a single potion.\n";
+            break;
+        }
+        case Potion::Ducks:
+            echo << "[todo]";
+            break;
+        case Potion::Force:
+            echo << "[todo]";
+            break;
+        case Potion::Salt:
+            echo << "[todo]";
+            break;
+        case Potion::Ants:
+            echo << "[todo]";
+            break;
+        case Potion::Demon:
+            echo << "[todo]";
+            break;
+        case Potion::Fire:
+            echo << "[todo]";
+            break;
+        case Potion::Explode:
+            echo << "[todo]";
+            break;
+        case Potion::Tree:
+            echo << "[todo]";
+            break;
+    }
 }

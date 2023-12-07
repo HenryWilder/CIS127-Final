@@ -3,17 +3,17 @@
 #include "Surroundings.hpp"
 #include "Player.hpp"
 
-Surroundings::~Surroundings()
+Surroundings::~Surroundings( )
 {
-    Clear();
+    Clear( );
 }
 
-void Surroundings::Print(ostream& stream) const
+void Surroundings::Print(ostream &stream) const
 {
     ListKeys(stream, things);
 }
 
-EntityType Surroundings::Prompt(const string& prompt) const
+EntityType Surroundings::Prompt(const string &prompt) const
 {
     map options = things;
     options.emplace(EntityType::Player, nullptr);
@@ -25,32 +25,32 @@ bool Surroundings::Has(EntityType what) const
     return things.contains(what);
 }
 
-const Entity& Surroundings::Get(EntityType what) const
+const Entity &Surroundings::Get(EntityType what) const
 {
     bool isPlayer = what == EntityType::Player;
     assert(things.contains(what) || isPlayer);
     return isPlayer ? player : *things.at(what);
 }
 
-Entity& Surroundings::Get(EntityType what)
+Entity &Surroundings::Get(EntityType what)
 {
     bool isPlayer = what == EntityType::Player;
     assert(things.contains(what) || isPlayer);
     return isPlayer ? player : *things.at(what);
 }
 
-bool Surroundings::IsEmpty() const
+bool Surroundings::IsEmpty( ) const
 {
-    return things.empty();
+    return things.empty( );
 }
 
-void Surroundings::Clear()
+void Surroundings::Clear( )
 {
-    for (auto& thing : things)
+    for (auto &thing : things)
     {
         delete thing.second;
     }
-    things.clear();
+    things.clear( );
 }
 
 // Returns true if added successfully, otherwise false.
@@ -68,7 +68,7 @@ bool Surroundings::TryAddNew(EntityType what)
 bool Surroundings::TryRemove(EntityType what)
 {
     auto it = things.find(what);
-    if (it != things.end())
+    if (it != things.end( ))
     {
         delete it->second;
         things.erase(it);
@@ -85,31 +85,31 @@ void Surroundings::QueueForRemoval(EntityType what) const
 
 // Releases all entities queued for removal. Call when entities are not in use.
 
-void Surroundings::ReleaseQueued()
+void Surroundings::ReleaseQueued( )
 {
     for (EntityType key : toRemove)
     {
         (void)TryRemove(key);
     }
-    toRemove.clear();
+    toRemove.clear( );
 }
 
-void Surroundings::ReRoll()
+void Surroundings::ReRoll( )
 {
-    Clear();
-    
+    Clear( );
+
     // 50% of rooms have a monster
-    if (CoinFlip())
+    if (CoinFlip( ))
     {
         TryAddNew(EntityType::Monster);
-        
+
         // 50% chance of having 2 monsters instead of 1 (25% total)
-        if (CoinFlip())
+        if (CoinFlip( ))
         {
             TryAddNew(EntityType::Monster);
-            
+
             // 50% chance of having 3 monsters instead of 2 (12.5% total)
-            if (CoinFlip())
+            if (CoinFlip( ))
             {
                 TryAddNew(EntityType::Monster);
             }
@@ -120,9 +120,9 @@ void Surroundings::ReRoll()
     {
         TryAddNew(ChooseRandom(EntityType::Baker, EntityType::Blacksmith, EntityType::Wizard));
     }
-    
+
     // 75% of all rooms have a door
-    if (AdvantagedCoinFlip())
+    if (AdvantagedCoinFlip( ))
     {
         TryAddNew(EntityType::Door);
     }
@@ -130,33 +130,33 @@ void Surroundings::ReRoll()
     echo << "[Your surroundings have changed.]\n";
 }
 
-EntityType Surroundings::Random() const
+EntityType Surroundings::Random( ) const
 {
     return ChooseRandomKey(things);
 }
 
-void Surroundings::Init()
+void Surroundings::Init( )
 {
-    ReRoll();
+    ReRoll( );
 }
 
-void Surroundings::Save(ostream& ofs) const
+void Surroundings::Save(ostream &ofs) const
 {
-    ofs << "surroundings: " << things.size() << '\n';
-    for (const auto& [name, thing] : things)
+    ofs << "surroundings: " << things.size( ) << '\n';
+    for (const auto &[name, thing] : things)
     {
         ofs << "  " << name;
-        if (NPC* npc = dynamic_cast<NPC*>(thing))
+        if (NPC *npc = dynamic_cast<NPC *>(thing))
         {
-            ofs << " - " << npc->GetCollective();
+            ofs << " - " << npc->GetCollective( );
         }
         ofs << '\n';
     }
 }
 
-void Surroundings::Load(istream& ifs)
+void Surroundings::Load(istream &ifs)
 {
-    Clear();
+    Clear( );
     size_t numThings;
     ifs.ignore(16, ':') >> numThings;
     for (size_t i = 0; i < numThings; ++i)

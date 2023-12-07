@@ -28,31 +28,31 @@ public:
     //
     // If the player has no luck--good nor bad--the success will not influenced and no luck be consumed.
     bool ApplyLuck(bool success);
-    
+
     // Returns the current type of luck (good/bad/neutral).
     // Consumes 1 unit of good luck if good.
     // Consumes 1 unit of bad luck if bad.
     // Consumes nothing if luck is neutral.
-    LuckType CheckLuck();
+    LuckType CheckLuck( );
 
     // "Testing your luck"
     // Returns the current type of luck (good/bad/neutral).
     // Consumes 1 unit of good luck no matter what.
     // If luck is already bad, it gets worse.
-    LuckType TestLuck();
-    
-    void GiveLuck(_In_range_(!=, LuckType::Neutral) LuckType kind, _In_range_(>, 0) int amount = 1);
-    
+    LuckType TestLuck( );
+
+    void GiveLuck(_In_range_(!= , LuckType::Neutral) LuckType kind, _In_range_(> , 0) int amount = 1);
+
     // Removes all luck, both good and bad
     void ClearAllLuck( )
     {
         luck = 0;
     }
 
-    void Init() override;
-    void Save(ostream& ofs) const override;
-    void Load(istream& ifs) override;
-    
+    void Init( ) override;
+    void Save(ostream &ofs) const override;
+    void Load(istream &ifs) override;
+
 private:
     int luck = 0;
 };

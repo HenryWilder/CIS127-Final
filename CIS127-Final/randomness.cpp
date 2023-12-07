@@ -2,7 +2,7 @@
 #include "randomness.hpp"
 
 random_device rd;
-mt19937 gen(rd());
+mt19937 gen(rd( ));
 
 bool DiceCheck(int chance, int outOf)
 {
@@ -11,20 +11,20 @@ bool DiceCheck(int chance, int outOf)
 
 bool Chance(float chance01)
 {
-    return uniform_real<float>()(gen) <= chance01;
+    return uniform_real<float>( )(gen) <= chance01;
 }
 
-bool CoinFlip()
+bool CoinFlip( )
 {
     return (bool)uniform_int(0, 1)(gen);
 }
 
-bool AdvantagedCoinFlip()
+bool AdvantagedCoinFlip( )
 {
-    return CoinFlip() || CoinFlip();
+    return CoinFlip( ) || CoinFlip( );
 }
 
-bool DisadvantagedCoinFlip()
+bool DisadvantagedCoinFlip( )
 {
-    return CoinFlip() && CoinFlip();
+    return CoinFlip( ) && CoinFlip( );
 }

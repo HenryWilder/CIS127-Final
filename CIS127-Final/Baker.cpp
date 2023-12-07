@@ -4,13 +4,13 @@
 #include "Surroundings.hpp"
 #include "TurnEchoStream.hpp"
 
-void Baker::DoInteraction_Grab()
+void Baker::DoInteraction_Grab( )
 {
     echo << "[todo]\n";
 }
-void Baker::DoInteraction_Bread()
+void Baker::DoInteraction_Bread( )
 {
-    if (player.CheckInfluence(GetCollective()))
+    if (player.CheckInfluence(GetCollective( )))
     {
         echo << "The baker thanks you for the bread and gives you some gold in return.";
     }
@@ -25,27 +25,27 @@ void Baker::DoInteraction_Bread()
         echo << "The baker accepts the bread.";
     }
 }
-void Baker::DoInteraction_Sword()
+void Baker::DoInteraction_Sword( )
 {
-    switch (player.TestLuck())
+    switch (player.TestLuck( ))
     {
-    case LuckType::Good:
-        echo << "The baker crumbles into a baker's dozen loafs of bread that scatter across the floor. You rapidly snatch up each one.\n";
-        player.AddItem(Item::Bread, 13);
-        RemoveFromWorld();
-        break;
+        case LuckType::Good:
+            echo << "The baker crumbles into a baker's dozen loafs of bread that scatter across the floor. You rapidly snatch up each one.\n";
+            player.AddItem(Item::Bread, 13);
+            RemoveFromWorld( );
+            break;
 
-    case LuckType::Neutral:
-        echo << "The baker didn't much enjoy that, but they're gone now.\n";
-        RemoveFromWorld();
-        break;
+        case LuckType::Neutral:
+            echo << "The baker didn't much enjoy that, but they're gone now.\n";
+            RemoveFromWorld( );
+            break;
 
-    case LuckType::Bad:
-        echo << "You have angered the bread gods, and [todo]\n"; // todo
-        break;
+        case LuckType::Bad:
+            echo << "You have angered the bread gods, and [todo]\n"; // todo
+            break;
     }
 }
-void Baker::DoInteraction_Gold()
+void Baker::DoInteraction_Gold( )
 {
     echo << "The baker thanks you for the gold and hands you some bread.\n";
     player.AddItem(Item::Bread);
@@ -53,58 +53,52 @@ void Baker::DoInteraction_Gold()
 
 // Baker
 
-void Baker::DoInteraction_Talk_Generic()
+void Baker::DoInteraction_Talk_Generic( )
 {
     echo << "[todo]\n";
 }
 
 // Potion
 
-void Baker::DoInteraction_Potion_Predict()
+void Baker::DoInteraction_Potion(Potion potion)
 {
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Heal()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Water()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Wish()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Ducks()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Force()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Salt()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Ants()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Demon()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Fire()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Explode()
-{
-    echo << "[todo]\n";
-}
-void Baker::DoInteraction_Potion_Tree()
-{
-    echo << "[todo]\n";
+    switch (potion)
+    {
+        case Potion::Predict:
+            echo << "[todo]\n";
+            break;
+        case Potion::Heal:
+            echo << "[todo]\n";
+            break;
+        case Potion::Water:
+            echo << "[todo]\n";
+            break;
+        case Potion::Wish:
+            echo << "[todo]\n";
+            break;
+        case Potion::Ducks:
+            echo << "[todo]\n";
+            break;
+        case Potion::Force:
+            echo << "[todo]\n";
+            break;
+        case Potion::Salt:
+            echo << "[todo]\n";
+            break;
+        case Potion::Ants:
+            echo << "[todo]\n";
+            break;
+        case Potion::Demon:
+            echo << "[todo]\n";
+            break;
+        case Potion::Fire:
+            echo << "[todo]\n";
+            break;
+        case Potion::Explode:
+            echo << "[todo]\n";
+            break;
+        case Potion::Tree:
+            echo << "[todo]\n";
+            break;
+    }
 }

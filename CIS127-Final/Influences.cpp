@@ -4,7 +4,7 @@
 int Influences::GetInfluence(Collective targetCollective) const
 {
     auto it = influence.find(targetCollective);
-    if (it != influence.end())
+    if (it != influence.end( ))
     {
         return it->second;
     }
@@ -14,7 +14,7 @@ int Influences::GetInfluence(Collective targetCollective) const
 void Influences::ModifyInfluence(Collective targetCollective, int change)
 {
     auto it = influence.find(targetCollective);
-    if (it != influence.end())
+    if (it != influence.end( ))
     {
         it->second = clamp(it->second + change, -10, +10);
     }
@@ -29,23 +29,23 @@ bool Influences::CheckInfluence(Collective targetCollective) const
     return DiceCheck(10 + GetInfluence(targetCollective), 20);
 }
 
-void Influences::Init()
+void Influences::Init( )
 {
-    ClearAllInfluence();
+    ClearAllInfluence( );
 }
 
-void Influences::Save(ostream& ofs) const
+void Influences::Save(ostream &ofs) const
 {
-    ofs << "influences: " << influence.size() << '\n';
-    for (const auto& [collective, amount] : influence)
+    ofs << "influences: " << influence.size( ) << '\n';
+    for (const auto &[collective, amount] : influence)
     {
         ofs << "  " << collective << " - " << amount << '\n';
     }
 }
 
-void Influences::Load(istream& ifs)
+void Influences::Load(istream &ifs)
 {
-    influence.clear();
+    influence.clear( );
     size_t numInfluences;
     ifs.ignore(16, ':') >> numInfluences;
     for (size_t i = 0; i < numInfluences; ++i)

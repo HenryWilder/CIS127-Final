@@ -5,7 +5,7 @@
 #include "ExtendedAscii.hpp"
 
 #pragma region Instructions
-constexpr const wchar_t* instructions = LR"(
+constexpr const wchar_t *instructions = LR"(
  ┌─[ Methods of input ]─────────────────────────────────┐
  │                                                      │
  │ ┌─[ Single recognized word ]──────────────┐          │
@@ -48,51 +48,51 @@ constexpr const wchar_t* instructions = LR"(
 
 void ConfigureUnicode( );
 
-int main()
+int main( )
 {
     ConfigureUnicode( );
 
     cout << endl;
 
-    while (turnHandler.GetTurnEndType() != TurnEndType::Quit)
+    while (turnHandler.GetTurnEndType( ) != TurnEndType::Quit)
     {
         // Load the game
-        LoadWithPrompt();
+        LoadWithPrompt( );
 
         cout << instructions << endl;
 
         echo << '\n'; // To put some space between the "[]" messages and this
-        turnHandler.DoNear();
+        turnHandler.DoNear( );
         echo << '\n';
-        turnHandler.DoItems();
-        FlushEcho();
+        turnHandler.DoItems( );
+        FlushEcho( );
         cout << endl;
 
         // Game loop
-        while (turnHandler.GetTurnEndType() == TurnEndType::Continue)
+        while (turnHandler.GetTurnEndType( ) == TurnEndType::Continue)
         {
-            if (!turnHandler.CheckPlayerIsAlive()) break;
-            
-            turnHandler.DoAction(turnHandler.PromptForAction());
+            if (!turnHandler.CheckPlayerIsAlive( )) break;
 
-            FlushEcho();
+            turnHandler.DoAction(turnHandler.PromptForAction( ));
 
-            surroundings.ReleaseQueued();
+            FlushEcho( );
+
+            surroundings.ReleaseQueued( );
 
             cout << endl;
         }
     }
-    
+
     // Save the game
-    Save();
-    
+    Save( );
+
     return 0;
 }
 
 void ConfigureUnicode( )
 {
     cout << "Some consoles have trouble displaying unicode characters.\n" << endl;
-    
+
     // ░ ▒ ▓ │ ┤ ╡ ╢ ╖
     // ╕ ╣ ║ ╗ ╝ ╜ ╛ ┐
     // └ ┴ ┬ ├ ─ ┼ ╞ ╟
@@ -100,7 +100,7 @@ void ConfigureUnicode( )
     // ╨ ╤ ╥ ╙ ╘ ╒ ╓ ╫
     // ╪ ┘ ┌ █ ▄ ▌ ▐ ▀
 
-    const wchar_t example[] =
+    const wchar_t example[ ] =
         L" ┌───────────────┐ \n"
         L" │ Hello, world! │ \n"
         L" └───────────────┘ \n"
@@ -111,7 +111,7 @@ void ConfigureUnicode( )
         L" ╚══════════════════════╧══════╝ ╙──╜\n";
 
     SetUseUnicode(false);
-    cout << " ascii"   << '\n' << example << endl;
+    cout << " ascii" << '\n' << example << endl;
     SetUseUnicode(true);
     cout << " unicode" << '\n' << example << endl;
 
