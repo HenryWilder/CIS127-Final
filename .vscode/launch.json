@@ -9,7 +9,7 @@
             "type": "cppvsdbg",
             "request": "launch",
             "program": "${workspaceFolder}/x64/Debug/Cis127-Final.exe",
-            "args": ["--unicode", "--no-instructions", "--load"],
+            "args": ["--unicode", "--no-instructions", "--new", "Henry"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
