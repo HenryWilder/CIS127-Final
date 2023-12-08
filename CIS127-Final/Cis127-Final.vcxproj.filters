@@ -5,185 +5,200 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Source Files\entities">
+      <UniqueIdentifier>{f2129e2b-dbf8-4faa-9cc8-d4980c878642}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Source Files\entities\npcs">
+      <UniqueIdentifier>{561ccabe-cbdf-42a6-972e-a2546023d740}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\NPCs">
-      <UniqueIdentifier>{44033694-af33-4ec2-a4f1-8342429b5cc8}</UniqueIdentifier>
+    <Filter Include="Source Files\entities\player">
+      <UniqueIdentifier>{993c0454-eba3-4602-b0ac-209d850286ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\NPCs">
-      <UniqueIdentifier>{29a81e8d-35cd-43c1-ad78-edf23cbd03b3}</UniqueIdentifier>
+    <Filter Include="Source Files\entities\player\player-comps">
+      <UniqueIdentifier>{d0dec275-edf4-4209-8d9e-e51fd84bed2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Player Components">
-      <UniqueIdentifier>{1854716a-82c2-4c36-988d-1ca598cb5a13}</UniqueIdentifier>
+    <Filter Include="Source Files\helpers">
+      <UniqueIdentifier>{155db5f8-0274-403c-8703-a63448375fb3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Player Components">
-      <UniqueIdentifier>{6acce29b-55e9-4183-8b38-4c2afb3c6eeb}</UniqueIdentifier>
+    <Filter Include="Source Files\serialization">
+      <UniqueIdentifier>{1950b488-545d-4a5e-b25d-9925b28d46d0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Serialization">
-      <UniqueIdentifier>{172ef3ad-81b2-44d2-94a3-9c8d4a688ecf}</UniqueIdentifier>
+    <Filter Include="Source Files\utilities">
+      <UniqueIdentifier>{0c24ad10-3204-4bcf-9b50-66f2ea424301}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Serialization">
-      <UniqueIdentifier>{49f56d44-5904-4075-8891-a5f64b5bc135}</UniqueIdentifier>
+    <Filter Include="Source Files\utilities\pch">
+      <UniqueIdentifier>{7af867fe-0572-46fc-b02b-7f6312b9d47f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Interactable.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="serialization\serialization.cpp">
+      <Filter>Source Files\serialization</Filter>
     </ClCompile>
-    <ClCompile Include="Surroundings.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="utilities\prompt.cpp">
+      <Filter>Source Files\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="utilities.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="utilities\randomness.cpp">
+      <Filter>Source Files\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="Baker.cpp">
-      <Filter>Source Files\NPCs</Filter>
+    <ClCompile Include="utilities\pch\extended-ascii.cpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
-    <ClCompile Include="Blacksmith.cpp">
-      <Filter>Source Files\NPCs</Filter>
+    <ClCompile Include="utilities\pch\helper-concepts.cpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
-    <ClCompile Include="Door.cpp">
-      <Filter>Source Files\NPCs</Filter>
+    <ClCompile Include="utilities\pch\randomness.cpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>Source Files\NPCs</Filter>
+    <ClCompile Include="utilities\pch\standard.cpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
-    <ClCompile Include="Wizard.cpp">
-      <Filter>Source Files\NPCs</Filter>
+    <ClCompile Include="utilities\pch\utilities.cpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerComponents.cpp">
-      <Filter>Source Files\Player Components</Filter>
+    <ClCompile Include="helpers\echo.cpp">
+      <Filter>Source Files\helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Health.cpp">
-      <Filter>Source Files\Player Components</Filter>
+    <ClCompile Include="helpers\enums.cpp">
+      <Filter>Source Files\helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Inventory.cpp">
-      <Filter>Source Files\Player Components</Filter>
+    <ClCompile Include="helpers\Surroundings.cpp">
+      <Filter>Source Files\helpers</Filter>
     </ClCompile>
-    <ClCompile Include="Luck.cpp">
-      <Filter>Source Files\Player Components</Filter>
+    <ClCompile Include="helpers\TurnHandler.cpp">
+      <Filter>Source Files\helpers</Filter>
     </ClCompile>
-    <ClCompile Include="StatusEffects.cpp">
-      <Filter>Source Files\Player Components</Filter>
+    <ClCompile Include="entities\Entity.cpp">
+      <Filter>Source Files\entities</Filter>
     </ClCompile>
-    <ClCompile Include="Influences.cpp">
-      <Filter>Source Files\Player Components</Filter>
+    <ClCompile Include="entities\NPC.cpp">
+      <Filter>Source Files\entities</Filter>
     </ClCompile>
-    <ClCompile Include="Enums.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\Player.cpp">
+      <Filter>Source Files\entities\player</Filter>
     </ClCompile>
-    <ClCompile Include="randomness.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\player-comps\Health.cpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClCompile>
-    <ClCompile Include="Prompt.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\player-comps\Influences.cpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClCompile>
-    <ClCompile Include="standard.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\player-comps\Inventory.cpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClCompile>
-    <ClCompile Include="HelperConcepts.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\player-comps\Luck.cpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClCompile>
-    <ClCompile Include="TurnEchoStream.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\player-comps\player-components.cpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClCompile>
-    <ClCompile Include="TurnHandler.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\player\player-comps\StatusEffects.cpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClCompile>
-    <ClCompile Include="ExtendedAscii.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="entities\npcs\Baker.cpp">
+      <Filter>Source Files\entities\npcs</Filter>
     </ClCompile>
-    <ClCompile Include="serialization.cpp">
-      <Filter>Source Files\Serialization</Filter>
+    <ClCompile Include="entities\npcs\Blacksmith.cpp">
+      <Filter>Source Files\entities\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="entities\npcs\Door.cpp">
+      <Filter>Source Files\entities\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="entities\npcs\Monster.cpp">
+      <Filter>Source Files\entities\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="entities\npcs\Wizard.cpp">
+      <Filter>Source Files\entities\npcs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Interactable.hpp">
-      <Filter>Header Files</Filter>
+    <None Include="readme.md">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="serialization\serialization.hpp">
+      <Filter>Source Files\serialization</Filter>
     </ClInclude>
-    <ClInclude Include="Surroundings.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="utilities\prompt.hpp">
+      <Filter>Source Files\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="utilities.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="utilities\randomness.hpp">
+      <Filter>Source Files\utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Baker.hpp">
-      <Filter>Header Files\NPCs</Filter>
+    <ClInclude Include="utilities\pch\extended-ascii.hpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
-    <ClInclude Include="Blacksmith.hpp">
-      <Filter>Header Files\NPCs</Filter>
+    <ClInclude Include="utilities\pch\helper-concepts.hpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
-    <ClInclude Include="Monster.hpp">
-      <Filter>Header Files\NPCs</Filter>
+    <ClInclude Include="utilities\pch\randomness.hpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
-    <ClInclude Include="Wizard.hpp">
-      <Filter>Header Files\NPCs</Filter>
+    <ClInclude Include="utilities\pch\standard.hpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
-    <ClInclude Include="Door.hpp">
-      <Filter>Header Files\NPCs</Filter>
+    <ClInclude Include="utilities\pch\utilities.hpp">
+      <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
-    <ClInclude Include="Luck.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="helpers\echo.hpp">
+      <Filter>Source Files\helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Inventory.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="helpers\enums.hpp">
+      <Filter>Source Files\helpers</Filter>
     </ClInclude>
-    <ClInclude Include="Health.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="helpers\Surroundings.hpp">
+      <Filter>Source Files\helpers</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerComponents.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="helpers\TurnHandler.hpp">
+      <Filter>Source Files\helpers</Filter>
     </ClInclude>
-    <ClInclude Include="StatusEffects.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="entities\Entity.hpp">
+      <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="Influences.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="entities\NPC.hpp">
+      <Filter>Source Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="Enums.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\Player.hpp">
+      <Filter>Source Files\entities\player</Filter>
     </ClInclude>
-    <ClInclude Include="randomness.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\Health.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="Prompt.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\Influences.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="standard.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\Inventory.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="HelperConcepts.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\IPlayerComponent.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="TurnEchoStream.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\Luck.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="TurnHandler.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\player-components.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="ExtendedAscii.hpp">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="entities\player\player-comps\StatusEffects.hpp">
+      <Filter>Source Files\entities\player\player-comps</Filter>
     </ClInclude>
-    <ClInclude Include="serialization.hpp">
-      <Filter>Header Files\Serialization</Filter>
+    <ClInclude Include="entities\npcs\Baker.hpp">
+      <Filter>Source Files\entities\npcs</Filter>
     </ClInclude>
-    <ClInclude Include="IPlayerComponent.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="entities\npcs\Blacksmith.hpp">
+      <Filter>Source Files\entities\npcs</Filter>
     </ClInclude>
-    <ClInclude Include="Player.hpp">
-      <Filter>Header Files\Player Components</Filter>
+    <ClInclude Include="entities\npcs\Door.hpp">
+      <Filter>Source Files\entities\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\npcs\Monster.hpp">
+      <Filter>Source Files\entities\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="entities\npcs\Wizard.hpp">
+      <Filter>Source Files\entities\npcs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

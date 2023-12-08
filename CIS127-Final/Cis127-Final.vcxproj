@@ -18,6 +18,67 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="entities\Entity.cpp" />
+    <ClCompile Include="entities\NPC.cpp" />
+    <ClCompile Include="entities\npcs\Baker.cpp" />
+    <ClCompile Include="entities\npcs\Blacksmith.cpp" />
+    <ClCompile Include="entities\npcs\Door.cpp" />
+    <ClCompile Include="entities\npcs\Monster.cpp" />
+    <ClCompile Include="entities\npcs\Wizard.cpp" />
+    <ClCompile Include="entities\player\player-comps\Health.cpp" />
+    <ClCompile Include="entities\player\player-comps\Influences.cpp" />
+    <ClCompile Include="entities\player\player-comps\Inventory.cpp" />
+    <ClCompile Include="entities\player\player-comps\Luck.cpp" />
+    <ClCompile Include="entities\player\player-comps\player-components.cpp" />
+    <ClCompile Include="entities\player\player-comps\StatusEffects.cpp" />
+    <ClCompile Include="entities\player\Player.cpp" />
+    <ClCompile Include="helpers\echo.cpp" />
+    <ClCompile Include="helpers\enums.cpp" />
+    <ClCompile Include="helpers\Surroundings.cpp" />
+    <ClCompile Include="helpers\TurnHandler.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="serialization\serialization.cpp" />
+    <ClCompile Include="utilities\pch\extended-ascii.cpp" />
+    <ClCompile Include="utilities\pch\helper-concepts.cpp" />
+    <ClCompile Include="utilities\pch\randomness.cpp" />
+    <ClCompile Include="utilities\pch\standard.cpp" />
+    <ClCompile Include="utilities\pch\utilities.cpp" />
+    <ClCompile Include="utilities\prompt.cpp" />
+    <ClCompile Include="utilities\randomness.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="readme.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="entities\Entity.hpp" />
+    <ClInclude Include="entities\NPC.hpp" />
+    <ClInclude Include="entities\npcs\Baker.hpp" />
+    <ClInclude Include="entities\npcs\Blacksmith.hpp" />
+    <ClInclude Include="entities\npcs\Door.hpp" />
+    <ClInclude Include="entities\npcs\Monster.hpp" />
+    <ClInclude Include="entities\npcs\Wizard.hpp" />
+    <ClInclude Include="entities\player\player-comps\Health.hpp" />
+    <ClInclude Include="entities\player\player-comps\Influences.hpp" />
+    <ClInclude Include="entities\player\player-comps\Inventory.hpp" />
+    <ClInclude Include="entities\player\player-comps\IPlayerComponent.hpp" />
+    <ClInclude Include="entities\player\player-comps\Luck.hpp" />
+    <ClInclude Include="entities\player\player-comps\player-components.hpp" />
+    <ClInclude Include="entities\player\player-comps\StatusEffects.hpp" />
+    <ClInclude Include="entities\player\Player.hpp" />
+    <ClInclude Include="helpers\echo.hpp" />
+    <ClInclude Include="helpers\enums.hpp" />
+    <ClInclude Include="helpers\Surroundings.hpp" />
+    <ClInclude Include="helpers\TurnHandler.hpp" />
+    <ClInclude Include="serialization\serialization.hpp" />
+    <ClInclude Include="utilities\pch\extended-ascii.hpp" />
+    <ClInclude Include="utilities\pch\helper-concepts.hpp" />
+    <ClInclude Include="utilities\pch\randomness.hpp" />
+    <ClInclude Include="utilities\pch\standard.hpp" />
+    <ClInclude Include="utilities\pch\utilities.hpp" />
+    <ClInclude Include="utilities\prompt.hpp" />
+    <ClInclude Include="utilities\randomness.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -154,60 +215,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Baker.cpp" />
-    <ClCompile Include="Blacksmith.cpp" />
-    <ClCompile Include="PlayerComponents.cpp" />
-    <ClCompile Include="Door.cpp" />
-    <ClCompile Include="Enums.cpp" />
-    <ClCompile Include="ExtendedAscii.cpp" />
-    <ClCompile Include="TurnHandler.cpp" />
-    <ClCompile Include="Health.cpp" />
-    <ClCompile Include="HelperConcepts.cpp" />
-    <ClCompile Include="Influences.cpp" />
-    <ClCompile Include="Interactable.cpp" />
-    <ClCompile Include="Inventory.cpp" />
-    <ClCompile Include="Luck.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Monster.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Prompt.cpp" />
-    <ClCompile Include="randomness.cpp" />
-    <ClCompile Include="serialization.cpp" />
-    <ClCompile Include="standard.cpp" />
-    <ClCompile Include="StatusEffects.cpp" />
-    <ClCompile Include="Surroundings.cpp" />
-    <ClCompile Include="TurnEchoStream.cpp" />
-    <ClCompile Include="utilities.cpp" />
-    <ClCompile Include="Wizard.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Baker.hpp" />
-    <ClInclude Include="Blacksmith.hpp" />
-    <ClInclude Include="IPlayerComponent.hpp" />
-    <ClInclude Include="PlayerComponents.hpp" />
-    <ClInclude Include="Door.hpp" />
-    <ClInclude Include="Enums.hpp" />
-    <ClInclude Include="ExtendedAscii.hpp" />
-    <ClInclude Include="TurnHandler.hpp" />
-    <ClInclude Include="Health.hpp" />
-    <ClInclude Include="HelperConcepts.hpp" />
-    <ClInclude Include="Influences.hpp" />
-    <ClInclude Include="Interactable.hpp" />
-    <ClInclude Include="Inventory.hpp" />
-    <ClInclude Include="Luck.hpp" />
-    <ClInclude Include="Monster.hpp" />
-    <ClInclude Include="Player.hpp" />
-    <ClInclude Include="Prompt.hpp" />
-    <ClInclude Include="randomness.hpp" />
-    <ClInclude Include="serialization.hpp" />
-    <ClInclude Include="standard.hpp" />
-    <ClInclude Include="StatusEffects.hpp" />
-    <ClInclude Include="Surroundings.hpp" />
-    <ClInclude Include="TurnEchoStream.hpp" />
-    <ClInclude Include="utilities.hpp" />
-    <ClInclude Include="Wizard.hpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

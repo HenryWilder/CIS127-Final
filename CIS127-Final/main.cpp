@@ -1,9 +1,7 @@
-﻿#include "utilities.hpp"
-#include "TurnEchoStream.hpp"
-#include "serialization.hpp"
-#include "TurnHandler.hpp"
-#include "ExtendedAscii.hpp"
-#include <string_view>
+﻿#include "utilities/pch/utilities.hpp"
+#include "helpers/echo.hpp"
+#include "serialization/serialization.hpp"
+#include "helpers/TurnHandler.hpp"
 
 #pragma region Instructions
 constexpr const wchar_t *instructions = LR"(

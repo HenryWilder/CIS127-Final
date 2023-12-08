@@ -1,9 +1,0 @@
-name: Henry
-items: 2
-  sword - 19
-  gold - 5
-influences: 0
-health: 4 / 10
-statuses: 0
-luck: -1
-surroundings: 0
