@@ -8,6 +8,7 @@
         "fstream": "cpp",
         "xiosbase": "cpp",
         "iosfwd": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "format": "cpp"
     }
 }

@@ -45,40 +45,40 @@ void Door::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door predict potion interaction
             break;
         case Potion::Heal:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door heal potion interaction
             break;
         case Potion::Water:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door water potion interaction
             break;
         case Potion::Wish:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door wish potion interaction
             break;
         case Potion::Ducks:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door ducks potion interaction
             break;
         case Potion::Force:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door force potion interaction
             break;
         case Potion::Salt:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door salt potion interaction
             break;
         case Potion::Ants:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door ants potion interaction
             break;
         case Potion::Demon:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door fire potion interaction
             break;
         case Potion::Explode:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door explode potion interaction
             break;
         case Potion::Tree:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Door tree potion interaction
             break;
     }
 }

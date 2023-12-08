@@ -42,11 +42,7 @@ void Blacksmith::DoInteraction_Gold( )
 
 void Blacksmith::DoInteraction_Talk(Topic topic)
 {
-    // The blacksmith is a big intimidating person (of indeterminite gender) who doesn't talk much and comes off as cold.
-    // The player is a knight (whose gender isn't indeterminite, but shouldn't be made explicit) in heavy plate armor covering their full body.
-    // The player doesn't talk in this function.
-    // The `topics` parameter is ignored in this override of the function.
-    echo << "[todo]";
+    echo << "[todo]"; // TODO: Implement Blacksmith talk interaction
 }
 
 // Potion
@@ -56,40 +52,40 @@ void Blacksmith::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith predict potion interaction
             break;
         case Potion::Heal:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith heal potion interaction
             break;
         case Potion::Water:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith water potion interaction
             break;
         case Potion::Wish:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith wish potion interaction
             break;
         case Potion::Ducks:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith ducks potion interaction
             break;
         case Potion::Force:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith force potion interaction
             break;
         case Potion::Salt:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith salt potion interaction
             break;
         case Potion::Ants:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith ants potion interaction
             break;
         case Potion::Demon:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith fire potion interaction
             break;
         case Potion::Explode:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith explode potion interaction
             break;
         case Potion::Tree:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Blacksmith tree potion interaction
             break;
     }
 }

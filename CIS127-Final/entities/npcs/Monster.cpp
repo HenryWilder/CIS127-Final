@@ -180,28 +180,28 @@ void Monster::DoInteraction_Potion(Potion potion)
             break;
         }
         case Potion::Ducks:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster ducks potion interaction
             break;
         case Potion::Force:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster force potion interaction
             break;
         case Potion::Salt:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster salt potion interaction
             break;
         case Potion::Ants:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster ants potion interaction
             break;
         case Potion::Demon:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster fire potion interaction
             break;
         case Potion::Explode:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster explode potion interaction
             break;
         case Potion::Tree:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Monster tree potion interaction
             break;
     }
 }

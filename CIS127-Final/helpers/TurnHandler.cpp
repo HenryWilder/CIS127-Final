@@ -107,7 +107,7 @@ void TurnHandler::DoUseItem(Item item, EntityTypeInfo_t target, Entity &targetOb
 
         case Item::Phonenumber:
         {
-            // todo
+            // TODO: Implement Phonenumber interaction
             return;
         }
     }

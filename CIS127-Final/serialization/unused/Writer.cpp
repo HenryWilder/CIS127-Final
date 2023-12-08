@@ -12,7 +12,7 @@ void Writer::PopScope()
 unique_ptr<ListWriter> Writer::BeginListElement()
 {
     _Indent();
-    stream << ":\n"; // todo: figure out a good syntax
+    stream << ":\n"; // TODO: figure out a good syntax
     scope.PushScope(ScopeType::List);
     return make_unique<ListWriter>(*this, CurrentDepth());
 }
@@ -20,7 +20,7 @@ unique_ptr<ListWriter> Writer::BeginListElement()
 unique_ptr<ObjectWriter> Writer::BeginObjectElement()
 {
     _Indent();
-    stream << ":\n"; // todo: figure out a good syntax
+    stream << ":\n"; // TODO: figure out a good syntax
     scope.PushScope(ScopeType::Object);
     return make_unique<ObjectWriter>(*this, CurrentDepth());
 }

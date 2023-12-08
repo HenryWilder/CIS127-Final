@@ -44,14 +44,14 @@ void Reader::PopScope( )
 
 unique_ptr<ListReader> Reader::BeginListElement()
 {
-    // todo: expect indentation
+    // TODO: expect indentation
     scope.PushScope(ScopeType::List);
     return make_unique<ListReader>(*this, scope.CurrentDepth( ));
 }
 
 unique_ptr<ObjectReader> Reader::BeginObjectElement()
 {
-    // todo: expect indentation
+    // TODO: expect indentation
     scope.PushScope(ScopeType::Object);
     return make_unique<ObjectReader>(*this, scope.CurrentDepth( ));
 }

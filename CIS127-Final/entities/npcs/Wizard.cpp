@@ -59,7 +59,7 @@ void Wizard::DoInteraction_Gold( )
 
 void Wizard::DoInteraction_Talk(Topic topic)
 {
-    echo << "[todo]";
+    echo << "[todo]"; // TODO: Implement Wizard talk interaction
 }
 
 // Potion
@@ -69,40 +69,40 @@ void Wizard::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard predict potion interaction
             break;
         case Potion::Heal:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard heal potion interaction
             break;
         case Potion::Water:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard water potion interaction
             break;
         case Potion::Wish:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard wish potion interaction
             break;
         case Potion::Ducks:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard ducks potion interaction
             break;
         case Potion::Force:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard force potion interaction
             break;
         case Potion::Salt:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard salt potion interaction
             break;
         case Potion::Ants:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard ants potion interaction
             break;
         case Potion::Demon:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard fire potion interaction
             break;
         case Potion::Explode:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard explode potion interaction
             break;
         case Potion::Tree:
-            echo << "[todo]";
+            echo << "[todo]"; // TODO: Implement Wizard tree potion interaction
             break;
     }
 }

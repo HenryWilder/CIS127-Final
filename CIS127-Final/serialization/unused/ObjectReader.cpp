@@ -4,6 +4,6 @@
 
 void ObjectReader::_DoSafetyChecks( ) const
 {
-    // todo
+  // TODO
 }
 #endif

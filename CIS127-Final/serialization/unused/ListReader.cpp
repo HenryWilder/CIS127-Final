@@ -38,6 +38,6 @@ void ListReader::EndList( )
 
 void ListReader::_DoSafetyChecks( ) const
 {
-    // todo
+    // TODO
 }
 #endif

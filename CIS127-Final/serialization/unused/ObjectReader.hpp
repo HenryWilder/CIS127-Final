@@ -32,7 +32,7 @@ public:
     ObjectReader( ) = delete;
     ~ObjectReader( )
     {
-        // todo: assert that EndObject() has been called
+        // TODO: assert that EndObject() has been called
     }
 
     template<istreamable T>
@@ -46,7 +46,7 @@ public:
 
     void EndObject( )
     {
-        // todo
+        // TODO
     }
 
 private:
