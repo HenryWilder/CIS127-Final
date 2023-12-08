@@ -58,7 +58,7 @@ bool Surroundings::TryAddNew(EntityType what)
 {
     if (!things.contains(what))
     {
-        things.emplace(what, NewInteractableOfType(what));
+        things.emplace(what, NewEntityOfType(what));
         return true;
     }
     return false;
@@ -171,7 +171,7 @@ void Surroundings::Load(istream &ifs)
         }
         else
         {
-            things.emplace(type, NewInteractableOfType(type));
+            things.emplace(type, NewEntityOfType(type));
         }
     }
 }

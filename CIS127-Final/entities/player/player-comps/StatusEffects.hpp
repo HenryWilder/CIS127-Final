@@ -1,4 +1,4 @@
-#pragma once"
+#pragma once
 #include "IPlayerComponent.hpp"
 
 class StatusEffects :

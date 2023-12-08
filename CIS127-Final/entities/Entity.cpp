@@ -1,14 +1,14 @@
 #include "utilities/pch/utilities.hpp"
 #include "Entity.hpp"
-#include "Surroundings.hpp"
-#include "echo.hpp"
+#include "helpers/Surroundings.hpp"
+#include "helpers/echo.hpp"
 
-#include "Door.hpp"
-#include "Baker.hpp"
-#include "Blacksmith.hpp"
-#include "Wizard.hpp"
-#include "Monster.hpp"
-#include "Player.hpp"
+#include "npcs/Door.hpp"
+#include "npcs/Baker.hpp"
+#include "npcs/Blacksmith.hpp"
+#include "npcs/Wizard.hpp"
+#include "npcs/Monster.hpp"
+#include "player/Player.hpp"
 
 void Entity::RemoveFromWorld( )
 {

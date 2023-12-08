@@ -1,10 +1,10 @@
 #include "utilities/pch/utilities.hpp"
 #include "Player.hpp"
-#include "Surroundings.hpp"
-#include "player-components.hpp"
-#include "randomness.hpp"
-#include "prompt.hpp"
-#include "echo.hpp"
+#include "helpers/Surroundings.hpp"
+#include "player-comps/player-components.hpp"
+#include "utilities/randomness.hpp"
+#include "utilities/prompt.hpp"
+#include "helpers/echo.hpp"
 
 // IMPORTANT:
 // All interactions defined in this file are made with the assertion that player is targeting "self".
