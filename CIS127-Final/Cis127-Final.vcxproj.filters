@@ -49,9 +49,6 @@
     <ClCompile Include="utilities\pch\helper-concepts.cpp">
       <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
-    <ClCompile Include="utilities\pch\randomness.cpp">
-      <Filter>Source Files\utilities\pch</Filter>
-    </ClCompile>
     <ClCompile Include="utilities\pch\standard.cpp">
       <Filter>Source Files\utilities\pch</Filter>
     </ClCompile>
@@ -132,9 +129,6 @@
       <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
     <ClInclude Include="utilities\pch\helper-concepts.hpp">
-      <Filter>Source Files\utilities\pch</Filter>
-    </ClInclude>
-    <ClInclude Include="utilities\pch\randomness.hpp">
       <Filter>Source Files\utilities\pch</Filter>
     </ClInclude>
     <ClInclude Include="utilities\pch\standard.hpp">

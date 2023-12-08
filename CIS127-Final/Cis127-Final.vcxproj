@@ -41,7 +41,6 @@
     <ClCompile Include="serialization\serialization.cpp" />
     <ClCompile Include="utilities\pch\extended-ascii.cpp" />
     <ClCompile Include="utilities\pch\helper-concepts.cpp" />
-    <ClCompile Include="utilities\pch\randomness.cpp" />
     <ClCompile Include="utilities\pch\standard.cpp" />
     <ClCompile Include="utilities\pch\utilities.cpp" />
     <ClCompile Include="utilities\prompt.cpp" />
@@ -73,7 +72,6 @@
     <ClInclude Include="serialization\serialization.hpp" />
     <ClInclude Include="utilities\pch\extended-ascii.hpp" />
     <ClInclude Include="utilities\pch\helper-concepts.hpp" />
-    <ClInclude Include="utilities\pch\randomness.hpp" />
     <ClInclude Include="utilities\pch\standard.hpp" />
     <ClInclude Include="utilities\pch\utilities.hpp" />
     <ClInclude Include="utilities\prompt.hpp" />
@@ -152,7 +150,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>utilities/pch/utilities.hpp</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,7 +169,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>utilities/pch/utilities.hpp</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,7 +188,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>utilities/pch/utilities.hpp</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -206,7 +207,8 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <DisableSpecificWarnings>4820;4514;4625;5026;4626;5027;5045</DisableSpecificWarnings>
       <PrecompiledHeader>Create</PrecompiledHeader>
-      <PrecompiledHeaderFile>utilities.hpp</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>utilities/pch/utilities.hpp</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
