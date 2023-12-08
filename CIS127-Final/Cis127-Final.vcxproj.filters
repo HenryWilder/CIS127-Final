@@ -29,6 +29,9 @@
     <Filter Include="Source Files\utilities\pch">
       <UniqueIdentifier>{7af867fe-0572-46fc-b02b-7f6312b9d47f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\test">
+      <UniqueIdentifier>{8192cf93-27c4-4294-8ab6-f9cf68fe7ede}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -108,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="entities\npcs\Wizard.cpp">
       <Filter>Source Files\entities\npcs</Filter>
+    </ClCompile>
+    <ClCompile Include="test\unit-testing.cpp">
+      <Filter>Source Files\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -193,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="entities\npcs\Wizard.hpp">
       <Filter>Source Files\entities\npcs</Filter>
+    </ClInclude>
+    <ClInclude Include="test\unit-testing.hpp">
+      <Filter>Source Files\test</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

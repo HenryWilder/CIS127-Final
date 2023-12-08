@@ -2,6 +2,7 @@
 #include "helpers/echo.hpp"
 #include "serialization/serialization.hpp"
 #include "helpers/TurnHandler.hpp"
+#include "test/test_all.hpp"
 
 #pragma region Instructions
 constexpr const wchar_t *instructions = LR"(
@@ -99,6 +100,13 @@ int main(int argc, const char *argv[])
             autoLoadOrNew = AutoLoadOrNew::Load;
         }
 
+        // Try to load an existing save
+        else if (arg == "-t" || arg == "--test")
+        {
+            UnitTests::DoTests();
+            return 0;
+        }
+
         // Help
         else if (arg == "--help")
         {
@@ -110,6 +118,7 @@ int main(int argc, const char *argv[])
                 << "  -s or --no-instructions    - Suppress the instructions.\n"
                 << "  -n <name> or --new <name>  - Start a new game named <name>.\n"
                 << "  -l or --load               - Load the existing save (fails if no save is found).\n"
+                << "  -t or --test               - Run unit tests instead of the program.\n"
                 << "  --help                     - Show this help menu.\n" << endl;
 
             return 0;

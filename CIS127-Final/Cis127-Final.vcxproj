@@ -39,6 +39,7 @@
     <ClCompile Include="helpers\TurnHandler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="serialization\serialization.cpp" />
+    <ClCompile Include="test\test_all.cpp" />
     <ClCompile Include="utilities\pch\extended-ascii.cpp" />
     <ClCompile Include="utilities\pch\helper-concepts.cpp" />
     <ClCompile Include="utilities\pch\standard.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="helpers\Surroundings.hpp" />
     <ClInclude Include="helpers\TurnHandler.hpp" />
     <ClInclude Include="serialization\serialization.hpp" />
+    <ClInclude Include="test\test_all.hpp" />
     <ClInclude Include="utilities\pch\extended-ascii.hpp" />
     <ClInclude Include="utilities\pch\helper-concepts.hpp" />
     <ClInclude Include="utilities\pch\standard.hpp" />

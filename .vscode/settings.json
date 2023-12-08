@@ -9,6 +9,9 @@
         "xiosbase": "cpp",
         "iosfwd": "cpp",
         "xstring": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "random": "cpp",
+        "charconv": "cpp",
+        "xmemory": "cpp"
     }
 }

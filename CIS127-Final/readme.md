@@ -18,3 +18,12 @@
 | :----------: | :---------------------------------------------------------------------------------- |
 | `kebab-case` | Used for naming collections of related types or functions without a unifying class. |
 | `PascalCase` | Used for naming a single class that matches the filename.                           |
+
+### Includes
+
+1. The precompiled header [`utilities/pch/utilities.hpp`](./utilities/pch/utilities.hpp)
+2. The hpp file of the current cpp file - should be just the name, not the full path.
+3. Includes from [`utilities/`](./utilities/)
+4. Includes from [`helpers/`](./helpers/)
+5. [`serialization/serialization.hpp`](./serialization/serialization.hpp)
+6. Remaining includes can be in any order.
