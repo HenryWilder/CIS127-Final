@@ -15,7 +15,7 @@ int Health::Heal(int points)
     {
         health = maxHealth;
     }
-    echo << "[You gained " << points << " health.]\n";
+    echo << COLOR_MESSAGE "[You gained " << points << " health.]\n";
     return points - possibleToHeal;
 }
 
@@ -30,7 +30,7 @@ bool Health::Damage(int points)
     {
         health = 0;
     }
-    echo << "[You took " << points << " damage.]\n";
+    echo << COLOR_MESSAGE "[You took " << points << " damage.]\n";
     return health != 0;
 }
 

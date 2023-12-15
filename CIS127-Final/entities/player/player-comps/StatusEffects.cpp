@@ -21,13 +21,13 @@ bool StatusEffects::HasStatusEffect(StatusFlags testStatus) const
 void StatusEffects::ApplyStatusEffect(StatusFlags applyStatuses)
 {
     statuses |= applyStatuses;
-    echo << "[You gained the " << to_string(applyStatuses) << " status effect(s).]\n";
+    echo << COLOR_MESSAGE "[You gained the " << to_string(applyStatuses) << " status effect(s).]\n";
 }
 
 void StatusEffects::ClearStatusEffect(StatusFlags clearStatuses)
 {
     statuses &= ~clearStatuses;
-    echo << "[You lost the " << to_string(clearStatuses) << " status effect(s).]\n";
+    echo << COLOR_MESSAGE "[You lost the " << to_string(clearStatuses) << " status effect(s).]\n";
 }
 
 void StatusEffects::Init( )

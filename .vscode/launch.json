@@ -13,7 +13,19 @@
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
-            "console": "externalTerminal",
+            "console": "integratedTerminal",
+            "preLaunchTask": "build: debug"
+        },
+        {
+            "name": "Debug with instructions",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/x64/Debug/Cis127-Final.exe",
+            "args": ["--new", "Henry"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "integratedTerminal",
             "preLaunchTask": "build: debug"
         },
         {

@@ -6,17 +6,12 @@
 
 void Wizard::DoInteraction_Grab( )
 {
-    string reaction, actionDescriptor;
-    if (DiceCheck(1, 2))
-    {
-        reaction = ChooseRandom("surprised", "intrigued", "embarrassed");
-    }
-    else
-    {
-        reaction = ChooseRandom("surprised", "unamused", "annoyed");
-    }
+    string reaction = DiceCheck(1, 2)
+        ? ChooseRandom("surprised", "intrigued", "embarrassed", "amazed", "curious")
+        : ChooseRandom("surprised", "unamused", "annoyed", "baffled", "disappointed");
     echo << "The wizard appears " << reaction << " by your action.\n";
 }
+
 void Wizard::DoInteraction_Bread( )
 {
     if (player.CheckInfluence(GetCollective( )))
@@ -27,10 +22,11 @@ void Wizard::DoInteraction_Bread( )
     }
     else
     {
-        // Todo: make this less random?
+        // TODO: make this less random?
         echo << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue( ) << " collective.\n";
     }
 }
+
 void Wizard::DoInteraction_Sword( )
 {
     echo << "\"Ouch!\" the wizard cries, disappearing into magical smoke.\n";
@@ -44,11 +40,12 @@ void Wizard::DoInteraction_Sword( )
     }
     else
     {
-        echo << "It smashes into a hundred pieces on the hard floor, the potion's effect activating instantly. "
-            "You are engulfed in flames as the fire potion coats you like hot oil.\n";
+        echo << "It smashes into a hundred pieces on the hard floor, the potion's effect activating instantly. ";
+        echo << "You are engulfed in flames as the fire potion coats you like hot oil.\n";
         player.DoInteraction_Potion(Potion::Fire);
     }
 }
+
 void Wizard::DoInteraction_Gold( )
 {
     echo << "The wizard thanks you for the gold and gives you a potion.\n";
@@ -57,9 +54,9 @@ void Wizard::DoInteraction_Gold( )
 
 // Talk
 
-void Wizard::DoInteraction_Talk(Topic topic)
+void Wizard::DoInteraction_Talk([[maybe_unused]] Topic topic)
 {
-    echo << "[todo]"; // TODO: Implement Wizard talk interaction
+    echo << "The wizard seems to " << ChooseRandom("agree", "be agitated") << " with your views.\n";
 }
 
 // Potion

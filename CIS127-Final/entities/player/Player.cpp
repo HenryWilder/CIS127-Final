@@ -120,6 +120,14 @@ void Player::DoInteraction_Talk(Topic topic)
             };
             break;
 
+        case Topic::NecroFarm:
+        case Topic::Bloodmoon:
+        case Topic::MoleMountain:
+        case Topic::MindflayerRecipe:
+        case Topic::GodFistfight:
+        case Topic::Theseus:
+        case Topic::NoGarlic:
+        case Topic::PetMentalHealth:
         default:
             contextualResponses = {
                 "found it rather odd",

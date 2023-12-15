@@ -14,14 +14,7 @@
 #include "entities/npcs/Wizard.hpp"
 #include "entities/player/Player.hpp"
 
-#define COLOR_RESET "\033[0m"
-#define COLOR_GREEN "\033[32m"
-#define COLOR_RED "\033[31m"
-#define COLOR_BLUE "\033[34m"
-#define COLOR_GRAY "\033[90m"
-#define COLOR_YELLOW "\033[33m"
-
-constexpr int EXPRESSION_WIDTH = 25;
+// constexpr int EXPRESSION_WIDTH = 25;
 
 #define _Assert(cond, msgExpected, msgActual)\
     do {\
@@ -111,7 +104,11 @@ void UnitTests::DoUnitTestFrameworkTests()
     AssertEquals(number, number);
     AssertNotEquals(number, biggerNumber);
 
+    #pragma warning(push)
+    #pragma warning(disable: 4127)
     AssertNull(nullptr);
+    #pragma warning(pop)
+
     AssertNotNull(&number);
 
     AssertGreaterThan(biggerNumber, smallerNumber);
@@ -146,7 +143,17 @@ void UnitTests::DoRandomnessTests()
 // Test Echo
 void UnitTests::DoEchoTests()
 {
-
+    cout << "\nEcho Color tests\n";
+    echo << COLOR_BLACK   "This text is black.\n";
+    echo << COLOR_RED     "This text is red.\n";
+    echo << COLOR_GREEN   "This text is green.\n";
+    echo << COLOR_YELLOW  "This text is yellow.\n";
+    echo << COLOR_BLUE    "This text is blue.\n";
+    echo << COLOR_MAGENTA "This text is magenta.\n";
+    echo << COLOR_CYAN    "This text is cyan.\n";
+    echo << COLOR_WHITE   "This text is white.\n";
+    echo << COLOR_GRAY    "This text is gray.\n";
+    FlushEcho();
 }
 
 // Test Enums

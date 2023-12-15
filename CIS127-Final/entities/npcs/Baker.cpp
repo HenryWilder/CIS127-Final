@@ -41,7 +41,7 @@ void Baker::DoInteraction_Sword( )
             break;
 
         case LuckType::Bad:
-            echo << "You have angered the bread gods, and [todo]\n"; // TODO: What happens when the player slashes at the Baker with bad luck
+            echo << "You have angered the bread gods.\n";
             break;
     }
 }
@@ -55,7 +55,7 @@ void Baker::DoInteraction_Gold( )
 
 void Baker::DoInteraction_Talk(Topic topic)
 {
-    echo << "[todo]\n";
+    echo << "[todo]\n"; // TODO: Implement Baker talk interaction
 }
 
 // Potion
@@ -65,40 +65,40 @@ void Baker::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker predict potion interaction
             break;
         case Potion::Heal:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker heal potion interaction
             break;
         case Potion::Water:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker water potion interaction
             break;
         case Potion::Wish:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker wish potion interaction
             break;
         case Potion::Ducks:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker ducks potion interaction
             break;
         case Potion::Force:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker force potion interaction
             break;
         case Potion::Salt:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker salt potion interaction
             break;
         case Potion::Ants:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker ants potion interaction
             break;
         case Potion::Demon:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker fire potion interaction
             break;
         case Potion::Explode:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker explode potion interaction
             break;
         case Potion::Tree:
-            echo << "[todo]\n";
+            echo << "[todo]\n"; // TODO: Implement Baker tree potion interaction
             break;
     }
 }

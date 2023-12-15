@@ -33,7 +33,7 @@ void Door::DoInteraction_Gold( )
 
 // Talk
 
-void Door::DoInteraction_Talk(Topic topic)
+void Door::DoInteraction_Talk([[maybe_unused]] Topic topic)
 {
     echo << "The door listens silently.\n";
 }

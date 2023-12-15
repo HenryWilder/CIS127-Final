@@ -30,7 +30,7 @@ void Inventory::AddItem(Item item, _In_range_(> , 0) int count)
     {
         items.emplace(item, (newTotal = count));
     }
-    echo << "[You gained " << count << " " << item << " and now have " << newTotal << ".]\n";
+    echo << COLOR_MESSAGE "[You gained " << count << " " << item << " and now have " << newTotal << ".]\n";
 }
 
 int Inventory::TryRemoveItemQty(Item item, _In_range_(> , 0) int count)
@@ -42,13 +42,13 @@ int Inventory::TryRemoveItemQty(Item item, _In_range_(> , 0) int count)
         if (it->second == count)
         {
             items.erase(it);
-            echo << "[You lost all of your " << item << " and have none left.]\n";
+            echo << COLOR_MESSAGE "[You lost all of your " << item << " and have none left.]\n";
             return 0;
         }
         else if (it->second > count)
         {
             int newTotal = it->second -= count;
-            echo << "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
+            echo << COLOR_MESSAGE "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
             return newTotal;
         }
     }
@@ -64,13 +64,13 @@ bool Inventory::ForceRemoveItemQty(Item item, _In_range_(> , 0) int count)
         if (it->second <= count)
         {
             items.erase(it);
-            echo << "[You lost all of your " << item << " and have none left.]\n";
+            echo << COLOR_MESSAGE "[You lost all of your " << item << " and have none left.]\n";
             return it->second == count;
         }
         else // it->second > count
         {
             int newTotal = it->second -= count;
-            echo << "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
+            echo << COLOR_MESSAGE "[You lost " << count << " of your " << item << " and have " << newTotal << " left.]\n";
             return true;
         }
     }

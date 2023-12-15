@@ -21,6 +21,18 @@ void FlushEcho( )
     string line;
     while (getline(echo, line))
     {
+        // Check for color escape sequence
+        string colorSequence;
+        if (line.starts_with('\x1B'))
+        {
+            size_t endPos = line.find('m');
+            if (endPos != string::npos)
+            {
+                colorSequence = line.substr(0, endPos + 1);
+                line.erase(0, endPos + 1);
+            }
+        }
+
         // Line is blank before parsing
         if (line.empty( ))
         {
@@ -60,7 +72,7 @@ void FlushEcho( )
                 line.erase(0, echoBoxInsideWidth);
             }
 
-            cout << L" │ " << setfill(' ') << left << setw(echoBoxInsideWidth) << linePart << L" │\n";
+            cout << L" │ " << colorSequence << setfill(' ') << left << setw(echoBoxInsideWidth) << linePart << COLOR_RESET << L" │\n";
         }
     }
 

@@ -139,7 +139,7 @@ void Monster::DoInteraction_Gold( )
 
 // Talk
 
-void Monster::DoInteraction_Talk(Topic topic)
+void Monster::DoInteraction_Talk([[maybe_unused]] Topic topic)
 {
     echo << "You feel the creature's many eyes burning through your soul.\n";
 }
@@ -172,15 +172,15 @@ void Monster::DoInteraction_Potion(Potion potion)
                 "the doom of humanity",
                 "\"decay\"",
                 "all things to rot",
-                "eternal life",
-                ""
+                "eternal life"
             );
             echo << "You can't completely understand what it said. But from what little you know of its tongue, the monster seemed to wished for " << wish << "...\n";
             echo << "Considering nothing changed, you assume the wish is beyond the scope of a single potion.\n";
             break;
         }
         case Potion::Ducks:
-            echo << "[todo]"; // TODO: Implement Monster ducks potion interaction
+            echo << "The monster's eyes widen as a flock of quacking ducks materialize around it. It flails its arms in confusion, trying to shoo them away.\n";
+            echo << "The ducks, however, seem to find the monster's antics amusing and continue to follow it around, quacking loudly.\n";
             break;
         case Potion::Force:
             echo << "[todo]"; // TODO: Implement Monster force potion interaction

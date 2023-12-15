@@ -53,6 +53,7 @@ int main(int argc, const char *argv[])
     const char* playerName = nullptr;
     AutoLoadOrNew autoLoadOrNew = AutoLoadOrNew::Ask;
 
+    // Handle commandline args
     for (int i = 1; i < argc; ++i)
     {
         std::string_view arg = argv[i];
@@ -145,13 +146,15 @@ int main(int argc, const char *argv[])
         // ╪ ┘ ┌ █ ▄ ▌ ▐ ▀
 
         const wchar_t example[ ] =
-            L" ┌───────────────┐ \n"
-            L" │ Hello, world! │ \n"
-            L" └───────────────┘ \n"
-            L" ╔══════════════════════╤═══╕ \n"
+            L" ┌───────────────┐\n"
+            L" │ " COLOR_MESSAGE "Hello, world!" COLOR_RESET L" │\n"
+            L" └───────────────┘\n"
+            L" ╔══════════════════════╤═══╕\n"
             L" ▐ This is an example.  │ 1.│\n"
             L" ╟──────────────────────┼───┴──╖ ╓──╖\n"
-            L" ║    ░░░░░▒▒▒▒▓▓▓▓████ │ 2. █ ╠═╬══╣\n"
+            L" ║ " COLOR_RED   L"   ░░░░░▒▒▒▒▓▓▓▓████" COLOR_RESET L" │ 2. R ╠═╬══╣\n"
+            L" ║ " COLOR_GREEN L"   ░░░░░▒▒▒▒▓▓▓▓████" COLOR_RESET L" │ 3. G ╠═╬══╣\n"
+            L" ║ " COLOR_BLUE  L"   ░░░░░▒▒▒▒▓▓▓▓████" COLOR_RESET L" │ 4. B ╠═╬══╣\n"
             L" ╚══════════════════════╧══════╝ ╙──╜\n";
 
         SetUseUnicode(false);

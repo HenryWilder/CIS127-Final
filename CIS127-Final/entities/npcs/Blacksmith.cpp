@@ -40,9 +40,9 @@ void Blacksmith::DoInteraction_Gold( )
 
 // Talk
 
-void Blacksmith::DoInteraction_Talk(Topic topic)
+void Blacksmith::DoInteraction_Talk([[maybe_unused]] Topic topic)
 {
-    echo << "[todo]"; // TODO: Implement Blacksmith talk interaction
+    echo << "The blacksmith grunts.";
 }
 
 // Potion

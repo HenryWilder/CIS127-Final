@@ -127,7 +127,7 @@ void Surroundings::ReRoll( )
         TryAddNew(EntityType::Door);
     }
 
-    echo << "[Your surroundings have changed.]\n";
+    echo << COLOR_MESSAGE "[Your surroundings have changed.]\n";
 }
 
 EntityType Surroundings::Random( ) const

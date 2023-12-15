@@ -12,6 +12,8 @@
         "format": "cpp",
         "random": "cpp",
         "charconv": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "ostream": "cpp",
+        "iomanip": "cpp"
     }
 }
