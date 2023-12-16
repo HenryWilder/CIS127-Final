@@ -54,7 +54,7 @@ void Baker::DoInteraction_Gold( )
 
 // Baker
 
-void Baker::DoInteraction_Talk(Topic topic)
+void Baker::DoInteraction_Talk([[maybe_unused]] Topic topic)
 {
     echo << "The baker doesn't know about all that, but offers you a cookie for being so cheerful.\n";
 }

@@ -1,0 +1,13 @@
+name: 
+items: 4
+  bread - 5867
+  sword - 6674
+  potion - 3385
+  gold - 9441
+influences: 0
+health: 5 / 10
+statuses: 0
+luck: 0
+surroundings: 2
+  door
+  baker - eastern_swampfire
