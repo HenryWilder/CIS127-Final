@@ -56,22 +56,56 @@ common_type_t<_Tys...> ChooseRandom(_Tys&&... options)
     return ChooseRandom<array_t>(arr);
 }
 
-// Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.
+/**
+ * Generates a random number between the specified minimum and maximum values.
+ *
+ * @param min The minimum value of the range (inclusive).
+ * @param max The maximum value of the range (inclusive).
+ * @return A random number between min and max.
+ */
+int RandomNumber(int min, int max);
+
+/**
+ * @brief Roll a dice. The roll will succeed on average [chance] times in every [outOf] rolls.
+ *
+ * @param chance The highest number that will result in a success.
+ *               (`chance == 0` will always fail; `chance >= outOf` will always succeed).
+ * @param outOf The total number of sides on the dice.
+ * @return True if the random event occurs, false otherwise.
+ */
 bool DiceCheck(int chance, int outOf);
 
-// Epsilon is 0.001.
-// Chance less than epsilon will always fail.
-// Chance greater than [1 minus epsilon] will always succeed.
+/**
+ * @brief Determines the success of an event based on a given chance.
+ *
+ * @param chance01 The probability of the event occurring, ranging from 0 to 1.
+ * @return True if the event succeeds, false otherwise.
+ */
 bool Chance(float chance01);
 
-// Flip a coin. Succeed if heads; fail if tails.
-// Succeeds 50% of the time.
+/**
+ * @brief Flips a coin and determines the success based on heads or tails.
+ *
+ * The event succeeds 50% of the time.
+ *
+ * @return True if heads, false if tails.
+ */
 bool CoinFlip();
 
-// Flip two coins. Succeed if either is heads; fail if both are tails.
-// Succeeds 75% of the time.
+/**
+ * @brief Flips two coins and determines the success based on at least one heads.
+ *
+ * The event succeeds 75% of the time.
+ *
+ * @return True if at least one heads, false if both are tails.
+ */
 bool AdvantagedCoinFlip();
 
-// Flip two coins. Succeed if both are heads; fail if either is tails.
-// Succeeds 25% of the time.
+/**
+ * @brief Flips two coins and determines the success based on both being heads.
+ *
+ * The event succeeds 25% of the time.
+ *
+ * @return True if both are heads, false if either is tails.
+ */
 bool DisadvantagedCoinFlip();

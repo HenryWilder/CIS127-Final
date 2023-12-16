@@ -23,4 +23,5 @@ void FlushEcho( );
 #define COLOR_GRAY    "\x1B[90m"
 #define COLOR_RESET   "\x1B[0m"
 
-#define COLOR_MESSAGE COLOR_CYAN
+#define COLOR_MESSAGE COLOR_GRAY
+#define COLOR_ACTION  COLOR_CYAN

@@ -4,9 +4,14 @@
 random_device rd;
 mt19937 gen(rd( ));
 
+int RandomNumber(int min, int max)
+{
+    return uniform_int(min, max)(gen);
+}
+
 bool DiceCheck(int chance, int outOf)
 {
-    return uniform_int(1, outOf)(gen) <= chance;
+    return RandomNumber(1, outOf) <= chance;
 }
 
 bool Chance(float chance01)

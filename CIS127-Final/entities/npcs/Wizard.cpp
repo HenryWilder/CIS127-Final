@@ -22,7 +22,6 @@ void Wizard::DoInteraction_Bread( )
     }
     else
     {
-        // TODO: make this less random?
         echo << "The wizard distrusts your bread, weary of assassination attempts from the " << collectives.RandomValue( ) << " collective.\n";
     }
 }
@@ -66,40 +65,47 @@ void Wizard::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]"; // TODO: Implement Wizard predict potion interaction
+            echo << "The wizard already uses their crystal ball on enough of a regular basis that they didn't learn anything new.\n";
             break;
         case Potion::Heal:
-            echo << "[todo]"; // TODO: Implement Wizard heal potion interaction
+            echo << "The wizard snatches the potion out of the air and pockets it for later. They toss you a gold coin in return.\n";
+            player.AddItem(Item::Gold);
             break;
         case Potion::Water:
-            echo << "[todo]"; // TODO: Implement Wizard water potion interaction
+            echo << "The wizard waves a hand, guiding the water back into your face.\n";
+            echo << "You are all wet.\n";
             break;
         case Potion::Wish:
-            echo << "[todo]"; // TODO: Implement Wizard wish potion interaction
+            echo << "The wizard's cloak seems to get a little longer.\n";
             break;
         case Potion::Ducks:
-            echo << "[todo]"; // TODO: Implement Wizard ducks potion interaction
+            echo << "The wizard shouts, their voice echoing, \"HUZZAH! BONUS DUCKS!!\". They seem happy about the ducks.\n";
             break;
         case Potion::Force:
-            echo << "[todo]"; // TODO: Implement Wizard force potion interaction
+            echo << "The wizard's hat gets blown off their head and they chase after it into another room.\n";
+            RemoveFromWorld();
             break;
         case Potion::Salt:
-            echo << "[todo]"; // TODO: Implement Wizard salt potion interaction
+        {
+            string what = ChooseRandom("cooking", "rituals", "potion-making");
+            echo << "The wizard thanks you for the salt, storing it in a pouch to use in " << what << " later.\n";
             break;
+        }
         case Potion::Ants:
-            echo << "[todo]"; // TODO: Implement Wizard ants potion interaction
+            echo << "The wizard levitates the ants into a ball and 'poofs' them far away.\n";
             break;
         case Potion::Demon:
             echo << "[todo]"; // TODO: Implement Wizard demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]"; // TODO: Implement Wizard fire potion interaction
+            echo << "The wizard waves a hand and redirects the flames into a small jar on their hip. The jar glows, providing heat with the swirling flames contained within it.\n";
             break;
         case Potion::Explode:
-            echo << "[todo]"; // TODO: Implement Wizard explode potion interaction
+            echo << "The wizard deflects the explosion, sending it back at you.\n";
+            player.Damage(3);
             break;
         case Potion::Tree:
-            echo << "[todo]"; // TODO: Implement Wizard tree potion interaction
+            echo << "The wizard transforms into a tall, skinny tree. They look a lot less colorful now without their pretty robes...";
             break;
     }
 }

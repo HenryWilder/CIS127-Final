@@ -19,12 +19,13 @@ public:
         return items;
     }
 
+    // Whether the inventory contains no items.
     bool IsInventoryEmpty( ) const
     {
         return items.empty( );
     }
 
-    // Increases the count of the item by
+    // Increases the count of the item by count.
     void AddItem(Item item, _In_range_(> , 0) int count = 1);
 
     // If failed to remove the item (e.g. item is missing or in insufficient quantity), returns -1.

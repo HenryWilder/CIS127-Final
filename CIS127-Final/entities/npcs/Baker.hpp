@@ -29,6 +29,9 @@ public:
     {
         return EntityType::Baker;
     }
+
+private:
+    bool isCoveredInPaste = false;
 };
 
 #endif /* Baker_hpp */

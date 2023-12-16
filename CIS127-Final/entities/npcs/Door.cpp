@@ -45,40 +45,40 @@ void Door::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]"; // TODO: Implement Door predict potion interaction
+            echo << "The door suddenly knows all of the people who are going to walk through it.\n";
             break;
         case Potion::Heal:
-            echo << "[todo]"; // TODO: Implement Door heal potion interaction
+            echo << "The cracks in the door's oak body seemingly fill in as it is revitalized.\n";
             break;
         case Potion::Water:
-            echo << "[todo]"; // TODO: Implement Door water potion interaction
+            echo << "Hopefully that doesn't weaken it...\n";
             break;
         case Potion::Wish:
-            echo << "[todo]"; // TODO: Implement Door wish potion interaction
+            echo << "The door has no wish.\n";
             break;
         case Potion::Ducks:
-            echo << "[todo]"; // TODO: Implement Door ducks potion interaction
+            echo << "The door does a good job of keeping the ducks out.\n";
             break;
         case Potion::Force:
-            echo << "[todo]"; // TODO: Implement Door force potion interaction
+            echo << "The door is blasted out of its frame.\n";
             break;
         case Potion::Salt:
-            echo << "[todo]"; // TODO: Implement Door salt potion interaction
+            echo << "It isn't very effective.\n";
             break;
         case Potion::Ants:
-            echo << "[todo]"; // TODO: Implement Door ants potion interaction
+            echo << "The door does a good job of keeping the ants out.\n";
             break;
         case Potion::Demon:
             echo << "[todo]"; // TODO: Implement Door demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]"; // TODO: Implement Door fire potion interaction
+            echo << "The door burns slowly, crumbling to ash.\n";
             break;
         case Potion::Explode:
-            echo << "[todo]"; // TODO: Implement Door explode potion interaction
+            echo << "With a flash, the door disintegrates.\n";
             break;
         case Potion::Tree:
-            echo << "[todo]"; // TODO: Implement Door tree potion interaction
+            echo << "The door is already wood.\n";
             break;
     }
 }

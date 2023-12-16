@@ -40,7 +40,7 @@ void TurnHandler::DoMove( )
 {
     Direction direction = directions.Prompt("\nWhere would you like to move?");
 
-    echo << format("You walked {} into another room.\n\n", directions.ValueAt(direction));
+    echo << COLOR_ACTION "You walked " << directions.ValueAt(direction) << " into another room.\n\n";
     surroundings.ReRoll( ); // choice is an illusion :P
 
     if (!surroundings.IsEmpty( ))
@@ -52,7 +52,7 @@ void TurnHandler::DoMove( )
     }
     else
     {
-        echo << "You are alone with your thoughts.";
+        echo << COLOR_ACTION "You are alone with your thoughts.";
     }
 }
 
@@ -62,7 +62,7 @@ void TurnHandler::DoTalk( )
 
     TopicInfo_t topic = topics.Random( );
 
-    echo << format("You had an interesting discussion with {} regarding {}.\n\n", target.full, topic.full);
+    echo << COLOR_ACTION "You had an interesting discussion with " << target.full << " regarding " << topic.full << ".\n\n";
 
     targetObject.DoInteraction_Talk(topic);
 }
@@ -71,7 +71,7 @@ void TurnHandler::DoGrab( )
 {
     auto [target, targetObject] = PromptForTartget("\nWho/what would you like to grab?");
 
-    echo << format("You grabbed {}.\n\n", target.full);
+    echo << COLOR_ACTION "You grabbed " << target.full << ".\n\n";
 
     targetObject.DoInteraction_Grab( );
 }
@@ -82,32 +82,32 @@ void TurnHandler::DoUseItem(Item item, EntityTypeInfo_t target, Entity &targetOb
     {
         case Item::Bread:
         {
-            echo << format("You gave a piece of bread to {}.\n\n", target.full);
+            echo << COLOR_ACTION "You give a piece of bread to " << target.full << ".\n\n";
             return targetObject.DoInteraction_Bread( );
         }
 
         case Item::Sword:
         {
-            echo << format("You swung your sword at {}.\n\n", target.full);
+            echo << COLOR_ACTION "You swing your sword at " << target.full << ".\n\n";
             return targetObject.DoInteraction_Sword( );
         }
 
         case Item::Gold:
         {
-            echo << format("You gave some gold to {}.\n\n", target.full);
+            echo << COLOR_ACTION "You give some gold to " << target.full << ".\n\n";
             return targetObject.DoInteraction_Gold( );
         }
 
         case Item::Potion:
         {
             PotionInfo_t potion = potions.Random( );
-            echo << format("You used a potion of {} on {}.\n\n", potion.full, target.full);
+            echo << COLOR_ACTION "You use a potion of " << potion.full << " on " << target.full << ".\n\n";
             return targetObject.DoInteraction_Potion(potion);
         }
 
         case Item::Phonenumber:
         {
-            // TODO: Implement Phonenumber interaction
+            // todo: Implement Phonenumber interaction
             return;
         }
     }
@@ -137,7 +137,7 @@ void TurnHandler::DoItems( )
 {
     StreamList::Push(StreamList::JSONObjectList);
 
-    echo << "Your current inventory: ";
+    echo << COLOR_YELLOW "Your current inventory:\n";
     player.PrintInventory(echo);
 
     StreamList::Pop( );
@@ -147,7 +147,7 @@ void TurnHandler::DoNear( )
 {
     StreamList::Push(StreamList::JSONValueList);
 
-    echo << "Your current surroundings: ";
+    echo << COLOR_YELLOW "Your current surroundings:\n";
     surroundings.Print(echo);
 
     StreamList::Pop( );
@@ -183,7 +183,7 @@ bool TurnHandler::CheckPlayerIsAlive( )
 {
     if (player.IsDead( ))
     {
-        echo << "Your health has dropped to zero and you have died.";
+        echo << COLOR_ACTION "Your health has dropped to zero and you have died.\n";
         FlushEcho( );
         bool wantsToRestart = (bool)boolean.Prompt("Would you like to start again?");
         turnEndType = wantsToRestart ? TurnEndType::Restart : TurnEndType::Quit;

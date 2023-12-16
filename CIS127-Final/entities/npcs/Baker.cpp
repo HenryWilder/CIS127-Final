@@ -1,18 +1,19 @@
 #include "utilities/pch/utilities.hpp"
 #include "Baker.hpp"
+#include "utilities/randomness.hpp"
 #include "entities/player/Player.hpp"
 #include "helpers/Surroundings.hpp"
 #include "helpers/echo.hpp"
 
 void Baker::DoInteraction_Grab( )
 {
-    echo << "[todo]\n";
+    echo << "The baker seems a bit annoyed at your advances. They suggest that if you wanted some bread you could just ask.\n";
 }
 void Baker::DoInteraction_Bread( )
 {
     if (player.CheckInfluence(GetCollective( )))
     {
-        echo << "The baker thanks you for the bread and gives you some gold in return.";
+        echo << "The baker thanks you for the bread and gives you some gold in return.\n";
     }
     else if (player.CountItem(Item::Gold) >= 2)
     {
@@ -22,7 +23,7 @@ void Baker::DoInteraction_Bread( )
     }
     else
     {
-        echo << "The baker accepts the bread.";
+        echo << "The baker accepts the bread.\n";
     }
 }
 void Baker::DoInteraction_Sword( )
@@ -55,7 +56,7 @@ void Baker::DoInteraction_Gold( )
 
 void Baker::DoInteraction_Talk(Topic topic)
 {
-    echo << "[todo]\n"; // TODO: Implement Baker talk interaction
+    echo << "The baker doesn't know about all that, but offers you a cookie for being so cheerful.\n";
 }
 
 // Potion
@@ -65,40 +66,63 @@ void Baker::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]\n"; // TODO: Implement Baker predict potion interaction
+            echo << "The baker is struck with a preminition of exactly when the bread they currently have baking will be done. It isn't very helpful, they already knew that...\n";
             break;
         case Potion::Heal:
-            echo << "[todo]\n"; // TODO: Implement Baker heal potion interaction
+            echo << "The baker wasn't hurt to begin with, but it seems to clean them up a little nonetheless.\n";
             break;
         case Potion::Water:
-            echo << "[todo]\n"; // TODO: Implement Baker water potion interaction
+        {
+            string feeling = ChooseRandom("frustrated", "irritated" "annoyed", "agitated", "disheartened");
+            echo << "The baker groans, feeling " << feeling << " as they clean up the sticky paste of flour on their hands and apron.\n";
+            isCoveredInPaste = true;
             break;
+        }
         case Potion::Wish:
-            echo << "[todo]\n"; // TODO: Implement Baker wish potion interaction
+        {
+            int count = RandomNumber(1000, 5000);
+            echo << count << " loafs of bread " << ChooseRandom("poof into existence", "appear out of thin air") << ". You pick some of them up.\n";
+            player.AddItem(Item::Bread, count / 4);
             break;
+        }
         case Potion::Ducks:
-            echo << "[todo]\n"; // TODO: Implement Baker ducks potion interaction
+            echo << "The baker offers the ducks some of yesterday's bread. They seem to enjoy it, and this won't become a frequent habbit for them.\n";
             break;
         case Potion::Force:
-            echo << "[todo]\n"; // TODO: Implement Baker force potion interaction
+        {
+            string feeling = ChooseRandom("fear", "amazement", "confusion", "dismay");
+            echo << "The baker flops onto the floor, their eyes wide in " << feeling << " as they are rolled out of the room.\n";
+            RemoveFromWorld();
             break;
+        }
         case Potion::Salt:
-            echo << "[todo]\n"; // TODO: Implement Baker salt potion interaction
+            echo << "The baker scoops up the salt and saves it for later.\n";
             break;
         case Potion::Ants:
-            echo << "[todo]\n"; // TODO: Implement Baker ants potion interaction
+            echo << "The baker does not appriciate being swarmed with ants.\n";
             break;
         case Potion::Demon:
             echo << "[todo]\n"; // TODO: Implement Baker demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]\n"; // TODO: Implement Baker fire potion interaction
+            if (isCoveredInPaste)
+            {
+                string feeling = ChooseRandom("exasperation", "resignation", "dismay", "perturbation", "vexation");
+                echo << "The baker shouts in " << feeling << " as the wet paste covering their apron and hands dries and hardens into a crust.\n";
+                echo << "The substance remains stuck to their clothes, limiting their movement.\n";
+                echo << "This will be quite difficult to clean up...\n";
+            }
+            else
+            {
+                echo << "The baker " << ChooseRandom("screams", "squeals", "shouts") << " in pain as the flames nibble them from head to toe.\n";
+            }
             break;
         case Potion::Explode:
-            echo << "[todo]\n"; // TODO: Implement Baker explode potion interaction
+            echo << "The baker pops like a bubble, a dozen loaves of bread spilling onto the floor. The loaves hover and rotate in place as you snatch them up.\n";
+            player.AddItem(Item::Bread, 13);
             break;
         case Potion::Tree:
-            echo << "[todo]\n"; // TODO: Implement Baker tree potion interaction
+            echo << "The baker transforms into a short, fat tree. This will be rather bad for their baking business...\n";
             break;
     }
 }

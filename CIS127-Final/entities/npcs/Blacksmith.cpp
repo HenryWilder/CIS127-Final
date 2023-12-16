@@ -52,51 +52,52 @@ void Blacksmith::DoInteraction_Potion(Potion potion)
     switch (potion)
     {
         case Potion::Predict:
-            echo << "[todo]"; // TODO: Implement Blacksmith predict potion interaction
+        {
+            string what = ChooseRandom(
+                "next year's trends in blade ornamentation",
+                "next week's lottery numbers"
+            );
+            echo << "The blacksmith seems to have a blast of inspiration, writing down a note regarding " << what << ".\n";
             break;
+        }
         case Potion::Heal:
-            echo << "[todo]"; // TODO: Implement Blacksmith heal potion interaction
+            echo << "The blacksmith didn't like being splashed, but appriciates the healing.\n";
+            if (CoinFlip()) echo << "You notice the calluses on their hands seem to have faded.\n";
             break;
         case Potion::Water:
-            echo << "[todo]"; // TODO: Implement Blacksmith water potion interaction
+        {
+            string expression = ChooseRandom("disapproval", "frustration");
+            echo << "The blacksmith doesn't seem to react, but give an expression of " << expression << ".\n";
             break;
+        }
         case Potion::Wish:
-            echo << "[todo]"; // TODO: Implement Blacksmith wish potion interaction
+            echo << "The hammer on the blacksmith's belt seems to get slightly bigger.\n";
             break;
         case Potion::Ducks:
-            echo << "[todo]"; // TODO: Implement Blacksmith ducks potion interaction
+            echo << "The blacksmith watches stoically as ducks waddle around them.\n";
+            if (CoinFlip()) echo << "One sits on their shoulder and quacks. The blacksmith seems to tolerate it.\n";
             break;
         case Potion::Force:
-            echo << "[todo]"; // TODO: Implement Blacksmith force potion interaction
+            echo << "The blacksmith is unmoved, held in place by their impressive mass.\n";
             break;
         case Potion::Salt:
-            echo << "[todo]"; // TODO: Implement Blacksmith salt potion interaction
+            echo << "They seem a little bugged by the salt, but nothing more.\n";
             break;
         case Potion::Ants:
-            echo << "[todo]"; // TODO: Implement Blacksmith ants potion interaction
+            echo << "The blacksmith starts scratching themselves all over, frantically ridding themself of the ants.\n";
             break;
         case Potion::Demon:
             echo << "[todo]"; // TODO: Implement Blacksmith demon potion interaction
             break;
         case Potion::Fire:
-            echo << "[todo]"; // TODO: Implement Blacksmith fire potion interaction
+            echo << "A flame consumes the blacksmith. They seem unaffected by it; used to the heat.\n";
             break;
         case Potion::Explode:
-            echo << "[todo]"; // TODO: Implement Blacksmith explode potion interaction
+            echo << "A puff of smoke filles the room. The blacksmith is somehow unaffected, other that being covered in soot.\n";
+            echo << "You remind yourself not to mess with them...\n";
             break;
         case Potion::Tree:
-            echo << "[todo]"; // TODO: Implement Blacksmith tree potion interaction
+            echo << "The blacksmith transforms into a tree. They don't seem that different...\n";
             break;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
